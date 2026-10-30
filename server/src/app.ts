@@ -2,6 +2,7 @@
 import Fastify from 'fastify';
 import cookie from '@fastify/cookie';
 import fs from 'node:fs';
+import path from 'node:path';
 import { openDb, type Db } from './db.js';
 import { config as baseConfig, type Config } from './config.js';
 import { COOKIE, HttpError, loadCtx } from './context.js';
@@ -11,6 +12,7 @@ import dataRoutes from './routes-data.js';
 import aiRoutes from './routes-ai.js';
 import oauthRoutes from './routes-oauth.js';
 import monitorRoutes, { alerter } from './monitor.js';
+import growthRoutes from './routes-growth.js';
 import crypto from 'node:crypto';
 import { createMailer, type Mailer } from './mail.js';
 
@@ -26,9 +28,11 @@ export async function buildApp(overrides: Partial<Config> = {}, opts: { db?: Db;
   app.decorate('cfg', cfg);
   app.decorate('mail', opts.mailer || createMailer(cfg, app.log));
   await app.register(cookie);
+  app.addContentTypeParser('application/x-www-form-urlencoded', { parseAs: 'string' }, (_req, body, done) => done(null, Object.fromEntries(new URLSearchParams(String(body)))));
 
   app.addHook('onRequest', async req => {
     if (!req.url.startsWith('/api/')) return;
+    if (req.url.startsWith('/api/public/')) return; /* formularz na stronie klienta: bez sesji i bez nagłówka */
     // Zmiany danych tylko z naszej aplikacji: wymagany nagłówek, którego inna strona nie wyśle bez zgody CORS.
     if (req.method !== 'GET' && req.method !== 'HEAD' && req.headers['x-hermes'] !== '1') throw new HttpError(403, 'csrf', 'Brak nagłówka x-hermes.');
     req.ctx = await loadCtx(db, req.cookies[COOKIE]);
@@ -55,12 +59,25 @@ export async function buildApp(overrides: Partial<Config> = {}, opts: { db?: Db;
   await app.register(aiRoutes);
   await app.register(oauthRoutes);
   await app.register(monitorRoutes);
+  await app.register(growthRoutes);
 
   const started = Date.now();
   app.get('/health', async () => { await db.one('SELECT 1 AS ok'); return { ok: true, db: db.kind, uptime: Math.round((Date.now() - started) / 1000), mail: app.mail.enabled, version: VERSION }; });
   const sendApp = async (_req: unknown, reply: any) => reply.type('text/html; charset=utf-8').header('cache-control', 'no-cache').send(fs.readFileSync(cfg.appFile));
   app.get('/', sendApp);
   app.get('/index.html', sendApp);
+  /* aplikacja do zainstalowania (PWA): manifest, service worker, ikony */
+  const TYPES: Record<string, string> = { '.png': 'image/png', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json; charset=utf-8', '.js': 'text/javascript; charset=utf-8' };
+  const sendAsset = (name: string, reply: any, cache = 'public, max-age=86400') => {
+    if (!/^[\w.-]+$/.test(name)) return reply.status(404).send();
+    const file = path.join(cfg.assetsDir, name);
+    if (!fs.existsSync(file)) return reply.status(404).send();
+    return reply.type(TYPES[path.extname(name)] || 'application/octet-stream').header('cache-control', cache).send(fs.readFileSync(file));
+  };
+  app.get('/assets/:name', async (req, reply) => sendAsset((req.params as any).name, reply));
+  app.get('/manifest.webmanifest', async (_req, reply) => sendAsset('manifest.webmanifest', reply, 'no-cache'));
+  app.get('/sw.js', async (_req, reply) => sendAsset('sw.js', reply, 'no-cache'));
+  app.get('/apple-touch-icon.png', async (_req, reply) => sendAsset('apple-touch-icon.png', reply));
   app.addHook('onClose', async () => { if (!opts.db) await db.close(); });
   return app;
 }

@@ -6,7 +6,7 @@ Prosty, AI-native CRM dla małych i średnich firm, zaprojektowany dla foundera,
 
 ![Pulpit Hermesa z listą „Na dziś”](docs/img/pulpit.png)
 
-> **Status:** wersja 0.10, początek fazy 1 [roadmapy](docs/roadmapa.md). `index.html` działa samodzielnie jako prototyp z danymi w przeglądarce, a z serwerem z folderu `server/` jako aplikacja dla zespołu: konta, 2FA, role, synchronizacja, RODO i Hermes AI przez serwer.
+> **Status:** wersja 0.11, faza 1 [roadmapy](docs/roadmapa.md) gotowa technicznie, pierwsze inicjatywy fazy 2. `index.html` działa samodzielnie jako prototyp z danymi w przeglądarce, a z serwerem z folderu `server/` jako aplikacja dla zespołu: konta, 2FA, role, synchronizacja, RODO i Hermes AI przez serwer.
 
 ## Szybki start
 
@@ -30,15 +30,15 @@ Albo bez Dockera: `cd server && npm install && npm run dev` (baza SQLite w pliku
 | Obszar | Najważniejsze funkcje |
 | --- | --- |
 | Leady i szanse | Osobne obiekty: lead to potencjalny klient, szansa to klient w procesie sprzedaży. Konwersja z checklistą ICP i zainteresowania, odrzucenie z powodem. |
-| Następny krok | Każdy otwarty lead i szansa ma krok z terminem. Zamknięcie zadania wymusza kolejne, krok można świadomie pominąć krzyżykiem. |
+| Następny krok i zadania | Każdy otwarty lead i szansa ma krok z terminem; zamknięcie wymusza kolejny. Do tego dowolnie wiele zadań z terminem i osobą, lista „Na dziś” i poranny plan mailem. |
 | Karty rekordów | Pełny ekran jak w HubSpocie czy Pipedrive: pasek etapów, kluczowe liczby, firma i wiele kontaktów, aktywności z wynikiem rozmowy, oś czasu z filtrami. |
 | Lejek | Kanban szans z edytowalnymi etapami i prostszy kanban leadów, przeciąganie, filtr opiekuna. |
 | Hermes Voice | Dodawanie firmy, kontaktu, leada i szansy głosem, także wszystko naraz, z podglądem przed zapisem. |
 | Hermes AI | Plan dnia, zagrożone szanse, kolejność leadów, podsumowania i szkice maili. Działa lokalnie albo z kluczem Claude API. |
 | Analityka | Okresy od dnia do roku, porównanie z poprzednim okresem, prognoza ważona, układ modułów do przeciągania. |
 | Wyszukiwarka | Grupowane wyniki z podświetleniem, zakresy, klawiatura, szukanie po telefonach, emailach i historii. |
-| Zespół | Konta z logowaniem i 2FA, zaproszenia, role (administrator, handlowiec, podgląd), widoczność „tylko swoje”, cele, dziennik zmian. Bez serwera: profile handlowców jako etykiety. |
-| Dane | Import i eksport CSV z dopasowaniem kolumn, kopia zapasowa JSON, dane demo, cofanie operacji. Na serwerze: synchronizacja zmian między osobami, eksport i usunięcie danych osoby (RODO). |
+| Zespół | Konta z logowaniem (email, Google, Microsoft) i 2FA, zaproszenia mailem, zaproszenia, role (administrator, handlowiec, podgląd), widoczność „tylko swoje”, cele, dziennik zmian. Bez serwera: profile handlowców jako etykiety. |
+| Dane | Formularz leada na stronę i webhook, dane firmy po NIP z rejestru MF, import i eksport CSV z dopasowaniem kolumn, kopia zapasowa JSON, dane demo, cofanie operacji. Na serwerze: synchronizacja zmian między osobami, eksport i usunięcie danych osoby (RODO). |
 
 Szczegóły i zrzuty ekranu są w [przewodniku użytkownika](docs/przewodnik.md).
 
@@ -89,8 +89,8 @@ Jeden plik HTML z czystym JavaScriptem, bez frameworka i bez zależności w prze
 ## Ograniczenia
 
 - Bez serwera dane są tylko w tej przeglądarce, a klucz Claude API jest trzymany lokalnie; to tryb prototypu.
-- Serwer nie wysyła jeszcze maili: linki zaproszeń i resetu hasła kopiuje się ręcznie.
-- Brak logowania przez Google i Microsoft, płatności oraz integracji z pocztą i kalendarzem (kolejne etapy roadmapy).
+- Brak płatności oraz integracji z Gmailem, Outlookiem i kalendarzami (kolejne etapy roadmapy).
+- Aplikację na telefon instaluje się z przeglądarki (PWA); natywna aplikacja jest w fazie 4.
 - Rozpoznawanie mowy zależy od przeglądarki; Firefox go nie obsługuje.
 
 ## Licencja

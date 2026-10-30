@@ -8,12 +8,13 @@ COPY server/src ./src
 RUN npm run build && npm prune --omit=dev
 
 FROM node:22-alpine
-ENV NODE_ENV=production PORT=3000 APP_FILE=/app/index.html SQLITE_PATH=/data/hermes.db
+ENV NODE_ENV=production PORT=3000 APP_FILE=/app/index.html ASSETS_DIR=/app/assets SQLITE_PATH=/data/hermes.db TZ=Europe/Warsaw
 WORKDIR /app/server
 COPY --from=build /app/server/node_modules ./node_modules
 COPY --from=build /app/server/dist ./dist
 COPY server/package.json ./
 COPY index.html /app/index.html
+COPY assets /app/assets
 RUN mkdir -p /data && chown node:node /data
 USER node
 EXPOSE 3000

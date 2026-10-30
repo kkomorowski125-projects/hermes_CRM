@@ -31,7 +31,7 @@ npm install
 npm run dev          # http://localhost:3000, dane w server/data/hermes.db
 ```
 
-Pierwsza osoba zakłada firmę na ekranie logowania („Załóż konto”) i zostaje administratorem. Kolejne osoby dołączają przez zaproszenia z Ustawień → Zespół. Bez skonfigurowanej wysyłki maili linki zaproszeń i resetu hasła trzeba skopiować i przekazać samodzielnie; w trybie deweloperskim serwer zapisuje je też w logu.
+Pierwsza osoba zakłada firmę na ekranie logowania („Załóż konto”) i zostaje administratorem. Kolejne osoby dołączają przez zaproszenia z Ustawień → Zespół. Z ustawionym `SMTP_URL` zaproszenia i linki do zmiany hasła wychodzą mailem. Bez niego link trzeba skopiować i przekazać samodzielnie; w trybie deweloperskim serwer zapisuje go też w logu.
 
 | Polecenie | Działanie |
 | --- | --- |
@@ -56,6 +56,10 @@ Zmienne środowiskowe opisuje [`.env.example`](../.env.example), a wdrożenie [w
 | `src/routes-org.ts` | Zespół, role, widoczność, zaproszenia, dziennik zmian |
 | `src/routes-data.ts` | Stan, synchronizacja, zmiany, kopia, import, RODO |
 | `src/routes-ai.ts` | Hermes AI przez serwer z limitem dziennym |
+| `src/routes-oauth.ts` | Logowanie Google i Microsoft (OpenID Connect z PKCE), połączone konta |
+| `src/routes-growth.ts` | Dane firmy po NIP, formularz leada na stronę, poranny plan dnia mailem |
+| `src/mail.ts` | Wysyłka maili przez SMTP i szablon wiadomości |
+| `src/monitor.ts` | Alerty o błędach na webhook, zgłoszenia błędów z przeglądarki |
 | `src/app.ts` | Złożenie aplikacji, nagłówki bezpieczeństwa, serwowanie `index.html` |
 
 ## Role i widoczność
@@ -103,7 +107,53 @@ Wszystkie zapytania zmieniające dane muszą mieć nagłówek `x-hermes: 1` (och
 | `GET /api/export`, `POST /api/import` | admin | Kopia w formacie prototypu |
 | `GET`, `DELETE /api/gdpr/contacts/:id` | admin | Dane osoby i ich trwałe usunięcie |
 | `GET /api/ai/status`, `POST /api/ai/messages` | zalogowany | Hermes AI przez serwer |
+| `GET /api/auth/oauth/providers` | każdy | Włączone logowania: Google, Microsoft |
+| `GET /api/auth/oauth/:dostawca/start`, `…/callback` | każdy | Logowanie przez Google lub Microsoft; `?mode=link` łączy z zalogowanym kontem, `?invite=` przyjmuje zaproszenie |
+| `POST /api/auth/oauth/complete`, `/totp` | w trakcie logowania | Nazwa nowej firmy, kod 2FA po logowaniu przez dostawcę |
+| `GET`, `DELETE /api/me/identities` | zalogowany | Połączone konta logowania |
+| `GET /api/nip/:nip` | zalogowany | Nazwa, adres i miasto firmy z Białej listy MF |
+| `GET`, `POST`, `DELETE /api/org/forms` | admin | Formularze leada na stronę |
+| `POST /api/public/forms/:id` | każdy (CORS) | Zgłoszenie z formularza lub webhooka: firma, kontakt, lead, notatka |
+| `POST /api/client-errors` | każdy | Błąd JavaScript z przeglądarki do logu |
 | `GET /health` | każdy | Stan serwera i bazy |
+
+## Logowanie Google i Microsoft
+
+Gdy w konfiguracji są `GOOGLE_CLIENT_ID` i `GOOGLE_CLIENT_SECRET` (albo odpowiedniki `MICROSOFT_…`), na ekranie logowania pojawiają się przyciski „Kontynuuj z Google” i „Kontynuuj z Microsoft”. Przepływ to OpenID Connect z kodem autoryzacji i PKCE; `state` i `nonce` są jednorazowe i ważne 10 minut.
+
+| Sytuacja | Co się dzieje |
+| --- | --- |
+| Konto Google lub Microsoft już połączone | Logowanie, a przy włączonej 2FA jeszcze kod z aplikacji |
+| Google z potwierdzonym adresem, który ma konto w Hermesie | Połączenie kont i logowanie |
+| Microsoft z adresem, który ma konto w Hermesie | Odmowa z prośbą o zalogowanie hasłem i połączenie konta w Ustawieniach, bo Microsoft nie zawsze potwierdza adres |
+| Link z zaproszeniem | Przyjęcie, gdy potwierdzony adres Google zgadza się z zaproszeniem |
+| Nowa osoba | Pytanie o nazwę firmy i założenie konta administratora (gdy `SIGNUP=open`) |
+
+Konto założone przez Google lub Microsoft nie ma hasła; można je ustawić w Ustawieniach. Ostatniego sposobu logowania nie da się odłączyć.
+
+## Maile
+
+Wysyłka idzie przez dowolny serwer SMTP (`SMTP_URL`, nadawca w `MAIL_FROM`): zaproszenia, link do nowego hasła (sam albo od administratora) i poranny plan dnia. Wiadomości mają wersję tekstową i prostą wersję HTML w kolorach Hermesa. Prośba o reset dla nieznanego adresu nie wysyła maila i nie zdradza, czy konto istnieje.
+
+## Zadania i poranny plan
+
+Zadania (`task`) synchronizują się jak pozostałe rekordy i podlegają tym samym zasadom widoczności co ich lead lub szansa. Codziennie o `DIGEST_HOUR` (domyślnie 7:00 czasu polskiego) każda osoba z rolą administratora lub handlowca dostaje mail z zadaniami i krokami z terminem na dziś lub wcześniej, jeśli takie ma. Plan wychodzi raz dziennie (tabela `digests`); każdy wyłącza go w Ustawieniach. Pusty `DIGEST_HOUR` wyłącza wysyłkę na serwerze.
+
+## Formularz leada i webhook
+
+Administrator tworzy formularz w Ustawieniach → Ogólne i dostaje adres oraz gotowy kod HTML. Adres przyjmuje zwykły formularz HTML (z polem `redirect` przekierowuje po wysłaniu na stronę podziękowania) i JSON z Zapiera, Make czy własnego skryptu. Pola: `name`, `email`, `phone`, `company`, `message`, opcjonalnie `value` i `source`. Ukryte pole `website` odsiewa boty, a limit to 20 zgłoszeń na godzinę z jednego adresu IP. Zgłoszenie tworzy albo odnajduje firmę i kontakt (po nazwie i adresie email), zakłada leada ze źródłem „Strona www”, krokiem na dziś i opiekunem administratorem oraz zapisuje wiadomość w historii.
+
+## Dane firmy po NIP
+
+W formularzu nowej firmy przycisk „Pobierz dane z rejestru” sprawdza sumę kontrolną NIP i pobiera z Białej listy Ministerstwa Finansów nazwę (w czytelnej postaci, np. „Alfa Soft Sp. z o.o.”), adres i miasto. Na serwerze zapytanie idzie przez `/api/nip/:nip` z limitem 60 na godzinę na firmę; w trybie lokalnym przeglądarka pyta rejestr bezpośrednio, o ile na to pozwala.
+
+## Aplikacja na telefon
+
+Serwer udostępnia manifest, ikony i service worker, więc Hermesa można zainstalować na telefonie i komputerze („Dodaj do ekranu początkowego”). Szkielet aplikacji jest w pamięci podręcznej, a dane zawsze przychodzą z serwera; bez sieci zainstalowana aplikacja pokazuje komunikat o braku połączenia zamiast pustych danych lokalnych. Poniżej 600 px układ przechodzi na wersję telefonu: przewijane menu, kompaktowy górny pasek, panele jeden pod drugim.
+
+## Monitoring
+
+Każda odpowiedź ma nagłówek `x-request-id`, a komunikat o błędzie serwera podaje ten numer użytkownikowi. Błąd 500 wysyła alert na `ALERT_WEBHOOK_URL` (Slack, Teams, Discord; najwyżej jeden na minutę). Błędy JavaScript z przeglądarki trafiają do logu serwera z identyfikatorem firmy i osoby. `/health` zwraca stan bazy, czas działania, wersję i to, czy działa wysyłka maili. Logi nie zawierają ciasteczek ani nagłówka `authorization`.
 
 ## RODO
 
@@ -122,4 +172,4 @@ Obie operacje, tak jak logowanie, eksport, import, zmiany rekordów i uprawnień
 - Ochrona przed CSRF nagłówkiem `x-hermes`, limit prób logowania, nagłówki `X-Content-Type-Options`, `X-Frame-Options` i `Referrer-Policy`.
 - Klucz Claude API tylko w zmiennej środowiskowej serwera.
 
-Brakuje jeszcze: wysyłki maili, logowania przez Google i Microsoft, szyfrowania kopii bazy i monitoringu błędów. To kolejne kroki fazy 1 [roadmapy](roadmapa.md).
+Szyfrowane kopie bazy i HTTPS opisuje [wdrożenie](wdrozenie.md).

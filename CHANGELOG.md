@@ -2,6 +2,18 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.11.0] · 31 października 2026
+
+### Dodane
+- Wysyłka maili przez SMTP: zaproszenia, link do nowego hasła, poranny plan dnia.
+- Logowanie Google i Microsoft (OpenID Connect z PKCE), łączenie kont w Ustawieniach, 2FA także po logowaniu przez dostawcę.
+- Zadania: wiele na leada i szansę, z terminem i osobą; w liście „Na dziś” i w porannym mailu.
+- Dane firmy po NIP z Białej listy MF w formularzu nowej firmy.
+- Formularz leada na stronę i webhook dla Zapiera i Make, z deduplikacją firm i kontaktów.
+- Aplikacja do zainstalowania na telefonie i komputerze (PWA) i układ dla ekranów telefonu.
+- Monitoring: numer zgłoszenia przy błędach, alerty na webhook, błędy z przeglądarki w logu.
+- Szyfrowane kopie bazy co noc i HTTPS przez Caddy w Docker Compose.
+
 ## [0.10.0] · 30 października 2026
 
 ### Dodane

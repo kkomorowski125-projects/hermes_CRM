@@ -13,6 +13,8 @@ export const config = {
   sqlitePath: process.env.SQLITE_PATH || path.resolve(here, '..', 'data', 'hermes.db'),
   /** Plik frontendu serwowany pod / */
   appFile: process.env.APP_FILE || path.resolve(here, '..', '..', 'index.html'),
+  /** Ikony, manifest i service worker aplikacji do zainstalowania */
+  assetsDir: process.env.ASSETS_DIR || path.resolve(here, '..', '..', 'assets'),
   /** Adres aplikacji używany w linkach zaproszeń i resetu hasła */
   publicUrl: (process.env.PUBLIC_URL || 'http://localhost:3000').replace(/\/$/, ''),
   /** Ciasteczka tylko przez HTTPS (włącz w produkcji) */

@@ -29,10 +29,23 @@ Aplikacja działa na porcie 3000. Pierwsze konto założone na ekranie logowania
 | `AI_DAILY_LIMIT` | `200` | Liczba zapytań AI na firmę dziennie |
 | `NODE_ENV` | w obrazie `production` | Poza `production` linki resetu hasła wracają w odpowiedzi API |
 | `LOG_LEVEL` | `info` | Poziom logów |
+| `SMTP_URL`, `MAIL_FROM` | puste | Wysyłka maili (sekcja Maile) |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | puste | Logowanie Google |
+| `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`, `MICROSOFT_TENANT` | puste, `common` | Logowanie Microsoft |
+| `DIGEST_HOUR` | `7` | Godzina porannego planu (czas polski); puste wyłącza |
+| `ALERT_WEBHOOK_URL` | puste | Alerty o błędach serwera |
+| `BACKUP_PASSPHRASE`, `BACKUP_HOUR`, `BACKUP_KEEP_DAYS` | puste, `1`, `14` | Szyfrowane kopie bazy |
+| `DOMAIN`, `APP_PORT` | puste, `3000` | Domena dla Caddy, port aplikacji na serwerze |
 
 ## HTTPS
 
-Postaw przed aplikacją serwer z certyfikatem, np. Caddy:
+Najprościej przez wbudowany profil z Caddy: ustaw w `.env` `DOMAIN=crm.twojafirma.pl`, `PUBLIC_URL=https://crm.twojafirma.pl`, `SECURE_COOKIES=true`, `APP_PORT=127.0.0.1:3000` i uruchom:
+
+```bash
+docker compose --profile https up -d --build
+```
+
+Caddy sam pobierze certyfikat Let's Encrypt (domena musi wskazywać na serwer, porty 80 i 443 otwarte). Jeśli masz już własny serwer proxy, wystarczy taki wpis:
 
 ```
 crm.twojafirma.pl {
@@ -44,8 +57,22 @@ Potem ustaw `PUBLIC_URL=https://crm.twojafirma.pl` i `SECURE_COOKIES=true`.
 
 ## Kopie zapasowe
 
-- **Baza:** codzienny zrzut, np. `docker compose exec db pg_dump -U hermes hermes | gzip > hermes-$(date +%F).sql.gz`, przechowywany poza serwerem i zaszyfrowany.
+- **Baza:** usługa `backup` co noc (domyślnie o 1:00 UTC, `BACKUP_HOUR`) zapisuje do `./backups` zrzut bazy skompresowany i zaszyfrowany AES 256 hasłem z `BACKUP_PASSPHRASE`. Przechowuje 14 dni (`BACKUP_KEEP_DAYS`). Bez hasła kopie są wyłączone. Kopię na żądanie robi `docker compose run --rm backup now`. Folder `backups` kopiuj regularnie poza serwer (np. do magazynu obiektów w UE).
+- **Odtworzenie:** `openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass env:BACKUP_PASSPHRASE -in plik.sql.gz.enc | gunzip | docker compose exec -T db psql -U hermes hermes`. Sprawdzaj odtworzenie raz w miesiącu na kopii testowej.
 - **Kopia z aplikacji:** administrator pobiera plik JSON w Ustawieniach → Ogólne. Ten sam format wczytuje się w prototypie i na serwerze (`POST /api/import`).
+
+## Maile
+
+Ustaw `SMTP_URL` (np. `smtps://użytkownik:hasło@smtp.dostawca.pl:465`) i `MAIL_FROM` (np. `Hermes CRM <crm@twojafirma.pl>`). Pasuje każdy dostawca SMTP: Postmark, Mailgun, Amazon SES, SMTP2GO albo skrzynka firmowa. Dodaj rekordy SPF i DKIM domeny nadawcy, żeby maile nie trafiały do spamu. `/health` pokazuje `"mail": true`, gdy wysyłka jest skonfigurowana.
+
+## Logowanie Google i Microsoft
+
+- **Google:** w Google Cloud Console utwórz klienta OAuth typu „Aplikacja internetowa”, dodaj adres przekierowania `https://twoja-domena/api/auth/oauth/google/callback` i wpisz `GOOGLE_CLIENT_ID` oraz `GOOGLE_CLIENT_SECRET`. Zakresy: `openid`, `email`, `profile`.
+- **Microsoft:** w Microsoft Entra (Rejestracje aplikacji) dodaj aplikację z typem konta „dowolna organizacja i konta osobiste”, przekierowanie internetowe `https://twoja-domena/api/auth/oauth/microsoft/callback`, utwórz klucz tajny i wpisz `MICROSOFT_CLIENT_ID` oraz `MICROSOFT_CLIENT_SECRET`. `MICROSOFT_TENANT` zostaw `common` albo wpisz identyfikator jednej organizacji.
+
+## Monitoring
+
+Ustaw `ALERT_WEBHOOK_URL` na webhook kanału w Slacku, Teams albo Discordzie, a błędy serwera przyjdą jako wiadomości z numerem zgłoszenia. Do sprawdzania dostępności podłącz zewnętrzny monitor (np. UptimeRobot, Better Stack) pod `https://twoja-domena/health`. Logi czytasz poleceniem `docker compose logs -f app`.
 
 ## Aktualizacja
 

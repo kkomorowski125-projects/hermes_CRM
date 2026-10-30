@@ -96,6 +96,20 @@ Otwarte leady to te ze statusem Nowy, W kontakcie albo Kwalifikacja.
 
 Historia rekordu zbiera wpisy z rekordów powiązanych: firma widzi wpisy swoich kontaktów, leadów i szans; szansa widzi wpisy swoich kontaktów i źródłowego leada. Ostatni kontakt liczy się z notatek, telefonów, emaili i spotkań.
 
+## Zadanie (`task`)
+
+| Pole | Typ | Opis |
+| --- | --- | --- |
+| `id` | tekst | Identyfikator |
+| `obj`, `rid` | tekst | Lead albo szansa, której dotyczy zadanie |
+| `title` | tekst | Co jest do zrobienia |
+| `due` | data | Termin; zadania z terminem na dziś lub wcześniej trafiają do listy „Na dziś” i porannego planu |
+| `owner` | tekst | Kto ma to zrobić (opiekun z zespołu) |
+| `done` | data | Dzień wykonania; puste = otwarte |
+| `created` | data | Dzień dodania |
+
+Następny krok zostaje jeden na leada i szansę: to najważniejsza rzecz do zrobienia. Zadania są na wszystko poza nim, np. umowa, faktura, materiały dla klienta.
+
 ## Pola własne
 
 W Ustawieniach możesz dodać do każdego obiektu pola typu tekst, liczba, kwota, data, lista wyboru, email i telefon. Pole własne ma klucz `cf…` i zapisuje się w rekordzie jak pola wbudowane. Pola wbudowane (`core`) można tylko przemianować.

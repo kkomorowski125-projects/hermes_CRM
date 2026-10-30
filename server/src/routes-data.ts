@@ -4,11 +4,11 @@ import type { Db } from './db.js';
 import { HttpError, bad, need, audit, parseJson, type Ctx } from './context.js';
 import { now } from './security.js';
 
-export const TYPES = ['company', 'contact', 'lead', 'deal', 'activity'] as const;
+export const TYPES = ['company', 'contact', 'lead', 'deal', 'activity', 'task'] as const;
 type RType = typeof TYPES[number];
 /** Ustawienia całej firmy, które zmienia administrator; reszta to preferencje osoby */
 const ORG_KEYS = ['target', 'targetSet', 'company', 'stages', 'labels', 'custom', 'meTargets'];
-const PREF_KEYS = ['aLayout', 'onboardingHidden'];
+const PREF_KEYS = ['aLayout', 'onboardingHidden', 'digest'];
 
 type Rec = { type: RType; id: string; data: Record<string, any>; deleted: boolean; updated_at: string };
 
@@ -22,10 +22,10 @@ async function loadAll(db: Db, orgId: string, since?: string): Promise<Rec[]> {
 function visibleFilter(c: Ctx, all: Rec[]) {
   if (c.visibility !== 'own' || c.role === 'admin') return all;
   const hidden = new Set(all.filter(r => (r.type === 'lead' || r.type === 'deal') && r.data.owner && r.data.owner !== c.user.name).map(r => `${r.type}:${r.id}`));
-  return all.filter(r => !hidden.has(`${r.type}:${r.id}`) && !(r.type === 'activity' && hidden.has(`${r.data.obj}:${r.data.rid}`)));
+  return all.filter(r => !hidden.has(`${r.type}:${r.id}`) && !((r.type === 'activity' || r.type === 'task') && hidden.has(`${r.data.obj}:${r.data.rid}`)));
 }
 const group = (recs: Rec[]) => {
-  const db: Record<string, any[]> = { company: [], contact: [], lead: [], deal: [], activity: [] };
+  const db: Record<string, any[]> = { company: [], contact: [], lead: [], deal: [], activity: [], task: [] };
   for (const r of recs) if (!r.deleted) db[r.type].push(r.data);
   db.activity.sort((a, b) => String(b.at).localeCompare(String(a.at)));
   return db;
@@ -80,12 +80,12 @@ export default async function dataRoutes(app: FastifyInstance) {
         if (!TYPES.includes(type as RType) || !id || id.length > 80 || !data || typeof data !== 'object' || data.id !== id) { rejected.push({ type, id, reason: 'invalid' }); continue; }
         const prev = await existing(type, id);
         if (own && (type === 'lead' || type === 'deal') && ((prev && prev.owner && prev.owner !== c.user.name) || (data.owner && data.owner !== c.user.name))) { rejected.push({ type, id, reason: 'not_owner' }); continue; }
-        if (type === 'activity' && await parentHidden(data.obj, data.rid)) { rejected.push({ type, id, reason: 'not_owner' }); continue; }
+        if ((type === 'activity' || type === 'task') && await parentHidden(data.obj, data.rid)) { rejected.push({ type, id, reason: 'not_owner' }); continue; }
         const json = JSON.stringify(data);
         const owner = type === 'lead' || type === 'deal' ? (data.owner || null) : null;
         if (prev) await tx.run('UPDATE records SET data = ?, owner = ?, updated_at = ?, updated_by = ?, deleted = 0 WHERE org_id = ? AND type = ? AND id = ?', [json, owner, t, c.user.id, c.org.id, type, id]);
         else await tx.run('INSERT INTO records (org_id, type, id, data, owner, updated_at, updated_by, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, 0)', [c.org.id, type, id, json, owner, t, c.user.id]);
-        if (type !== 'activity') await audit(tx, { orgId: c.org.id, userId: c.user.id }, prev && !Number(prev.deleted) ? 'record_updated' : 'record_created', type, id, { name: data.name });
+        if (type !== 'activity' && type !== 'task') await audit(tx, { orgId: c.org.id, userId: c.user.id }, prev && !Number(prev.deleted) ? 'record_updated' : 'record_created', type, id, { name: data.name });
       }
       for (const d of dels) {
         const type = String(d?.type), id = String(d?.id || '');
@@ -93,7 +93,7 @@ export default async function dataRoutes(app: FastifyInstance) {
         if (!prev) continue;
         if (own && (type === 'lead' || type === 'deal') && prev.owner && prev.owner !== c.user.name) { rejected.push({ type, id, reason: 'not_owner' }); continue; }
         await tx.run('UPDATE records SET deleted = 1, updated_at = ?, updated_by = ? WHERE org_id = ? AND type = ? AND id = ?', [t, c.user.id, c.org.id, type, id]);
-        if (type !== 'activity') await audit(tx, { orgId: c.org.id, userId: c.user.id }, 'record_deleted', type, id, { name: parseJson<any>(prev.data, {}).name });
+        if (type !== 'activity' && type !== 'task') await audit(tx, { orgId: c.org.id, userId: c.user.id }, 'record_deleted', type, id, { name: parseJson<any>(prev.data, {}).name });
       }
       if (b.settings && typeof b.settings === 'object' && c.role === 'admin') {
         const next = { ...c.org.settings, ...Object.fromEntries(ORG_KEYS.filter(k => k in b.settings!).map(k => [k, b.settings![k]])) } as Record<string, any>;

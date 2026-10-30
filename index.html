@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hermes CRM</title>
+<meta name="theme-color" content="#5B61B8">
+<meta name="apple-mobile-web-app-title" content="Hermes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1012,6 +1016,14 @@ body.auth-on>*:not(#authLayer):not(.toast){display:none!important}
 .auth-oauth{display:grid;gap:8px;margin-bottom:14px}.auth-oauth .ghost-button{justify-content:center;gap:10px;height:44px;text-decoration:none}
 .auth-or{display:flex;align-items:center;gap:10px;margin:0 0 14px;color:var(--faint);font-size:12px}.auth-or::before,.auth-or::after{content:'';flex:1;height:1px;background:var(--line2)}
 .set-row .tag svg{margin-right:6px;vertical-align:-3px}
+.rtask{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}.rtask:last-of-type{border-bottom:0}
+.rtask>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.rtask b{font-size:14px;font-weight:500;color:var(--ink2)}.rtask small{font-size:12px;color:var(--mute)}
+.rtask .task-check{width:20px;height:20px;margin-top:1px}.rtask .task-check:hover{color:var(--ink)}.rtask .mini{opacity:.55}.rtask:hover .mini{opacity:1}
+.rtask-empty{margin:4px 0;color:var(--mute);font-size:13px;line-height:1.5}
+.task-form{display:grid;gap:8px;padding-top:4px}.task-form .fin{height:38px}.task-form-row{display:flex;gap:8px;flex-wrap:wrap}.task-form-row .fin{flex:1;min-width:120px}
+.nip-row .fin{flex:1}.nip-row .ghost-button{white-space:nowrap}
+.srv-form{display:grid;gap:8px;width:min(460px,100%)}.srv-form textarea.fin{font-size:12px}.srv-form>div:last-child{display:flex;gap:8px;flex-wrap:wrap}
+.switch{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--text);cursor:pointer}.switch input{width:18px;height:18px;accent-color:var(--accent)}
 .auth-foot{max-width:420px;margin:0;color:var(--faint);font-size:12px;line-height:1.5;text-align:center}
 #syncState[data-st=saving]{color:var(--accent)}#syncState[data-st=error]{color:var(--late)}
 .ro-banner{display:flex;align-items:center;gap:8px;margin:0 0 14px;padding:10px 14px;border:1px solid var(--accent-line);border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);font-size:13px}
@@ -1020,6 +1032,19 @@ body.auth-on>*:not(#authLayer):not(.toast){display:none!important}
 .srv-linkbox{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--accent-soft)}.srv-linkbox p{margin:0 0 8px;font-size:13px;color:var(--accent-ink)}.srv-linkbox .auth-link{margin:0}
 .srv-invites{padding:14px 20px 18px;border-top:1px solid var(--line2)}.srv-invites h3{margin:0 0 8px;font-size:14px}.srv-invites ul{margin:0;padding:0;list-style:none}.srv-invites li{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;color:var(--text)}
 .gdpr{margin:0 22px 16px;padding:14px;border:1px solid var(--line2);border-radius:10px}.gdpr h3{margin:0 0 4px;font-size:14px}.gdpr p{margin:0 0 10px;color:var(--mute);font-size:13px;line-height:1.5}.gdpr div{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:600px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .topbar{gap:8px;padding:0 10px}
+  .search{flex:0 0 auto;width:44px;padding:0;justify-content:center}.search span,.search kbd{display:none}
+  .top-actions{gap:6px;margin-left:auto}
+  .top-actions [data-act="import"]{display:none}
+  .ai-button{font-size:0;gap:0;padding:0 11px}
+  .page-heading,.heading-actions{flex-wrap:wrap;max-width:100%}
+  .seg{max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .tablewrap{overflow-x:auto}
+  .page{padding:20px 12px 36px}
+  .page-heading h1{font-size:28px}
+}
 </style>
 </head>
 <body>
@@ -1329,7 +1354,8 @@ function demoData() {
     ].map(([obj, rid, type, text, n, t, extra], i) => ({ id: 'a' + i, obj, rid, type, text, at: at(n, t), ...(extra || {}) }))
   };
 }
-const emptyData = () => ({ company: [], contact: [], lead: [], deal: [], activity: [] });
+const emptyData = () => ({ company: [], contact: [], lead: [], deal: [], activity: [], task: [] });
+const DATA_KEYS = ['lead', 'deal', 'company', 'contact', 'activity', 'task'];
 const db = emptyData();
 const settings = { target: 100000, userName: '', company: '', targetSet: false, onboardingHidden: false, stages: DEFAULT_STAGES.map(x => ({ ...x })), team: [] };
 const me = () => settings.userName.trim() || 'Ja';
@@ -1383,7 +1409,7 @@ function migrateDb() {
 }
 function applyState(s) {
   if (!s || typeof s !== 'object' || !s.db) return false;
-  for (const o of [...OBJS, 'activity']) db[o] = Array.isArray(s.db[o]) ? s.db[o] : [];
+  for (const o of DATA_KEYS) db[o] = Array.isArray(s.db[o]) ? s.db[o] : [];
   Object.assign(settings, s.settings || {});
   if (!Array.isArray(settings.stages) || !settings.stages.length) settings.stages = DEFAULT_STAGES.map(x => ({ ...x }));
   if (!Array.isArray(settings.team)) settings.team = [];
@@ -1601,6 +1627,11 @@ function todayItems() {
     const late = r.nextDate < today;
     items.push({ kind: 'step', obj, id: r.id, hot: late, title: r.nextStep || 'Następny krok', meta: `${recLabel(obj, r)} · ${late ? 'po terminie, ' + rel(r.nextDate) : 'dziś'}` });
   });
+  db.task.filter(t => !t.done && t.due && t.due <= today && (!SRV.on || !t.owner || t.owner === me())).sort((a, b) => a.due.localeCompare(b.due)).forEach(t => {
+    const parent = find(t.obj, t.rid); if (!parent) return;
+    const late = t.due < today;
+    items.push({ kind: 'task', obj: t.obj, id: t.rid, taskId: t.id, hot: late, title: t.title, meta: `Zadanie · ${recLabel(t.obj, parent)} · ${late ? 'po terminie, ' + rel(t.due) : 'dziś'}` });
+  });
   live.filter(([, r]) => !r.nextStep && !r.nextDate).forEach(([obj, r]) => {
     const w = obj === 'lead' ? leadWait(r) : null;
     items.push({ kind: 'nostep', obj, id: r.id, hot: w !== null && w >= 1, title: obj === 'lead' ? 'Ustal pierwszy krok z leadem' : 'Ustal następny krok', meta: obj === 'lead' ? `${recLabel(obj, r)}${w !== null ? ` · czeka ${w ? w + ' ' + plural(w, 'dzień', 'dni', 'dni') : 'od dziś'}` : ''}` : `${dealLabel(r)} · ${money(r.value)}` });
@@ -1654,9 +1685,9 @@ function renderOverview() {
     </section>
     <div class="dash-grid">
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Na dziś</h2><p>Kroki w szansach i leadach, rekordy bez planu</p></div></div>
+        <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Na dziś</h2><p>Kroki, zadania i rekordy bez planu</p></div></div>
         <div class="tasks">${items.length ? items.map(it => `<div class="task">
-          <button class="task-check${it.hot ? ' hot' : ''}${it.kind === 'nostep' ? ' plan' : ''}" data-act="done" data-kind="${it.kind}" data-obj="${it.obj}" data-id="${it.id}" aria-label="${it.kind === 'nostep' ? 'Ustal następny krok' : 'Oznacz jako zrobione'}" title="${it.kind === 'nostep' ? 'Ustal krok' : 'Zrobione'}">${ic(it.kind === 'nostep' ? 'plus' : 'tick', 13)}</button>
+          <button class="task-check${it.hot ? ' hot' : ''}${it.kind === 'nostep' ? ' plan' : ''}" data-act="done" data-kind="${it.kind}"${it.taskId ? ` data-task="${it.taskId}"` : ''} data-obj="${it.obj}" data-id="${it.id}" aria-label="${it.kind === 'nostep' ? 'Ustal następny krok' : 'Oznacz jako zrobione'}" title="${it.kind === 'nostep' ? 'Ustal krok' : 'Zrobione'}">${ic(it.kind === 'nostep' ? 'plus' : 'tick', 13)}</button>
           <button class="task-body" data-act="open" data-obj="${it.obj}" data-id="${it.id}"><b>${esc(it.title)}</b><small${it.hot ? ' style="color:var(--late)"' : ''}>${esc(it.meta)}</small></button>${it.obj === 'lead' ? '<span class="kind-pill">Lead</span>' : ''}${ic('chevron', 16)}</div>`).join('')
         : '<div class="empty" style="padding:40px 10px"><h3>Czysto!</h3><p>Nic nie zalega. Może czas na nowe leady?</p></div>'}</div>
       </section>
@@ -2427,6 +2458,77 @@ function recHead(obj, r) {
     ${recBanner(obj, r)}
     <div class="rh-kpis">${recKpis(obj, r)}</div>`;
 }
+function recTasks(obj, r) {
+  const list = db.task.filter(t => t.obj === obj && t.rid === r.id);
+  const open = list.filter(t => !t.done).sort((a, b) => (a.due || '9').localeCompare(b.due || '9')), doneN = list.length - open.length;
+  const adding = state.taskAdd === r.id, owners = ownerList();
+  return `<section class="panel rp" id="rec-tasks"><header><h3>Zadania${open.length ? ` <em>${open.length}</em>` : ''}</h3>${adding ? '' : `<button class="text-button" data-act="task-new" data-id="${r.id}">${ic('plus', 14)}Dodaj</button>`}</header><div class="rp-body">
+    ${open.map(t => { const late = t.due && t.due < today; return `<div class="rtask"><button class="task-check${late ? ' hot' : ''}" data-act="task-done" data-id="${t.id}" aria-label="Oznacz zadanie jako zrobione" title="Oznacz jako zrobione">${ic('tick', 13)}</button><div><b>${esc(t.title)}</b><small${late ? ' style="color:var(--late)"' : ''}>${t.due ? (late ? 'Po terminie, ' : '') + esc(rel(t.due)) : 'Bez terminu'}${t.owner && t.owner !== me() ? ' · ' + esc(t.owner) : ''}</small></div><button class="mini" data-act="task-del" data-id="${t.id}" aria-label="Usuń zadanie" title="Usuń zadanie">${ic('trash', 13)}</button></div>`; }).join('')}
+    ${!open.length && !adding ? '<p class="rtask-empty">Brak otwartych zadań. Dodaj je, gdy do zrobienia jest więcej niż następny krok.</p>' : ''}
+    ${adding ? `<form id="taskForm" data-obj="${obj}" data-id="${r.id}" class="task-form" novalidate><label class="sr" for="tk-title">Zadanie</label><input class="fin" id="tk-title" name="title" placeholder="np. Przygotować umowę" autocomplete="off"><div class="task-form-row"><label class="sr" for="tk-due">Termin</label><input class="fin" id="tk-due" type="date" name="due" value="${addDays(1)}">${owners.length > 1 ? `<label class="sr" for="tk-owner">Kto</label><select class="fin" id="tk-owner" name="owner">${owners.map(n => `<option${n === (r.owner || me()) ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>` : ''}</div><div class="task-form-row"><button class="primary-button sm" type="submit">Dodaj zadanie</button><button class="ghost-button sm" type="button" data-act="task-cancel">Anuluj</button></div></form>` : ''}
+    ${doneN ? `<p class="rtask-empty">Zrobione: ${doneN}</p>` : ''}
+  </div></section>`;
+}
+/* dane firmy po NIP: Biała lista Ministerstwa Finansów (na serwerze przez API Hermesa) */
+function nipOk(n) { if (!/^\d{10}$/.test(n)) return false; const w = [6, 5, 7, 2, 3, 4, 5, 6, 7], s = w.reduce((a, x, i) => a + x * +n[i], 0) % 11; return s !== 10 && s === +n[9]; }
+const titleCase = x => x.toLowerCase().replace(/(^|[\s.(])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+async function nipLookup(nip) {
+  if (SRV.on) return api('/api/nip/' + nip);
+  const r = await fetch(`https://wl-api.mf.gov.pl/api/search/nip/${nip}?date=${today}`);
+  const s = ((await r.json()).result || {}).subject;
+  if (!s) { const e = new Error('Nie znaleziono firmy z tym NIP w rejestrze VAT.'); throw e; }
+  const addr = s.workingAddress || s.residenceAddress || '', m = addr.match(/\d{2}\x2d\d{3}\s+(.+)$/);
+  let name = s.name || '';
+  const forms = [['SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ', 'Sp. z o.o.'], ['SPÓŁKA AKCYJNA', 'S.A.'], ['SPÓŁKA KOMANDYTOWA', 'Sp.k.'], ['SPÓŁKA JAWNA', 'Sp.j.']];
+  const fm = forms.find(([k]) => name.toUpperCase().endsWith(k));
+  if (fm) name = name.slice(0, -fm[0].length).trim();
+  return { nip, name: (name === name.toUpperCase() ? titleCase(name) : name) + (fm ? ' ' + fm[1] : ''), city: m ? titleCase(m[1]) : '', address: titleCase(addr) };
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-act="nip-fetch"]'); if (!b) return;
+  const i = $('#n-nip'), nip = (i.value || '').replace(/\D/g, '');
+  if (!nipOk(nip)) { i.classList.add('err'); i.focus(); toast('To nie jest poprawny NIP'); return; }
+  b.disabled = true;
+  try {
+    const r = await nipLookup(nip);
+    const n = $('#n-name'); if (n) n.value = r.name;
+    const c = $('#n-city'); if (c) c.value = r.city || '';
+    i.value = nip;
+    const h = $('#addErr'); if (h) h.textContent = `Z rejestru VAT: ${r.name}${r.address ? ', ' + r.address : ''}.`;
+    toast('Uzupełniono dane z rejestru');
+  } catch (err) { toast(err.message && !/fetch/i.test(err.message) ? err.message : 'Rejestr MF jest niedostępny z tej przeglądarki. Wpisz dane ręcznie.'); }
+  finally { b.disabled = false; }
+});
+function completeTask(id) {
+  const t = db.task.find(x => x.id === id); if (!t || t.done) return;
+  t.done = today;
+  logAct(t.obj, t.rid, 'system', `Zadanie wykonane: ${t.title}`);
+  const actId = db.activity[0].id;
+  render();
+  toast(`Zrobione: ${t.title}`, { label: 'Cofnij', fn: () => { t.done = ''; db.activity = db.activity.filter(a => a.id !== actId); render(); } });
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act^="task-"]'); if (!t) return;
+  const a = t.dataset.act;
+  if (a === 'task-new') { state.taskAdd = t.dataset.id; render(); setTimeout(() => { const i = $('#tk-title'); if (i) i.focus(); }, 0); }
+  if (a === 'task-cancel') { state.taskAdd = null; render(); }
+  if (a === 'task-done') completeTask(t.dataset.id);
+  if (a === 'task-del') {
+    const i = db.task.findIndex(x => x.id === t.dataset.id); if (i < 0) return;
+    const [gone] = db.task.splice(i, 1); render();
+    toast('Usunięto zadanie', { label: 'Cofnij', fn: () => { db.task.splice(i, 0, gone); render(); } });
+  }
+});
+document.addEventListener('submit', e => {
+  const f = e.target; if (f.id !== 'taskForm') return;
+  e.preventDefault();
+  const el = n => f.elements.namedItem(n), ti = el('title'), title = ti.value.trim();
+  if (!title) { ti.classList.add('err'); ti.focus(); toast('Wpisz, co jest do zrobienia'); return; }
+  const task = { id: uid('t'), obj: f.dataset.obj, rid: f.dataset.id, title, due: el('due').value || '', owner: el('owner') ? el('owner').value : me(), done: '', created: today };
+  db.task.push(task); state.taskAdd = null;
+  logAct(task.obj, task.rid, 'system', `Dodano zadanie: ${title}${task.due ? ' · termin ' + fdate(task.due) : ''}${task.owner && task.owner !== me() ? ' · dla: ' + task.owner : ''}`);
+  render(); toast('Dodano zadanie');
+});
 function recNextBox(obj, r) {
   if (!isLive(obj, r)) return '';
   const late = r.nextDate && r.nextDate < today;
@@ -2509,7 +2611,7 @@ function renderRecord() {
   main.innerHTML = `<nav class="crumbs" aria-label="Okruszki">${backBtn}<button class="crumb" data-act="go" data-page="list" data-obj="${obj}">${S.many}</button><span class="crumb-sep">/</span><span class="crumb-cur">${esc(r.name)}</span></nav>
     <section class="panel rec-head" id="rec-head">${recHead(obj, r)}</section>
     <div class="rec-grid">
-      <aside class="rec-side">${recNextBox(obj, r)}${assocContacts(obj, r)}${assocCompany(obj, r)}${recDetails(obj, r)}${recRelated(obj, r)}</aside>
+      <aside class="rec-side">${recNextBox(obj, r)}${recTasks(obj, r)}${assocContacts(obj, r)}${assocCompany(obj, r)}${recDetails(obj, r)}${recRelated(obj, r)}</aside>
       <section class="rec-main"><section class="panel rp composer-panel" id="rec-composer">${recComposer(obj, r)}</section><section class="panel rp" id="rec-tl">${recTimeline(obj, r)}</section></section>
     </div>`;
 }
@@ -2538,7 +2640,7 @@ function openAdd(obj, preset = {}) {
   const fl = f => `<div class="f"><label for="n-${f.key}">${esc(f.label)}${f.req ? ' <span class="req" aria-hidden="true">*</span>' : ''}</label>${control(f, preset[f.key] ?? '', 'form', obj)}</div>`;
   modal(`<form id="addForm" data-obj="${obj}" novalidate>
     ${mhead(`Nowy rekord · ${S.one}`, `Dodaj ${S.gen}`)}
-    <div class="mbody"><button type="button" class="voice-inline" data-act="voice" data-hint="${obj}">${ic('mic', 16)}<b>Wypełnij głosem</b><span>Powiedz wszystko naraz, Hermes rozpozna pola</span></button>${fl(first)}${pairs.map(p => p.length === 2 ? `<div class="form-row">${p.map(fl).join('')}</div>` : fl(p[0])).join('')}
+    <div class="mbody"><button type="button" class="voice-inline" data-act="voice" data-hint="${obj}">${ic('mic', 16)}<b>Wypełnij głosem</b><span>Powiedz wszystko naraz, Hermes rozpozna pola</span></button>${obj === 'company' ? `<div class="f"><label for="n-nip">NIP</label><div class="date-row nip-row"><input id="n-nip" class="fin" name="nip" inputmode="numeric" placeholder="np. 526 025 09 95" autocomplete="off"><button type="button" class="ghost-button sm" data-act="nip-fetch">${ic('search', 15)}Pobierz dane z rejestru</button></div><input type="hidden" name="city" id="n-city"></div>` : ''}${fl(first)}${pairs.map(p => p.length === 2 ? `<div class="form-row">${p.map(fl).join('')}</div>` : fl(p[0])).join('')}
       ${hidden.map(k => `<input type="hidden" name="${k}" value="${esc(preset[k])}">`).join('')}
       <p class="hint" id="addErr" role="alert">Pozostałe pola uzupełnisz w karcie rekordu.</p></div>
     <div class="mfoot"><button type="button" class="ghost-button" data-act="close-modal">Anuluj</button><button type="submit" class="primary-button">Utwórz ${ic('arrow', 16)}</button></div>
@@ -3553,6 +3655,7 @@ document.addEventListener('click', e => {
       const k = t.dataset.kind, obj = t.dataset.obj || 'deal', id = t.dataset.id;
       if (k === 'step') completeStep(obj, id);
       else if (k === 'nostep') openNextStep(obj, id, obj === 'lead' ? 'Pierwszy krok z leadem' : 'Ustal następny krok');
+      else if (k === 'task') completeTask(t.dataset.task);
       break;
     }
     case 'atype': {
@@ -3645,7 +3748,7 @@ document.addEventListener('click', e => {
     case 'demo-quick': case 'demo': {
       if (a === 'demo' && !t.dataset.armed) { t.dataset.armed = '1'; t.textContent = 'Nadpisać obecne dane?'; return; }
       const prev = JSON.parse(JSON.stringify(snapshot()));
-      const fresh = demoData(); for (const o of [...OBJS, 'activity']) db[o] = fresh[o];
+      const fresh = demoData(); for (const o of DATA_KEYS) db[o] = fresh[o] || [];
       for (const o of REC_OBJS) db[o].forEach(r => { if (r.owner === 'Kamil K.') r.owner = me(); });
       if (!SRV.on && !settings.team.some(u => u.name === 'Monika N.')) settings.team.push({ id: uid('u'), name: 'Monika N.', email: 'monika@przyklad.pl', role: 'Handlowiec', target: 40000 });
       state.recent = [];
@@ -3656,7 +3759,7 @@ document.addEventListener('click', e => {
     case 'wipe': {
       if (!t.dataset.armed) { t.dataset.armed = '1'; t.innerHTML = ic('trash', 16) + 'Na pewno? Kliknij ponownie'; return; }
       const prev = JSON.parse(JSON.stringify(snapshot()));
-      for (const o of [...OBJS, 'activity']) db[o] = [];
+      for (const o of DATA_KEYS) db[o] = [];
       settings.onboardingHidden = false; state.recent = [];
       render(); toast('Wyczyszczono wszystkie dane', { label: 'Cofnij', fn: () => { applyState(prev); render(); toast('Przywrócono dane'); } });
       break;
@@ -4062,11 +4165,11 @@ async function api(path, method = 'GET', body) {
 const rkey = (type, id) => type + '|' + id;
 function srvRecords() {
   const m = new Map();
-  for (const o of [...OBJS, 'activity']) for (const r of db[o]) if (r && r.id) m.set(rkey(o, r.id), JSON.stringify(r));
+  for (const o of DATA_KEYS) for (const r of db[o]) if (r && r.id) m.set(rkey(o, r.id), JSON.stringify(r));
   return m;
 }
 function orgPart() { const s = snapshot(); return JSON.stringify(ORG_PICK({ ...settings, labels: s.labels, custom: s.custom })); }
-const prefPart = () => JSON.stringify({ aLayout: settings.aLayout, onboardingHidden: settings.onboardingHidden });
+const prefPart = () => JSON.stringify({ aLayout: settings.aLayout, onboardingHidden: settings.onboardingHidden, digest: settings.digest });
 function srvTeam() {
   const s = SRV.s, mine = s.members.find(m => m.id === s.user.id) || s.user;
   settings.userName = s.user.name; settings.userEmail = s.user.email;
@@ -4290,8 +4393,19 @@ function srvProfileRows() {
       <div class="set-row"><div><h3>Hasło</h3><p>${SRV.ids && !SRV.ids.hasPassword ? 'Logujesz się przez Google lub Microsoft. Ustaw hasło, żeby logować się także emailem.' : 'Zmiana hasła wyloguje Cię na pozostałych urządzeniach.'}</p></div>
         <form id="srvPass" class="srv-inline acts" novalidate>${SRV.ids && !SRV.ids.hasPassword ? '' : `<label class="sr" for="srv-p1">Obecne hasło</label><input class="fin" id="srv-p1" name="current" type="password" placeholder="Obecne hasło" autocomplete="current-password">`}<label class="sr" for="srv-p2">Nowe hasło</label><input class="fin" id="srv-p2" name="next" type="password" placeholder="Nowe hasło" title="Co najmniej 10 znaków" autocomplete="new-password"><button class="ghost-button sm" type="submit">Zmień hasło</button></form></div>
       ${srvIdentityRow()}
+      <div class="set-row"><div><h3>Poranny plan dnia</h3><p>Codziennie rano mail z zadaniami i krokami na dziś, także tymi po terminie. Wysyłamy go tylko, gdy coś czeka.</p></div>
+        <div class="acts"><label class="switch"><input type="checkbox" data-srv="digest"${settings.digest === false ? '' : ' checked'}><span>Wysyłaj mi plan dnia</span></label></div></div>
+      ${isAdmin() ? srvFormRow() : ''}
       <div class="set-row"><div><h3>Weryfikacja dwuetapowa</h3><p>Przy logowaniu poza hasłem podajesz kod z aplikacji w telefonie. Zalecamy ją każdemu, kto ma dostęp do danych klientów.</p></div>
         <div class="acts">${twofa}</div></div>`;
+}
+function srvFormRow() {
+  const f = SRV.forms;
+  if (!f) { api('/api/org/forms').then(r => { SRV.forms = r.forms; if (state.page === 'settings' && state.settingsObj === 'general') renderSettings(); }).catch(() => {}); return ''; }
+  const one = f[0];
+  const code = one ? `<form action="${one.url}" method="post">\n  <input name="name" placeholder="Imię i nazwisko" required>\n  <input name="email" type="email" placeholder="Email">\n  <input name="phone" placeholder="Telefon">\n  <input name="company" placeholder="Firma">\n  <textarea name="message" placeholder="W czym możemy pomóc?"></textarea>\n  <input name="website" style="display:none" tabindex="-1" autocomplete="off">\n  <button type="submit">Wyślij</button>\n</form>` : '';
+  return `<div class="set-row"><div><h3>Formularz leada na stronę</h3><p>Zgłoszenie z Twojej strony od razu tworzy leada z firmą, kontaktem i krokiem na dziś. Ten sam adres przyjmuje JSON z Zapiera, Make albo innego narzędzia.</p></div>
+        <div class="acts srv-form">${one ? `<div class="auth-link"><label class="sr" for="srv-form-url">Adres formularza</label><input class="fin" id="srv-form-url" readonly value="${esc(one.url)}"><button class="ghost-button sm" data-act="srv-copy" data-src="#srv-form-url">Kopiuj adres</button></div><label class="sr" for="srv-form-code">Kod HTML formularza</label><textarea class="fin" id="srv-form-code" rows="6" readonly>${esc(code)}</textarea><div><button class="ghost-button sm" data-act="srv-copy" data-src="#srv-form-code">Kopiuj kod HTML</button><button class="ghost-button sm danger" data-act="srv-form-del" data-id="${esc(one.id)}">Wyłącz formularz</button></div>` : '<button class="ghost-button sm" data-act="srv-form-new">Utwórz formularz</button>'}</div></div>`;
 }
 function srvIdentityRow() {
   const x = SRV.ids; if (!x || (!x.available.google && !x.available.microsoft && !x.identities.length)) return '';
@@ -4348,7 +4462,7 @@ function renderSrvTeam(head) {
       ${SRV.audit ? `<div class="tablewrap settings"><table><thead><tr><th scope="col">Kiedy</th><th scope="col">Kto</th><th scope="col">Co</th></tr></thead><tbody>${SRV.audit.map(a => `<tr><td class="mute" style="white-space:nowrap">${esc((d => fdate(isoD(d)) + ', ' + pad(d.getHours()) + ':' + pad(d.getMinutes()))(new Date(a.at)))}</td><td>${esc(a.user_name || 'System')}</td><td>${esc(auditText(a))}</td></tr>`).join('') || '<tr><td colspan="3" class="mute">Brak wpisów</td></tr>'}</tbody></table></div>` : ''}
     </section>` : ''}`;
 }
-const AUDIT_TXT = { login: 'Logowanie', org_created: 'Założenie konta firmy', record_created: 'Utworzenie', record_updated: 'Zmiana', record_deleted: 'Usunięcie', export: 'Eksport kopii danych', import: 'Import kopii danych', gdpr_export: 'Eksport danych osoby (RODO)', gdpr_erase: 'Usunięcie danych osoby (RODO)', invite_created: 'Zaproszenie', invite_accepted: 'Przyjęcie zaproszenia', member_updated: 'Zmiana uprawnień', member_removed: 'Usunięcie z zespołu', reset_link_created: 'Link do zmiany hasła', '2fa_enabled': 'Włączenie weryfikacji dwuetapowej', '2fa_disabled': 'Wyłączenie weryfikacji dwuetapowej', ai_first_use_today: 'Pierwsze dziś zapytanie do Hermes AI', identity_linked: 'Połączenie konta logowania', identity_unlinked: 'Odłączenie konta logowania' };
+const AUDIT_TXT = { login: 'Logowanie', org_created: 'Założenie konta firmy', record_created: 'Utworzenie', record_updated: 'Zmiana', record_deleted: 'Usunięcie', export: 'Eksport kopii danych', import: 'Import kopii danych', gdpr_export: 'Eksport danych osoby (RODO)', gdpr_erase: 'Usunięcie danych osoby (RODO)', invite_created: 'Zaproszenie', invite_accepted: 'Przyjęcie zaproszenia', member_updated: 'Zmiana uprawnień', member_removed: 'Usunięcie z zespołu', reset_link_created: 'Link do zmiany hasła', '2fa_enabled': 'Włączenie weryfikacji dwuetapowej', '2fa_disabled': 'Wyłączenie weryfikacji dwuetapowej', ai_first_use_today: 'Pierwsze dziś zapytanie do Hermes AI', identity_linked: 'Połączenie konta logowania', identity_unlinked: 'Odłączenie konta logowania', form_created: 'Utworzenie formularza leada', form_deleted: 'Wyłączenie formularza leada' };
 function auditText(a) {
   let d = a.detail; try { d = typeof d === 'string' ? JSON.parse(d) : d; } catch (e) { d = null; }
   const what = AUDIT_TXT[a.action] || a.action;
@@ -4380,6 +4494,11 @@ async function srvAction(a, t) {
         const m = SRV.s.members.find(x => x.id === t.dataset.id);
         const r = await api(`/api/org/members/${encodeURIComponent(t.dataset.id)}/reset`, 'POST', {});
         SRV.link = { title: `Link do nowego hasła dla: ${m ? m.name : 'osoby'}${r.sent ? ' wysłany mailem' : ''}.`, note: 'Jest ważny 24 godziny i działa raz.', url: r.link }; renderSettings(); return;
+      }
+      case 'srv-form-new': await api('/api/org/forms', 'POST', {}); SRV.forms = null; renderSettings(); toast('Formularz gotowy. Wklej kod na swoją stronę.'); return;
+      case 'srv-form-del': {
+        if (!t.dataset.armed) { t.dataset.armed = '1'; t.textContent = 'Na pewno? Kliknij ponownie'; return; }
+        await api('/api/org/forms/' + encodeURIComponent(t.dataset.id), 'DELETE'); SRV.forms = null; renderSettings(); toast('Wyłączono formularz'); return;
       }
       case 'srv-id-del': await api('/api/me/identities/' + t.dataset.p, 'DELETE'); SRV.ids = await api('/api/me/identities'); renderSettings(); toast('Odłączono konto logowania'); return;
       case 'srv-inv-del': await api('/api/org/invites/' + encodeURIComponent(t.dataset.id), 'DELETE'); toast('Anulowano zaproszenie'); await srvRefreshTeam(); return;
@@ -4439,6 +4558,7 @@ document.addEventListener('change', async e => {
   if (!SRV.on || !SRV.s) return;
   const t = e.target;
   try {
+    if (t.dataset.srv === 'digest') { settings.digest = t.checked; save(); toast(t.checked ? 'Poranny plan włączony' : 'Poranny plan wyłączony'); return; }
     if (t.dataset.srv === 'org') { await api('/api/auth/switch-org', 'POST', { orgId: t.value }); location.replace(location.pathname); return; }
     if (t.dataset.setting === 'userName' && t.value.trim()) { await api('/api/me', 'PATCH', { name: t.value.trim() }); SRV.s.user.name = t.value.trim(); const m = SRV.s.members.find(x => x.id === SRV.s.user.id); if (m) m.name = SRV.s.user.name; return; }
     if (t.dataset.mm) {
@@ -4466,7 +4586,12 @@ window.addEventListener('beforeunload', e => {
 async function srvBoot() {
   const P = new URLSearchParams(location.search);
   let r;
-  try { r = await fetch('/api/session', { credentials: 'same-origin' }); } catch (e) { return false; }
+  try { r = await fetch('/api/session', { credentials: 'same-origin' }); }
+  catch (e) {
+    /* aplikacja zainstalowana z serwera, ale bez sieci: nie przechodzimy na dane lokalne */
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) { SRV.on = true; showOffline(); return true; }
+    return false;
+  }
   const json = (r.headers.get('content-type') || '').includes('json');
   if (!json || (r.status !== 200 && r.status !== 401)) return false;
   SRV.on = true;
@@ -4487,7 +4612,23 @@ async function srvBoot() {
   if (oinfo === 'linked') { state.page = 'settings'; state.settingsObj = 'general'; render(); toast('Połączono konto logowania'); }
   else if (oerr) toast(OAUTH_ERR[oerr] || 'Logowanie nie powiodło się.');
   SRV.poll = setInterval(srvPoll, 20000);
+  srvInstallable();
   return true;
+}
+function showOffline() {
+  let L = $('#authLayer');
+  if (!L) { L = document.createElement('div'); L.id = 'authLayer'; document.body.appendChild(L); }
+  document.body.classList.add('auth-on');
+  L.innerHTML = `<div class="auth" role="main"><div class="auth-card"><div class="auth-brand">${LOGO}<span>Hermes</span></div><h1>Brak połączenia</h1><p class="auth-sub">Hermes potrzebuje internetu, żeby pokazać aktualne dane firmy. Sprawdź połączenie i spróbuj ponownie.</p><button class="primary-button" style="width:100%;justify-content:center;height:46px" data-act="srv-retry">Spróbuj ponownie</button></div></div>`;
+  window.addEventListener('online', () => location.reload(), { once: true });
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-act="srv-retry"]')) location.reload(); });
+/* aplikacja do zainstalowania: manifest i service worker tylko w trybie serwera */
+function srvInstallable() {
+  if (!document.querySelector('link[rel="manifest"]')) {
+    document.head.insertAdjacentHTML('beforeend', '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/assets/icon.svg" type="image/svg+xml">');
+  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 
 const maybeServer = typeof fetch === 'function' && /^https?:$/.test(location.protocol);
