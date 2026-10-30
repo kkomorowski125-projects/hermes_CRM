@@ -513,6 +513,19 @@ html,body{background:var(--side)}
 .ai-send:disabled{opacity:.4;cursor:default}
 .ai-note{margin:0;color:var(--mute);font-size:12px;text-align:center}
 
+/* v4: enforced next step */
+.done-step{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:9px;background:#EFF5E5;color:#3F5A12;font-size:14px}
+.done-step s{flex:1;min-width:0;text-decoration-thickness:1.5px}
+.done-step span{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.sugg{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;margin-top:-6px;padding:6px 11px;border:0;border-radius:7px;background:#F2F6E4;color:#4A5E0E;font-size:13px;font-weight:600}
+.sugg svg{color:#7A62D9}
+.sugg:hover{background:#E8F0CF}
+.close-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:16px;border-top:1px dashed var(--line);color:var(--mute);font-size:13px}
+.close-row span{margin-right:4px}
+.chip-btn.won{gap:6px}.chip-btn.won:hover{border-color:#89B840;background:#F2F8E6;color:#3F5A12}
+.chip-btn.lost{gap:6px}.chip-btn.lost:hover{border-color:#DD644E;background:#FDF0EC;color:var(--late)}
+.mfoot .ghost-button+.ghost-button{margin-left:0}
+
 @media (max-width:1180px){
   .metrics,.kpis{grid-template-columns:repeat(2,1fr)}
   .dash-grid,.rgrid,.rgrid2{grid-template-columns:1fr}
@@ -1320,12 +1333,14 @@ function renderDrawer() {
 function refreshDrawer() { if (openRec) renderDrawer(); }
 
 /* ================= modals ================= */
-function modal(html, cls = '') {
+let modalLock = false;
+function modal(html, cls = '', opts = {}) {
+  modalLock = !!opts.lock;
   $('#modalLayer').innerHTML = `<div class="mlayer"><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div></div>`;
 }
-function closeModal() { $('#modalLayer').innerHTML = ''; imp = null; }
+function closeModal() { $('#modalLayer').innerHTML = ''; imp = null; modalLock = false; }
 const isModal = () => !!$('#modalLayer').innerHTML;
-const mhead = (eyebrow, title) => `<div class="mhead"><div><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div><button type="button" class="sq-btn" data-act="close-modal" aria-label="Zamknij">${ic('close', 17)}</button></div>`;
+const mhead = (eyebrow, title, lock) => `<div class="mhead"><div><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div>${lock ? '' : `<button type="button" class="sq-btn" data-act="close-modal" aria-label="Zamknij">${ic('close', 17)}</button>`}</div>`;
 
 function openAdd(obj, preset = {}) {
   const S = SCHEMA[obj];
@@ -1333,28 +1348,46 @@ function openAdd(obj, preset = {}) {
   const hidden = Object.keys(preset).filter(k => !fs.some(f => f.key === k));
   const [first, ...rest] = fs;
   const pairs = []; for (let i = 0; i < rest.length; i += 2) pairs.push(rest.slice(i, i + 2));
-  const fl = f => `<div class="f"><label for="n-${f.key}">${esc(f.label)}${f.req ? ' <span class="req" aria-hidden="true">*</span>' : ''}</label>${control(f, preset[f.key] ?? (f.key === 'stage' ? 'Nowe' : ''), 'form', obj)}</div>`;
+  const need = f => f.req || (obj === 'deal' && f.key === 'nextStep');
+  const fl = f => `<div class="f"><label for="n-${f.key}">${esc(f.label)}${need(f) ? ' <span class="req" aria-hidden="true">*</span>' : ''}</label>${control(f, preset[f.key] ?? (f.key === 'stage' ? 'Nowe' : f.key === 'nextDate' ? addDays(3) : ''), 'form', obj)}</div>`;
   modal(`<form id="addForm" data-obj="${obj}" novalidate>
     ${mhead(`Nowy rekord · ${S.one}`, `Dodaj ${S.gen}`)}
     <div class="mbody">${fl(first)}${pairs.map(p => p.length === 2 ? `<div class="form-row">${p.map(fl).join('')}</div>` : fl(p[0])).join('')}
       ${hidden.map(k => `<input type="hidden" name="${k}" value="${esc(preset[k])}">`).join('')}
-      <p class="hint" id="addErr" role="alert">Pozostałe pola uzupełnisz w karcie rekordu.</p></div>
+      <p class="hint" id="addErr" role="alert">${obj === 'deal' ? 'Każda otwarta szansa musi mieć następny krok. Resztę uzupełnisz w karcie.' : 'Pozostałe pola uzupełnisz w karcie rekordu.'}</p></div>
     <div class="mfoot"><button type="button" class="ghost-button" data-act="close-modal">Anuluj</button><button type="submit" class="primary-button">Utwórz ${ic('arrow', 16)}</button></div>
   </form>`);
   setTimeout(() => $('#n-name') && $('#n-name').focus(), 0);
 }
 
-function openNextStep(id, title) {
+let stepCtx = null;
+function openNextStep(id, title, mode = 'edit', meta = {}) {
   const d = find('deal', id); if (!d) return;
+  if (mode === 'complete' && !d.nextStep) mode = 'new';
+  stepCtx = { id, mode, ...meta };
+  const lock = mode !== 'edit';
+  const val = mode === 'complete' ? '' : (d.nextStep || '');
+  const date = mode === 'complete' || !d.nextDate || d.nextDate < today ? addDays(mode === 'complete' ? 3 : (d.nextDate && d.nextDate < today ? 0 : 3)) : d.nextDate;
+  const sugg = STEP_HINT[d.stage];
+  const hint = { complete: 'Zadanie zamknie się dopiero, gdy zaplanujesz kolejny krok — albo zamkniesz szansę.', stage: 'Każda otwarta szansa musi mieć następny krok.', new: 'Każda otwarta szansa musi mieć następny krok.', edit: 'Krok pojawi się na Pulpicie w dniu terminu.' }[mode];
+  const foot = {
+    complete: `<button type="button" class="ghost-button" data-act="step-cancel">Anuluj</button><button type="submit" class="primary-button">${ic('tick', 16)}Zamknij zadanie i zapisz krok</button>`,
+    stage: `<button type="button" class="ghost-button" data-act="step-cancel">Cofnij zmianę etapu</button>${meta.hadStep ? '<button type="button" class="ghost-button" data-act="step-keep">Zostaw obecny krok</button>' : ''}<button type="submit" class="primary-button">Zapisz krok</button>`,
+    new: `<button type="submit" class="primary-button">Zapisz krok</button>`,
+    edit: `<button type="button" class="ghost-button" data-act="close-modal">Anuluj</button><button type="submit" class="primary-button">Zapisz krok</button>`
+  }[mode];
   modal(`<form id="nextForm" data-id="${id}" novalidate>
-    ${mhead(esc(dealLabel(d)) + ' · ' + esc(d.stage), esc(title || 'Następny krok'))}
+    ${mhead(esc(dealLabel(d)) + ' · ' + esc(d.stage), esc(title || 'Następny krok'), lock)}
     <div class="mbody">
-      <div class="f"><label for="ns-text">Co zrobisz?</label><input id="ns-text" class="fin" name="text" value="${esc(d.nextStep || '')}" placeholder="np. Zadzwonić po decyzję" autocomplete="off"></div>
-      <div class="f"><label for="ns-date">Kiedy?</label><div class="date-row"><input id="ns-date" class="fin" type="date" name="date" value="${d.nextDate || addDays(3)}">${[['Dziś', 0], ['Jutro', 1], ['Za 3 dni', 3], ['Za tydzień', 7]].map(([l, n]) => `<button type="button" class="chip-btn" data-act="qdate" data-d="${addDays(n)}">${l}</button>`).join('')}</div></div>
-      <p class="hint" id="nsErr" role="alert">Krok pojawi się na Pulpicie w dniu terminu.</p>
+      ${mode === 'complete' ? `<div class="done-step">${ic('tick', 16)}<s>${esc(d.nextStep)}</s><span>zrobione</span></div>` : ''}
+      <div class="f"><label for="ns-text">${mode === 'complete' ? 'Kolejny krok' : 'Co zrobisz?'}</label><input id="ns-text" class="fin" name="text" value="${esc(val)}" placeholder="np. Zadzwonić po decyzję" autocomplete="off"></div>
+      ${sugg && !val ? `<button type="button" class="sugg" data-act="step-sugg" data-t="${esc(sugg)}">${SPARK(14)}Podpowiedź: ${esc(sugg)}</button>` : ''}
+      <div class="f"><label for="ns-date">Kiedy?</label><div class="date-row"><input id="ns-date" class="fin" type="date" name="date" value="${date}">${[['Dziś', 0], ['Jutro', 1], ['Za 3 dni', 3], ['Za tydzień', 7]].map(([l, n]) => `<button type="button" class="chip-btn" data-act="qdate" data-d="${addDays(n)}">${l}</button>`).join('')}</div></div>
+      <p class="hint" id="nsErr" role="alert">${hint}</p>
+      ${mode === 'complete' ? `<div class="close-row"><span>…albo zamknij szansę:</span><button type="button" class="chip-btn won" data-act="step-won">${ic('tick', 14)}Wygrana</button><button type="button" class="chip-btn lost" data-act="step-lost">${ic('close', 14)}Przegrana</button></div>` : ''}
     </div>
-    <div class="mfoot"><button type="button" class="ghost-button" data-act="close-modal">Pomiń</button><button type="submit" class="primary-button">Zapisz krok</button></div>
-  </form>`);
+    <div class="mfoot">${foot}</div>
+  </form>`, '', { lock });
   setTimeout(() => $('#ns-text') && $('#ns-text').focus(), 0);
 }
 function openLost(id) {
@@ -1371,6 +1404,7 @@ function openLost(id) {
 }
 
 function openCmd() {
+  if (modalLock) return;
   modal(`<div class="cmdin">${ic('search', 20)}<label class="sr" for="cmdq">Szukaj</label><input id="cmdq" data-role="cmdq" placeholder="Szukaj firm, kontaktów, leadów, szans…" autocomplete="off"><kbd>Esc</kbd></div><div id="cmdres"></div>`, 'cmd');
   renderCmd('');
   setTimeout(() => $('#cmdq').focus(), 0);
@@ -1761,22 +1795,41 @@ function draftAnswer({ obj, r }) {
 /* ================= actions ================= */
 function setStage(d, stage) {
   if (!stage || d.stage === stage) return;
+  const meta = { prev: d.stage, prevAt: d.stageAt, prevClosed: d.closedAt, prevLost: d.lostReason, hadStep: !!d.nextStep };
   const prev = d.stage;
   d.stage = stage; d.stageAt = today;
   logAct('deal', d.id, 'stage', `${prev || '—'} → ${stage}`);
+  meta.actId = db.activity[0].id;
   if (CLOSED.includes(stage)) { d.closedAt = today; if (stage === 'Wygrana') { d.nextStep = ''; d.nextDate = ''; } }
   else { d.closedAt = ''; d.lostReason = ''; }
   render(); refreshDrawer();
   if (stage === 'Przegrana') openLost(d.id);
   else if (stage === 'Wygrana') toast(`Wygrana: ${dealLabel(d)} · ${money(d.value)}`);
-  else openNextStep(d.id, `${stage} — co dalej?`);
+  else openNextStep(d.id, `${stage} — co dalej?`, 'stage', meta);
 }
 function completeStep(id) {
   const d = find('deal', id); if (!d) return;
-  logAct('deal', id, 'task', d.nextStep || 'Następny krok');
-  d.nextStep = ''; d.nextDate = '';
-  render(); refreshDrawer();
-  toast(`Zrobione: ${dealLabel(d)}`, { label: 'Ustal kolejny krok', fn: () => openNextStep(id, 'Kolejny krok') });
+  openNextStep(id, 'Zrobione — co dalej?', 'complete');
+}
+function stepAction(kind, t) {
+  const c = stepCtx; if (!c) return;
+  const d = find('deal', c.id); if (!d) { closeModal(); return; }
+  if (kind === 'sugg') { const i = $('#ns-text'); i.value = t.dataset.t; i.classList.remove('err'); i.focus(); t.remove(); return; }
+  if (kind === 'keep') { closeModal(); toast('Zostawiono obecny krok'); return; }
+  if (kind === 'cancel') {
+    if (c.mode === 'stage') {
+      d.stage = c.prev; d.stageAt = c.prevAt; d.closedAt = c.prevClosed || ''; d.lostReason = c.prevLost || '';
+      db.activity = db.activity.filter(a => a.id !== c.actId);
+      closeModal(); render(); refreshDrawer(); toast(`Cofnięto — szansa wróciła do etapu ${c.prev}`);
+    } else { closeModal(); toast('Zadanie nadal otwarte'); }
+    return;
+  }
+  if (kind === 'won' || kind === 'lost') {
+    logAct('deal', d.id, 'task', d.nextStep || 'Następny krok');
+    d.nextStep = ''; d.nextDate = '';
+    closeModal();
+    setStage(d, kind === 'won' ? 'Wygrana' : 'Przegrana');
+  }
 }
 function convertLead() {
   const l = find('lead', openRec.id); let comp = null;
@@ -1793,7 +1846,7 @@ function convertLead() {
   logAct('deal', d.id, 'system', `Utworzono z leada: ${l.name}`);
   openRec = { obj: 'deal', id: d.id };
   render(); renderDrawer();
-  openNextStep(d.id, 'Pierwszy krok w nowej szansie');
+  openNextStep(d.id, 'Pierwszy krok w nowej szansie', 'new');
 }
 function deleteRecord() {
   const { obj, id } = openRec, idx = db[obj].findIndex(x => x.id === id), r = db[obj][idx];
@@ -1830,7 +1883,7 @@ function logEntry() {
 }
 
 document.addEventListener('click', e => {
-  if (e.target.classList && e.target.classList.contains('mlayer')) { closeModal(); return; }
+  if (e.target.classList && e.target.classList.contains('mlayer')) { if (!modalLock) closeModal(); return; }
   const t = e.target.closest('[data-act]'); if (!t) return;
   const a = t.dataset.act;
   if (t.tagName === 'A') e.preventDefault();
@@ -1857,6 +1910,11 @@ document.addEventListener('click', e => {
     case 'convert': convertLead(); break;
     case 'lost': state.showLost = !state.showLost; renderPipeline(); break;
     case 'nextstep': openNextStep(t.dataset.id); break;
+    case 'step-sugg': stepAction('sugg', t); break;
+    case 'step-keep': stepAction('keep', t); break;
+    case 'step-cancel': stepAction('cancel', t); break;
+    case 'step-won': stepAction('won', t); break;
+    case 'step-lost': stepAction('lost', t); break;
     case 'qdate': { const i = $('#ns-date'); if (i) i.value = t.dataset.d; break; }
     case 'done': {
       const k = t.dataset.kind, id = t.dataset.id;
@@ -1945,6 +2003,11 @@ document.addEventListener('submit', e => {
       err.className = 'warn'; err.textContent = `Taki rekord już istnieje (${rec.email ? "ten sam e-mail lub ta sama nazwa" : "ta sama nazwa"}). Kliknij „Utwórz” ponownie, aby dodać mimo to.`;
       return;
     }
+    if (obj === 'deal' && !CLOSED.includes(rec.stage) && !rec.nextStep) {
+      const i = $('#n-nextStep'); if (i) { i.classList.add('err'); i.setAttribute('aria-invalid', 'true'); i.focus(); }
+      err.className = 'warn'; err.textContent = 'Każda otwarta szansa potrzebuje następnego kroku — co i kiedy zrobisz?';
+      return;
+    }
     if (obj === 'deal' && rec.nextStep && !rec.nextDate) rec.nextDate = addDays(3);
     if (obj === 'deal' && CLOSED.includes(rec.stage)) rec.closedAt = today;
     db[obj].unshift(rec);
@@ -1955,9 +2018,12 @@ document.addEventListener('submit', e => {
   if (form.id === 'nextForm') {
     const d = find('deal', form.dataset.id), text = String(fd.get('text') || '').trim();
     if (!text) { $('#ns-text').classList.add('err'); $('#ns-text').focus(); const er = $('#nsErr'); er.className = 'warn'; er.textContent = 'Opisz krok w kilku słowach.'; return; }
+    const mode = stepCtx && stepCtx.id === d.id ? stepCtx.mode : 'edit';
+    if (mode === 'complete') logAct('deal', d.id, 'task', d.nextStep || 'Następny krok');
     d.nextStep = text; d.nextDate = fd.get('date') || addDays(3);
+    stepCtx = null;
     closeModal(); render(); refreshDrawer();
-    toast(`Następny krok: ${rel(d.nextDate)}`);
+    toast(mode === 'complete' ? `Zadanie zamknięte · kolejny krok ${rel(d.nextDate)}` : `Następny krok: ${rel(d.nextDate)}`);
   }
   if (form.id === 'lostForm') {
     const d = find('deal', form.dataset.id), reason = fd.get('reason'), note = String(fd.get('note') || '').trim();
@@ -2039,7 +2105,7 @@ document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'j') { e.preventDefault(); ai.open ? closeAI() : openAI(openRec ? { ...openRec } : ai.ctx); return; }
   if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'ai-input') { e.preventDefault(); const f = $('#aiForm'); if (f) f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); return; }
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && e.target.id === 'act-text') { e.preventDefault(); logEntry(); return; }
-  if (e.key === 'Escape') { if (isModal()) closeModal(); else if (ai.open) closeAI(); else if (openRec) { openRec = null; renderDrawer(); } return; }
+  if (e.key === 'Escape') { if (isModal()) { if (!modalLock) closeModal(); } else if (ai.open) closeAI(); else if (openRec) { openRec = null; renderDrawer(); } return; }
   if (e.key === 'Enter' && e.target.id === 'cmdq') { const b = $('#cmdres .cmdrow'); if (b) b.click(); return; }
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (e.key === 'Enter' && e.target.classList.contains('deal-card')) { e.target.click(); return; }

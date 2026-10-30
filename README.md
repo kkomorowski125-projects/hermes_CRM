@@ -11,9 +11,10 @@ Dane zapisują się automatycznie w tej przeglądarce. Na start zobaczysz dane p
 ## Jak pracować z Hermesem
 
 1. Każda otwarta szansa ma **następny krok i termin**. Po przesunięciu karty do innego etapu Hermes zapyta, co dalej.
-2. Rano otwierasz **Pulpit** — lista „Na dziś” zbiera kroki na dziś, kroki po terminie, szanse bez planu i nowe leady. Odhaczasz, a Hermes pyta o kolejny krok.
-3. Po rozmowie, mailu lub spotkaniu dodajesz krótki wpis w **historii** rekordu — data ostatniego kontaktu ustawia się sama.
-4. Przegrana szansa wymaga **powodu przegranej** — po kilku tygodniach Analityka pokaże, co najczęściej blokuje sprzedaż.
+2. Rano otwierasz **Pulpit** — lista „Na dziś” zbiera kroki na dziś, kroki po terminie, szanse bez planu i nowe leady.
+3. **Zamknięcie zadania wymusza kolejny krok.** Po kliknięciu „Zrobione” zadanie zamknie się dopiero wtedy, gdy zaplanujesz następny krok z terminem — albo oznaczysz szansę jako wygraną lub przegraną. „Anuluj” zostawia zadanie otwarte. To samo dotyczy nowej szansy i zmiany etapu (zmianę etapu można cofnąć).
+4. Po rozmowie, mailu lub spotkaniu dodajesz krótki wpis w **historii** rekordu — data ostatniego kontaktu ustawia się sama.
+5. Przegrana szansa wymaga **powodu przegranej** — po kilku tygodniach Analityka pokaże, co najczęściej blokuje sprzedaż.
 
 ## Co jest w środku
 
