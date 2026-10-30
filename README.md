@@ -58,12 +58,12 @@ Firmy i kontakty otwierają się w panelu bocznym. Widać w nim powiązane leady
 - **Dodawanie ręczne**: lead lub szansa razem z firmą i osobą w jednym formularzu. Istniejące rekordy podpowiadają się z listy, a duplikaty są wykrywane.
 - **Import i eksport CSV**: automatyczne dopasowanie kolumn, także osoby kontaktowej (imię, e-mail, telefon) przy leadach i szansach. Firmy i osoby są tworzone albo dopasowywane do istniejących.
 - **Cofnij**: usunięcie rekordu, odłączenie kontaktu, odrzucenie leada, dane demo i czyszczenie danych.
-- **Analityka**:
-  - wygrane w tym miesiącu względem celu;
-  - prognoza (także ważona) i pokrycie celu;
-  - zdrowie lejka, wyniki zespołu;
-  - konwersja leadów na szanse w podziale na źródła;
-  - powody przegranych.
+- **Analityka** z wyborem okresu: **dzień, tydzień, miesiąc, kwartał, rok**. Strzałkami przechodzisz do poprzednich okresów, każdy wynik porównany jest z poprzednim okresem. W raporcie:
+  - wygrane względem celu okresu (cel miesięczny ×3 dla kwartału, ×12 dla roku, proporcjonalnie dla dnia i tygodnia) oraz tempo względem upływu okresu;
+  - nowe szanse, skuteczność i konwersja leadów w okresie;
+  - aktywność: telefony, e-maile, spotkania, zamknięte zadania, nowe leady;
+  - wykres „Wygrane i prognoza” (wygrane w kolejnych okresach plus planowane zamknięcia) i pokrycie celu;
+  - zdrowie lejka, wyniki zespołu, jakość źródeł leadów i powody przegranych.
 - **Hermes AI** (⌘J): plan dnia, zagrożone szanse (także te z jedną osobą po stronie klienta), kolejność leadów (najpierw ICP, potem źródło), podsumowania rekordów, rada „konwertować czy nie”, szkice wiadomości i propozycje kroków. Bez klucza działa lokalnie. Z kluczem Claude API odpowiada na dowolne pytania.
 - **⌘K**: wyszukiwarka z ostatnio otwieranymi rekordami i zadaniami na dziś.
 - **Ustawienia**: profil, cel, Hermes AI, kopia zapasowa, eksport CSV, dane demo i pola obiektów (zmiana nazw, własne pola).

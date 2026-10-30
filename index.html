@@ -794,6 +794,44 @@ button.sb.on:hover{background:var(--accent-hover);color:#fff}
 .check small{color:var(--mute);font-size:12px}
 @media (max-width:1180px){.rec-grid{grid-template-columns:1fr}.rh-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:820px){.rh-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.stagebar{flex-wrap:wrap}.sb{flex-basis:45%}.rh-title .title-in{font-size:22px}}
+
+/* v9: analytics periods */
+.pnav{display:flex;align-items:center;gap:6px;height:42px;padding:0 4px}
+.pnav span{min-width:150px;text-align:center;font-size:14px;font-weight:600;color:var(--ink2);white-space:nowrap}
+.pnav .sq-btn:first-child svg{transform:rotate(180deg)}
+.pnav .sq-btn:disabled{opacity:.35;cursor:default}
+.dl{display:inline-flex;padding:1px 6px;border-radius:5px;background:#EEEFF2;color:var(--mute);font-size:11px;font-weight:700;font-style:normal;white-space:nowrap}
+.dl.up{background:#E6F3EB;color:#2F6B4F}
+.dl.down{background:#FBEAE6;color:var(--late)}
+.kpi footer b .dl{margin-right:2px}
+.kpi-progress{position:relative;overflow:visible}
+.kpi-progress i{border-radius:2px}
+.kpi-progress s{position:absolute;top:-4px;width:2px;height:12px;border-radius:1px;background:var(--ink2);opacity:.55}
+.kpi .cmp{display:flex;align-items:center;gap:6px;margin:-6px 0 14px;color:var(--mute);font-size:12px}
+.kpi strong{margin-bottom:12px}
+.pace{display:block;margin-top:9px;color:var(--late);font-size:12px;font-weight:600}
+.pace.ok{color:var(--ok)}
+.act-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.act-strip>div{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.act-strip>div>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.act-strip span{color:var(--mute);font-size:12px}
+.act-strip b{font:600 22px/1 var(--display);letter-spacing:-.03em;color:var(--ink)}
+.act-strip .ai-ic{width:32px;height:32px;display:grid;place-items:center;flex-shrink:0;border-radius:8px;background:var(--accent-soft);color:var(--accent)}
+.legend{display:flex;gap:14px;color:var(--mute);font-size:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px}
+.legend i.w,.stack i.w{background:var(--accent)}
+.legend i.f,.stack i.f{background:#D6D9F3}
+.stack{width:100%;max-width:58px;min-height:0;display:flex;flex-direction:column;border-radius:5px 5px 0 0;overflow:hidden}
+.stack i{display:block;min-height:2px}
+.stack i.f{background:repeating-linear-gradient(135deg,#DADDF4 0 5px,#E8EAF9 5px 10px)}
+.cols.dense{gap:6px}
+.colx.dense{gap:6px;font-size:11px}
+.colb.sel .v{color:var(--accent-ink)}
+.colb.sel .stack{box-shadow:0 0 0 2px #fff,0 0 0 3px var(--accent-2)}
+.colx span.sel{color:var(--accent-ink);font-weight:700}
+@media (max-width:1180px){.act-strip{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:820px){.act-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.pnav span{min-width:110px}}
 </style>
 </head>
 <body>
@@ -1181,7 +1219,7 @@ const lastTouch = (obj, r) => { const a = actsOf(obj, r).find(isTouch); return a
 const leadWait = l => l.status === 'Nowy' && !actsOf('lead', l).some(isTouch) ? Math.max(0, -dayDiff(l.created || today)) : null;
 
 /* ================= state ================= */
-const state = { page: 'overview', obj: 'lead', q: '', settingsObj: 'general', aOwner: '', showLost: false, atype: 'note', ratype: 'note', outcome: '', allActs: false, rec: null, back: null, picker: null, tl: 'all', sort: {}, filter: { lead: 'open', deal: 'open', company: 'all', contact: 'all' }, recent: [] };
+const state = { page: 'overview', obj: 'lead', q: '', settingsObj: 'general', aOwner: '', aPeriod: 'month', aOff: 0, showLost: false, atype: 'note', ratype: 'note', outcome: '', allActs: false, rec: null, back: null, picker: null, tl: 'all', sort: {}, filter: { lead: 'open', deal: 'open', company: 'all', contact: 'all' }, recent: [] };
 let openRec = null, imp = null;
 const main = $('#main');
 function pushRecent(obj, id) {
@@ -1576,95 +1614,166 @@ function renderRows() {
 }
 
 /* ================= analytics ================= */
+/* ---- reporting periods ---- */
+const PERIODS = [['day', 'Dzień'], ['week', 'Tydzień'], ['month', 'Miesiąc'], ['quarter', 'Kwartał'], ['year', 'Rok']];
+const PERIOD_GEN = { day: 'dnia', week: 'tygodnia', month: 'miesiąca', quarter: 'kwartału', year: 'roku' };
+function periodRange(type, off = 0) {
+  const d = new Date(); d.setHours(12, 0, 0, 0);
+  let s, e;
+  if (type === 'day') { d.setDate(d.getDate() + off); s = new Date(d); e = new Date(d); }
+  else if (type === 'week') { d.setDate(d.getDate() - (d.getDay() + 6) % 7 + off * 7); s = new Date(d); e = new Date(d); e.setDate(e.getDate() + 6); }
+  else if (type === 'month') { s = new Date(d.getFullYear(), d.getMonth() + off, 1, 12); e = new Date(d.getFullYear(), d.getMonth() + off + 1, 0, 12); }
+  else if (type === 'quarter') { const q = Math.floor(d.getMonth() / 3) + off; s = new Date(d.getFullYear(), q * 3, 1, 12); e = new Date(d.getFullYear(), q * 3 + 3, 0, 12); }
+  else { s = new Date(d.getFullYear() + off, 0, 1, 12); e = new Date(d.getFullYear() + off, 11, 31, 12); }
+  return { type, off, from: isoD(s), to: isoD(e), days: Math.round((e - s) / 864e5) + 1 };
+}
+const inP = (v, p) => !!v && String(v).slice(0, 10) >= p.from && String(v).slice(0, 10) <= p.to;
+const isCurP = p => today >= p.from && today <= p.to;
+function periodLabel(p, short) {
+  const f = new Date(p.from + 'T12:00:00'), t = new Date(p.to + 'T12:00:00');
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const dm = (x, o = { day: 'numeric', month: 'short' }) => x.toLocaleDateString('pl-PL', o);
+  if (p.type === 'day') return short ? dm(f, { day: 'numeric', month: 'numeric' }) : cap(dm(f, { weekday: 'long', day: 'numeric', month: 'long' }));
+  if (p.type === 'week') return short ? dm(f) : `${dm(f)} – ${dm(t)}${t.getFullYear() !== new Date().getFullYear() ? ' ' + t.getFullYear() : ''}`;
+  if (p.type === 'month') return cap(dm(f, short ? { month: 'short', year: '2-digit' } : { month: 'long', year: 'numeric' }));
+  if (p.type === 'quarter') return `Q${Math.floor(f.getMonth() / 3) + 1} ${short ? String(f.getFullYear()).slice(2) : f.getFullYear()}`;
+  return String(f.getFullYear());
+}
+/* the monthly goal scaled to the period (day/week pro rata to the month's days) */
+function periodTarget(p, base) {
+  if (p.type === 'month') return base;
+  if (p.type === 'quarter') return base * 3;
+  if (p.type === 'year') return base * 12;
+  const f = new Date(p.from + 'T12:00:00'), dim = new Date(f.getFullYear(), f.getMonth() + 1, 0).getDate();
+  return Math.round(base * p.days / dim);
+}
+const delta = (cur, prev) => {
+  if (!prev && !cur) return '<span class="dl">bez zmian</span>';
+  if (!prev) return '<span class="dl up">nowe</span>';
+  const v = Math.round((cur - prev) / prev * 100);
+  return `<span class="dl ${v > 0 ? 'up' : v < 0 ? 'down' : ''}">${v > 0 ? '+' : ''}${v}%</span>`;
+};
+const niceStep = max => { const raw = Math.max(1, max) / 4, m = Math.pow(10, Math.floor(Math.log10(raw))); return [1, 2, 2.5, 5, 10].map(x => x * m).find(x => x >= raw); };
+
 function renderAnalytics() {
-  const owners = field('deal', 'owner').options.map(o => o[0]);
-  const ow = state.aOwner;
+  const used = field('deal', 'owner').options.map(o => o[0]).filter(o => db.deal.some(d => d.owner === o) || db.lead.some(l => l.owner === o));
+  const owners = used.length ? used : [me()];
+  if (state.aOwner && !owners.includes(state.aOwner)) state.aOwner = '';
+  const ow = state.aOwner, pt = state.aPeriod || 'month', off = Math.min(0, state.aOff || 0);
+  const P = periodRange(pt, off), PP = periodRange(pt, off - 1), cur = isCurP(P), label = periodLabel(P);
   const deals = db.deal.filter(d => !ow || d.owner === ow);
+  const leads = db.lead.filter(l => !ow || l.owner === ow);
   const open = deals.filter(isOpen);
-  const won = deals.filter(d => d.stage === 'Wygrana'), lost = deals.filter(d => d.stage === 'Przegrana');
-  const leads = db.lead, qual = leads.filter(l => l.status === 'Skonwertowany'), leadsClosed = qual.length + leads.filter(l => l.status === 'Odrzucony').length;
-  const target = ow ? settings.target / owners.length : settings.target;
-  const monthWon = wonIn(deals), wonV = sum(monthWon), att = pct(wonV, target) || 0;
-  const wr = pct(won.length, won.length + lost.length), lc = pct(qual.length, leadsClosed);
-  const avg = open.length ? sum(open) / open.length : 0;
+  const wonP = p => deals.filter(d => d.stage === 'Wygrana' && inP(d.closedAt, p));
+  const lostP = p => deals.filter(d => d.stage === 'Przegrana' && inP(d.closedAt, p));
+  const target = periodTarget(P, ow ? settings.target / Math.max(1, owners.length) : settings.target);
+  const wonL = wonP(P), wonV = sum(wonL), prevWonV = sum(wonP(PP)), att = pct(wonV, target) || 0;
+  const lostL = lostP(P), wr = pct(wonL.length, wonL.length + lostL.length);
+  const newD = deals.filter(d => inP(d.created, P)), prevNewD = deals.filter(d => inP(d.created, PP));
+  const leadDone = l => l.statusAt || l.convertedAt || l.created;
+  const convL = leads.filter(l => l.status === 'Skonwertowany' && inP(leadDone(l), P)), disqL = leads.filter(l => l.status === 'Odrzucony' && inP(leadDone(l), P));
+  const lc = pct(convL.length, convL.length + disqL.length);
+  const newL = leads.filter(l => inP(l.created, P)), prevNewL = leads.filter(l => inP(l.created, PP));
   const late = open.filter(d => d.nextDate && d.nextDate < today);
+  const elapsed = cur ? Math.round((dayDiff(today) - dayDiff(P.from) + 1) / P.days * 100) : 100;
 
-  const months = {};
-  open.filter(d => d.close).forEach(d => { const k = d.close.slice(0, 7); (months[k] = months[k] || []).push(d); });
-  const mkeys = Object.keys(months).sort().slice(0, 6);
-  const mmax = Math.max(1, ...mkeys.map(k => sum(months[k])));
-  const peak = mkeys.reduce((a, k) => sum(months[k]) > sum(months[a] || []) ? k : a, mkeys[0]);
-  const mlabel = k => { const s = new Date(k + '-01T12:00:00').toLocaleDateString('pl-PL', { month: 'short', year: '2-digit' }); return s.charAt(0).toUpperCase() + s.slice(1); };
-  const ystep = Math.ceil(mmax / 4 / 10000) * 10000 || 10000;
+  /* activity in period (only records visible for the owner filter) */
+  const mine = a => !ow || (a.obj === 'deal' ? (find('deal', a.rid) || {}).owner === ow : a.obj === 'lead' ? (find('lead', a.rid) || {}).owner === ow : true);
+  const actsP = p => db.activity.filter(a => inP(a.at, p) && mine(a));
+  const aNow = actsP(P), aPrev = actsP(PP);
+  const cnt = (L, t) => L.filter(a => a.type === t).length;
+  const actCells = [['call', 'Telefony'], ['email', 'E-maile'], ['meeting', 'Spotkania'], ['task', 'Zamknięte zadania']].map(([t, l]) => [l, cnt(aNow, t), cnt(aPrev, t), ACT[t][1]]);
+  actCells.push(['Nowe leady', newL.length, prevNewL.length, 'spark']);
 
-  const closingNow = open.filter(d => (d.close || '9999').slice(0, 7) <= thisMonth);
-  const commit = wonV, best = sum(closingNow), gap = Math.max(0, target - commit - best);
+  /* chart: won (past) + planned closes (future) per bucket */
+  const span = { day: [13, 6], week: [7, 4], month: [5, 3], quarter: [3, 2], year: [2, 1] }[pt];
+  const buckets = [];
+  for (let i = -span[0]; i <= span[1]; i++) {
+    const b = periodRange(pt, off + i), isNow = isCurP(b);
+    const w = sum(wonP(b));
+    const fc = b.to >= today ? sum(open.filter(d => d.close && (inP(d.close, b) || (isNow && d.close < b.from)))) : 0;
+    buckets.push({ b, w, fc, isNow, sel: i === 0 });
+  }
+  const bmax = Math.max(1, ...buckets.map(x => x.w + x.fc)), ystep = niceStep(bmax);
+  const dense = buckets.length > 12;
+
+  /* coverage of the period goal */
+  const closing = P.to >= today ? open.filter(d => d.close && (inP(d.close, P) || (cur && d.close < P.from))) : [];
+  const commit = wonV, best = sum(closing), gap = Math.max(0, target - commit - best);
   const cov = pct(commit + best, target) || 0;
   const C = 2 * Math.PI * 48;
-  const segC = Math.min(1, commit / target) * C, segB = Math.min(1 - segC / C, best / target) * C;
+  const segC = Math.min(1, commit / Math.max(1, target)) * C, segB = Math.min(1 - segC / C, best / Math.max(1, target)) * C;
 
   const stageRows = field('deal', 'stage').options.filter(o => !CLOSED.includes(o[0]));
   const smax = Math.max(1, ...stageRows.map(o => sum(deals.filter(d => d.stage === o[0]))));
+  const avg = open.length ? sum(open) / open.length : 0;
   const srcRows = field('lead', 'source').options.map(o => {
-    const L = leads.filter(l => l.source === o[0]), q = L.filter(l => l.status === 'Skonwertowany').length;
+    const L = newL.filter(l => l.source === o[0]), q = L.filter(l => l.status === 'Skonwertowany').length;
     return { label: o[0], n: L.length, q, rate: pct(q, L.length) };
   }).filter(r => r.n).sort((a, b) => b.n - a.n);
   const nmax = Math.max(1, ...srcRows.map(r => r.n));
   const reasons = {};
-  lost.forEach(d => { const k = d.lostReason || 'Nie podano'; (reasons[k] = reasons[k] || []).push(d); });
+  lostL.forEach(d => { const k = d.lostReason || 'Nie podano'; (reasons[k] = reasons[k] || []).push(d); });
   const rkeys = Object.keys(reasons).sort((a, b) => reasons[b].length - reasons[a].length);
   const rmax = Math.max(1, ...rkeys.map(k => reasons[k].length));
+  const inPer = !cur ? 'w wybranym okresie' : { day: 'tego dnia', week: 'w tym tygodniu', month: 'w tym miesiącu', quarter: 'w tym kwartale', year: 'w tym roku' }[pt];
+  const prevName = { day: 'dzień', week: 'tydzień', month: 'miesiąc', quarter: 'kwartał', year: 'rok' }[pt];
 
-  main.innerHTML = heading({ eyebrow: `Raport · ${new Date().toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })}`, title: 'Analityka', accent: '.', sub: 'Przychód, prognoza i jakość lejka w jednym widoku.',
-    actions: `<div class="seg" role="group" aria-label="Opiekun">${['', ...owners].map(o => `<button data-act="aowner" data-v="${esc(o)}" aria-pressed="${o === ow}">${o ? esc(o) : 'Cały zespół'}</button>`).join('')}</div>` }) + `
+  main.innerHTML = heading({ eyebrow: `Raport · ${esc(label)}`, title: 'Analityka', accent: '.', sub: `Przychód, prognoza i jakość lejka — ${cur ? 'bieżący okres' : 'okres ' + esc(label)}. Porównanie z poprzednim okresem.`,
+    actions: `<div class="seg" role="group" aria-label="Okres">${PERIODS.map(([k, l]) => `<button data-act="aperiod" data-v="${k}" aria-pressed="${k === pt}">${l}</button>`).join('')}</div>
+      <div class="pnav" role="group" aria-label="Wybór okresu"><button class="sq-btn" data-act="aoff" data-d="-1" aria-label="Poprzedni okres" title="Poprzedni okres">${ic('chevron', 16)}</button><span>${esc(label)}</span><button class="sq-btn" data-act="aoff" data-d="1" aria-label="Następny okres" title="Następny okres"${off >= 0 ? ' disabled' : ''}>${ic('chevron', 16)}</button>${off < 0 ? `<button class="text-button" data-act="aoff" data-d="0">Bieżący</button>` : ''}</div>
+      ${owners.length > 1 ? `<div class="seg" role="group" aria-label="Opiekun">${['', ...owners].map(o => `<button data-act="aowner" data-v="${esc(o)}" aria-pressed="${o === ow}">${o ? esc(o) : 'Cały zespół'}</button>`).join('')}</div>` : ''}` }) + `
     <section class="kpis" aria-label="Wyniki sprzedaży">
-      <article class="kpi dark"><div class="h"><span>Wygrane w tym miesiącu</span><em>${att}% celu</em></div><strong>${money(wonV)}</strong>
-        <footer><span><i class="dot" style="background:var(--accent)"></i>${wonV >= target ? 'Cel osiągnięty' : money(target - wonV) + ' do celu'}</span><b>cel ${kzl(target)}</b></footer><div class="kpi-progress"><i style="width:${Math.min(100, att)}%"></i></div></article>
-      <article class="kpi"><div class="h"><span>Wartość otwartych</span><em>${open.length} szans</em></div><strong>${money(sum(open))}</strong><footer><span>Ważona ${money(weighted(open))}</span><b>${late.length ? late.length + ' po terminie' : 'Na czas'}</b></footer></article>
-      <article class="kpi"><div class="h"><span>Skuteczność</span><em>${won.length}/${won.length + lost.length}</em></div><strong>${wr === null ? '—' : wr + '%'}</strong><footer><span>Wygrane ze wszystkich zamkniętych</span></footer></article>
-      <article class="kpi"><div class="h"><span>Konwersja leadów</span><em>${qual.length}/${leadsClosed}</em></div><strong>${lc === null ? '—' : lc + '%'}</strong><footer><span>Skonwertowane z zamkniętych leadów</span><b>${leads.filter(isOpenLead).length} otwartych</b></footer></article>
+      <article class="kpi dark"><div class="h"><span>Wygrane · ${esc(label)}</span><em>${att}% celu</em></div><strong>${money(wonV)}</strong><p class="cmp">${delta(wonV, prevWonV)} vs poprzedni ${prevName}</p>
+        <footer><span>${wonV >= target ? 'Cel osiągnięty' : money(target - wonV) + ' do celu'}</span><b>cel ${kzl(target)}</b></footer>
+        <div class="kpi-progress"><i style="width:${Math.min(100, att)}%"></i>${cur && elapsed < 100 ? `<s style="left:${elapsed}%" title="Upłynęło ${elapsed}% okresu"></s>` : ''}</div>
+        ${cur && elapsed < 100 ? `<small class="pace${att >= elapsed ? ' ok' : ''}">${att >= elapsed ? 'Tempo przed planem' : 'Tempo poniżej planu'} · upłynęło ${elapsed}% ${PERIOD_GEN[pt]}</small>` : ''}</article>
+      <article class="kpi"><div class="h"><span>Nowe szanse</span><em>${newD.length}</em></div><strong>${money(sum(newD))}</strong><p class="cmp">${delta(sum(newD), sum(prevNewD))} vs poprzedni ${prevName}</p><footer><span>Prognoza ważona lejka</span><b>${kzl(weighted(open))}</b></footer></article>
+      <article class="kpi"><div class="h"><span>Skuteczność</span><em>${wonL.length}/${wonL.length + lostL.length}</em></div><strong>${wr === null ? '—' : wr + '%'}</strong><p class="cmp">${money(sum(wonL))} wygrane · ${money(sum(lostL))} przegrane</p><footer><span>Wygrane z zamkniętych ${inPer}</span></footer></article>
+      <article class="kpi"><div class="h"><span>Konwersja leadów</span><em>${convL.length}/${convL.length + disqL.length}</em></div><strong>${lc === null ? '—' : lc + '%'}</strong><p class="cmp">${convL.length} na szanse · ${disqL.length} odrzucone</p><footer><span>Nowe leady w okresie</span><b>${newL.length}</b></footer></article>
     </section>
+    <section class="act-strip" aria-label="Aktywność handlowa">${actCells.map(([l, n, pv, icn]) => `<div><span class="ai-ic">${ic(icn, 15)}</span><div><span>${l}</span><b>${n}</b></div>${delta(n, pv)}</div>`).join('')}</section>
     <div class="rgrid">
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Prognoza zamknięć</h2><p>Wartość otwartych szans wg planowanego miesiąca zamknięcia</p></div></div>
-        ${mkeys.length ? `<div class="cols-chart"><div class="cols-y">${[4, 3, 2, 1, 0].map(i => `<span>${kzl(ystep * i).replace(' tys.', 'k')}</span>`).join('')}</div>
-          <div class="cols-area"><div class="cols">${mkeys.map(k => { const s = sum(months[k]), n = months[k].length, t = `${mlabel(k)} · ${n} ${plural(n, 'szansa', 'szanse', 'szans')} · ${money(s)}`;
-            return `<div class="colb" tabindex="0" data-tip="${esc(t)}" aria-label="${esc(t)}"><span class="v">${kzl(s)}</span><span class="c${k === peak ? ' peak' : ''}" style="height:${s / (ystep * 4) * 100}%"></span></div>`; }).join('')}</div>
-          <div class="colx">${mkeys.map(k => `<span>${mlabel(k)}</span>`).join('')}</div></div></div>` : '<div class="empty"><p>Brak otwartych szans z datą zamknięcia.</p></div>'}
+        <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Wygrane i prognoza</h2><p>Wygrane w kolejnych okresach i otwarte szanse wg planowanej daty zamknięcia</p></div><div class="legend"><span><i class="w"></i>Wygrane</span><span><i class="f"></i>Planowane</span></div></div>
+        <div class="cols-chart"><div class="cols-y">${[4, 3, 2, 1, 0].map(i => `<span>${kzl(ystep * i).replace(/\s?tys\./, 'k')}</span>`).join('')}</div>
+          <div class="cols-area"><div class="cols${dense ? ' dense' : ''}">${buckets.map(x => { const tot = x.w + x.fc, t = `${periodLabel(x.b)} · wygrane ${money(x.w)}${x.fc ? ` · planowane ${money(x.fc)}` : ''}`;
+            return `<div class="colb${x.sel ? ' sel' : ''}" tabindex="0" data-tip="${esc(t)}" aria-label="${esc(t)}">${!dense || x.sel ? `<span class="v">${tot ? kzl(tot) : ''}</span>` : ''}<span class="stack" style="height:${tot / (ystep * 4) * 100}%">${x.fc ? `<i class="f" style="flex:${x.fc}"></i>` : ''}${x.w ? `<i class="w" style="flex:${x.w}"></i>` : ''}</span></div>`; }).join('')}</div>
+          <div class="colx${dense ? ' dense' : ''}">${buckets.map((x, i) => `<span class="${x.sel ? 'sel' : ''}">${!dense || i % 2 === buckets.length % 2 || x.sel ? esc(periodLabel(x.b, true)) : ''}</span>`).join('')}</div></div></div>
       </section>
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">02</span><h2>Pokrycie celu</h2><p>Wygrane + szanse planowane na ${esc(monthName())}</p></div></div>
+        <div class="panel-head"><div class="ttl"><span class="idx">02</span><h2>Pokrycie celu</h2><p>Cel ${esc(label)}: ${money(target)}${pt === 'day' || pt === 'week' ? ' (proporcjonalnie do celu miesiąca)' : ''}</p></div></div>
         <div class="ring-wrap"><svg viewBox="0 0 120 120" role="img" aria-label="Pokrycie celu ${cov}%"><circle cx="60" cy="60" r="48" stroke="#ECECEF"/><circle cx="60" cy="60" r="48" stroke="#CFD2F2" stroke-dasharray="${segB.toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-segC).toFixed(1)}"/><circle cx="60" cy="60" r="48" stroke="#5B61B8" stroke-dasharray="${segC.toFixed(1)} ${C.toFixed(1)}"/></svg><div><strong>${cov}%</strong><span>pokrycia</span></div></div>
         <div class="flist">
-          <div><span><i style="background:#5B61B8"></i>Wygrane</span><b>${kzl(commit)}</b><em>${pct(commit, target)}%</em></div>
-          <div><span><i style="background:#CFD2F2"></i>Do zamknięcia w tym mies.</span><b>${kzl(best)}</b><em>${pct(best, target)}%</em></div>
-          <div><span><i style="background:#E0E1E6"></i>Brakuje do celu</span><b>${kzl(gap)}</b><em>${pct(gap, target)}%</em></div>
+          <div><span><i style="background:#5B61B8"></i>Wygrane</span><b>${kzl(commit)}</b><em>${pct(commit, target) ?? 0}%</em></div>
+          <div><span><i style="background:#CFD2F2"></i>${P.to >= today ? 'Planowane do zamknięcia' : 'Okres zamknięty'}</span><b>${kzl(best)}</b><em>${pct(best, target) ?? 0}%</em></div>
+          <div><span><i style="background:#E0E1E6"></i>Brakuje do celu</span><b>${kzl(gap)}</b><em>${pct(gap, target) ?? 0}%</em></div>
         </div>
         ${late.length ? `<div class="note rnote"><span>!</span><div><b>${late.length} ${plural(late.length, 'krok', 'kroki', 'kroków')} po terminie</b><p>${esc(late.slice(0, 2).map(dealLabel).join(' i '))} czekają na Twój ruch.</p></div></div>` : '<div style="height:22px"></div>'}
       </section>
     </div>
     <div class="rgrid2">
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">03</span><h2>Zdrowie lejka</h2><p>Wartość i liczba szans na każdym etapie</p></div><button class="text-button" data-act="go" data-page="pipeline">Zobacz lejek ${ic('arrow', 15)}</button></div>
+        <div class="panel-head"><div class="ttl"><span class="idx">03</span><h2>Zdrowie lejka</h2><p>Stan na dziś: wartość i liczba szans na każdym etapie</p></div><button class="text-button" data-act="go" data-page="pipeline">Zobacz lejek ${ic('arrow', 15)}</button></div>
         <div style="padding:6px 0">${stageRows.map(o => { const ds = deals.filter(d => d.stage === o[0]), s = sum(ds), avgD = ds.length ? Math.round(ds.reduce((a, d) => a + daysIn(d), 0) / ds.length) : 0, t = `${o[0]} · ${ds.length} ${plural(ds.length, 'szansa', 'szanse', 'szans')} · ${money(s)} · średnio ${avgD} dni w etapie`;
           return `<div class="frow" tabindex="0" data-tip="${esc(t)}" aria-label="${esc(t)}"><div><span>${esc(o[0])}</span><small>${ds.length} ${plural(ds.length, 'szansa', 'szanse', 'szans')} · ~${avgD} dni</small></div><div class="track"><i style="width:${s / smax * 100}%"></i></div><b>${kzl(s)}</b></div>`; }).join('')}</div>
-        <div class="fsum"><div><span>Lejek ÷ brakujący cel</span><b>${(sum(open) / Math.max(1, target - wonV)).toFixed(1).replace('.', ',')}×</b></div><div><span>Bez następnego kroku</span><b class="${open.some(d => !d.nextStep) ? 'warn' : ''}">${open.filter(d => !d.nextStep).length}</b></div><div><span>Prognoza ważona</span><b>${kzl(weighted(open))}</b></div></div>
+        <div class="fsum"><div><span>Lejek ÷ brakujący cel</span><b>${(sum(open) / Math.max(1, target - wonV)).toFixed(1).replace('.', ',')}×</b></div><div><span>Bez następnego kroku</span><b class="${open.some(d => !d.nextStep) ? 'warn' : ''}">${open.filter(d => !d.nextStep).length}</b></div><div><span>Średnia szansa</span><b>${kzl(avg)}</b></div></div>
       </section>
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">04</span><h2>Zespół</h2><p>Wygrane w tym miesiącu względem celu</p></div></div>
+        <div class="panel-head"><div class="ttl"><span class="idx">04</span><h2>Zespół</h2><p>Wygrane w okresie (${esc(label)}) względem celu</p></div></div>
         <div class="tablewrap"><table><thead><tr><th scope="col">Handlowiec</th><th scope="col">Wygrane</th><th scope="col">Otwarte</th><th scope="col">Cel</th></tr></thead>
-        <tbody>${owners.map(o => { const ds = db.deal.filter(d => d.owner === o), w = sum(wonIn(ds)), op = sum(ds.filter(isOpen)), a = pct(w, settings.target / owners.length) || 0;
+        <tbody>${owners.map(o => { const ds = db.deal.filter(d => d.owner === o), w = sum(ds.filter(d => d.stage === 'Wygrana' && inP(d.closedAt, P))), op = sum(ds.filter(isOpen)), a = pct(w, periodTarget(P, settings.target / Math.max(1, owners.length))) || 0;
           return `<tr><td><span class="chip">${avatar(o, 'contact', 32)}<b style="font-weight:600;color:var(--ink2)">${esc(o)}</b></span></td><td>${kzl(w)}</td><td>${kzl(op)}</td><td><div class="attain"><span><i style="width:${Math.min(100, a)}%"></i></span><b>${a}%</b></div></td></tr>`; }).join('')}</tbody></table></div>
       </section>
     </div>
     <div class="rgrid2">
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">05</span><h2>Jakość źródeł leadów</h2><p>Liczba leadów i odsetek skonwertowanych na szanse</p></div></div>
-        ${srcRows.length ? `<div class="src">${srcRows.map(r => `<div tabindex="0" data-tip="${esc(`${r.label} · ${r.n} ${plural(r.n, 'lead', 'leady', 'leadów')} · ${r.q} skonwertowanych`)}"><span>${esc(r.label)}</span><b>${r.n}</b><div class="track"><i style="width:${r.n / nmax * 100}%"></i></div><small>${r.rate}% konwersji</small></div>`).join('')}</div>` : '<div class="empty"><p>Brak leadów.</p></div>'}
+        <div class="panel-head"><div class="ttl"><span class="idx">05</span><h2>Jakość źródeł leadów</h2><p>Leady dodane w okresie i odsetek skonwertowanych na szanse</p></div></div>
+        ${srcRows.length ? `<div class="src">${srcRows.map(r => `<div tabindex="0" data-tip="${esc(`${r.label} · ${r.n} ${plural(r.n, 'lead', 'leady', 'leadów')} · ${r.q} skonwertowanych`)}"><span>${esc(r.label)}</span><b>${r.n}</b><div class="track"><i style="width:${r.n / nmax * 100}%"></i></div><small>${r.rate}% konwersji</small></div>`).join('')}</div>` : `<div class="empty"><p>Brak nowych leadów ${inPer}.</p></div>`}
       </section>
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">06</span><h2>Dlaczego przegrywamy</h2><p>Powody przegranych szans</p></div></div>
-        ${rkeys.length ? `<div class="src">${rkeys.map(k => `<div tabindex="0" data-tip="${esc(`${k} · ${reasons[k].length} ${plural(reasons[k].length, 'szansa', 'szanse', 'szans')} · ${money(sum(reasons[k]))}`)}"><span>${esc(k)}</span><b>${reasons[k].length}</b><div class="track"><i style="width:${reasons[k].length / rmax * 100}%;background:var(--lateDot)"></i></div><small>${kzl(sum(reasons[k]))}</small></div>`).join('')}</div>` : '<div class="empty"><p>Brak przegranych — oby tak dalej.</p></div>'}
+        <div class="panel-head"><div class="ttl"><span class="idx">06</span><h2>Dlaczego przegrywamy</h2><p>Powody szans przegranych w okresie</p></div></div>
+        ${rkeys.length ? `<div class="src">${rkeys.map(k => `<div tabindex="0" data-tip="${esc(`${k} · ${reasons[k].length} ${plural(reasons[k].length, 'szansa', 'szanse', 'szans')} · ${money(sum(reasons[k]))}`)}"><span>${esc(k)}</span><b>${reasons[k].length}</b><div class="track"><i style="width:${reasons[k].length / rmax * 100}%;background:var(--lateDot)"></i></div><small>${kzl(sum(reasons[k]))}</small></div>`).join('')}</div>` : `<div class="empty"><p>Brak przegranych ${inPer} — oby tak dalej.</p></div>`}
       </section>
     </div>`;
 }
@@ -2727,6 +2836,8 @@ document.addEventListener('click', e => {
       renderSettings(); save(); toast(`Usunięto pole: ${f.label}`); break;
     }
     case 'aowner': state.aOwner = t.dataset.v; renderAnalytics(); break;
+    case 'aperiod': state.aPeriod = t.dataset.v; state.aOff = 0; renderAnalytics(); break;
+    case 'aoff': { const dd = +t.dataset.d; state.aOff = dd === 0 ? 0 : Math.min(0, (state.aOff || 0) + dd); renderAnalytics(); break; }
     case 'tmpl': downloadTemplate(); break;
     case 'backup': download(`hermes-kopia-${today}.json`, JSON.stringify(snapshot(), null, 2), 'application/json'); toast('Pobrano kopię zapasową'); break;
     case 'demo-quick': case 'demo': {
