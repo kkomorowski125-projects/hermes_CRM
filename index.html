@@ -989,6 +989,13 @@ mark{background:#FFE9A8;color:inherit;border-radius:3px;padding:0 1px}
 .vc-fields .fin{height:38px;font-size:14px}
 .vc-match{display:flex;align-items:center;gap:6px;margin:0;padding:0 14px 12px;color:#2F6B4F;font-size:12px;font-weight:500}
 @media (max-width:820px){.vc-grid{grid-template-columns:1fr}.mic-button span{display:none}}
+
+.split-add{display:inline-flex;align-items:stretch}
+.split-add>.primary-button:first-child{border-top-right-radius:0;border-bottom-right-radius:0}
+.split-add .split-mic{padding:0 12px;border-top-left-radius:0;border-bottom-left-radius:0;border-left:1px solid rgba(255,255,255,.28)}
+.split-add .split-mic.sm{padding:0 10px}
+.split-add .primary-button:hover{transform:none}
+.split-add .split-mic:hover{background:var(--accent-hover)}
 </style>
 </head>
 <body>
@@ -1529,8 +1536,7 @@ function renderTop() {
     <button class="search" data-act="cmdk" aria-label="Szukaj (⌘K lub /)">${ic('search', 18)}<span>Szukaj leadów, szans, firm, kontaktów…</span><kbd>⌘K</kbd></button>
     <div class="top-actions">
       <button class="icon-button" data-act="import" data-obj="${obj}" aria-label="Import CSV" title="Import CSV">${ic('upload')}</button>
-      <button class="mic-button" data-act="voice" aria-label="Dodaj głosem (V)" title="Dodaj głosem firmę, kontakt, leada albo szansę (V)">${ic('mic', 18)}<span>Głosem</span></button>
-      <button class="primary-button" data-act="add" data-obj="${obj}">${ic('plus', 17)}${label}</button>
+      <div class="split-add"><button class="primary-button" data-act="add" data-obj="${obj}">${ic('plus', 17)}${label}</button><button class="primary-button split-mic" data-act="voice" aria-label="Dodaj głosem (V)" title="Dodaj głosem: firmę, kontakt, leada albo szansę, także wszystko naraz (V)">${ic('mic', 17)}</button></div>
       <button class="ai-button" data-act="ai" aria-label="Ask Hermes AI (⌘J)"><span class="ai-spark">${SPARK(16)}</span>Ask Hermes AI<kbd>⌘J</kbd></button>
     </div>`;
 }
@@ -1752,7 +1758,7 @@ function renderList() {
         <label class="field-search"><span class="sr">Szukaj</span>${ic('search', 16)}<input type="search" data-role="q" placeholder="Szukaj w: ${S.many.toLowerCase()}" value="${esc(state.q)}"></label>
         <button class="ghost-button sm" data-act="export" data-obj="${o}" title="Eksport CSV" aria-label="Eksport CSV">${ic('download', 16)}</button>
         <button class="ghost-button sm" data-act="import" data-obj="${o}" title="Import CSV" aria-label="Import CSV">${ic('upload', 16)}</button>
-        <button class="primary-button sm" data-act="add" data-obj="${o}">${ic('plus', 16)}Dodaj ${S.gen}</button>
+        <div class="split-add"><button class="primary-button sm" data-act="add" data-obj="${o}">${ic('plus', 16)}Dodaj ${S.gen}</button><button class="primary-button sm split-mic" data-act="voice" data-hint="${o}" aria-label="Dodaj ${S.gen} głosem" title="Dodaj ${S.gen} głosem">${ic('mic', 16)}</button></div>
       </div>
       <div id="rows"></div>
     </section>`;

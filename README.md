@@ -40,7 +40,7 @@ Firmy i kontakty otwierają się w panelu bocznym. Widać w nim powiązane leady
 
 ## Wprowadzanie głosem
 
-Przycisk **Głosem** w górnym pasku (albo klawisz `V`) otwiera Hermes Voice. Mówisz naturalnie, np. „Nowy lead Kwiaciarnia Róża z Krakowa, kontakt Anna Mazur, właścicielka, telefon 501 300 200, źródło polecenie, wartość 8 tysięcy, następny krok zadzwonić jutro”, a Hermes rozpoznaje firmę, kontakt, leada i szansę, także wszystko naraz. Przed zapisem widzisz karty z polami do poprawienia i informację, które rekordy już istnieją (zostaną powiązane, a nie zdublowane). Zapis od razu wiąże kontakt z firmą, a leada i szansę z firmą i kontaktem; treść nagrania trafia do historii jako notatka.
+Ikona mikrofonu przy przycisku dodawania (w górnym pasku i na listach) albo klawisz `V` otwiera Hermes Voice. Mówisz naturalnie, np. „Nowy lead Kwiaciarnia Róża z Krakowa, kontakt Anna Mazur, właścicielka, telefon 501 300 200, źródło polecenie, wartość 8 tysięcy, następny krok zadzwonić jutro”, a Hermes rozpoznaje firmę, kontakt, leada i szansę, także wszystko naraz. Przed zapisem widzisz karty z polami do poprawienia i informację, które rekordy już istnieją (zostaną powiązane, a nie zdublowane). Zapis od razu wiąże kontakt z firmą, a leada i szansę z firmą i kontaktem; treść nagrania trafia do historii jako notatka.
 
 - Rozpoznawanie działa lokalnie (słowa kluczowe, kwoty, telefony, emaile mówione jako „małpa” i „kropka”, daty typu „jutro”, „w piątek”, „15 listopada”). Z kluczem Claude API Hermes AI dodatkowo dopracowuje pola.
 - „Wypełnij głosem” jest też w każdym formularzu dodawania, a mikrofon w notatkach na kartach rekordów i w Ask Hermes AI (dyktowanie tekstu).
