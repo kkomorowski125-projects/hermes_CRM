@@ -1,11 +1,12 @@
 # Hermes AI
 
-Hermes AI to asystent wbudowany w CRM: odpowiada na pytania o dane, planuje dzień, wskazuje zagrożone szanse i pisze szkice wiadomości. Działa w trzech trybach, zależnie od tego, co jest dostępne.
+Hermes AI to asystent wbudowany w CRM: odpowiada na pytania o dane, planuje dzień, wskazuje zagrożone szanse i pisze szkice wiadomości. Działa w czterech trybach, zależnie od tego, co jest dostępne.
 
 | Tryb | Kiedy działa | Co potrafi |
 | --- | --- | --- |
 | Lokalny | Zawsze, bez klucza | Najczęstsze pytania, liczone z danych w przeglądarce |
-| Claude API | Po wpisaniu klucza w Ustawieniach | Dowolne pytania o dane w CRM |
+| Claude API | Po wpisaniu klucza w Ustawieniach (bez serwera) | Dowolne pytania o dane w CRM |
+| Claude przez serwer | Gdy serwer ma `ANTHROPIC_API_KEY` | Jak wyżej, klucz tylko na serwerze, limit dzienny na firmę |
 | Claude w artefakcie | Gdy aplikacja jest otwarta jako artefakt na claude.ai | Dopracowanie pól w Hermes Voice, po zgodzie użytkownika |
 
 ## Gdzie go znajdziesz
@@ -45,7 +46,7 @@ Gdy połączenie się nie uda, Hermes odpowiada w trybie lokalnym i pokazuje kom
 - Klucz jest zapisany tylko w tej przeglądarce (`hermes-ai-config`) i nie trafia do kopii zapasowej.
 - Zapytania idą z przeglądarki prosto do API Anthropic z nagłówkiem `anthropic-dangerous-direct-browser-access`. To rozwiązanie tylko na prototyp.
 - W trybie z kluczem dane CRM są wysyłane do API Anthropic. Użytkownik jest o tym informowany w Ustawieniach.
-- W wersji produkcyjnej zapytania muszą przechodzić przez serwer z kluczem po stronie serwera, limitami na firmę i logiem użycia (faza 1 [roadmapy](roadmapa.md)).
+- W trybie serwera przeglądarka wysyła pytanie do `POST /api/ai/messages`, a serwer dodaje klucz, wybiera model i liczy zużycie (`AI_DAILY_LIMIT`, domyślnie 200 zapytań dziennie na firmę). Pole klucza znika z Ustawień, a zamiast niego widać stan i dzisiejsze zużycie. Pierwsze zapytanie dnia trafia do dziennika zmian ([serwer](serwer.md)).
 
 ## Zasady odpowiedzi
 

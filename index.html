@@ -996,6 +996,27 @@ mark{background:#FFE9A8;color:inherit;border-radius:3px;padding:0 1px}
 .split-add .split-mic.sm{padding:0 10px}
 .split-add .primary-button:hover{transform:none}
 .split-add .split-mic:hover{background:var(--accent-hover)}
+.srv-wait body{visibility:hidden}
+body.auth-on>*:not(#authLayer):not(.toast){display:none!important}
+.auth{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:32px 16px;background:var(--paper)}
+.auth-card{width:100%;max-width:420px;padding:30px 30px 24px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 18px 50px rgba(22,24,44,.08)}
+.auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:22px;font:600 20px/1 var(--display);color:var(--ink)}
+.auth h1{margin:0 0 6px;font:600 26px/1.15 var(--display);color:var(--ink);letter-spacing:-.02em}
+.auth-sub{margin:0 0 18px;color:var(--mute);font-size:14px;line-height:1.5}
+.auth-form{display:grid;gap:12px}.auth-form .f{display:grid;gap:6px}
+.auth-form .primary-button{justify-content:center;height:46px;margin-top:2px}
+.auth-err{min-height:0;margin:0;color:var(--late);font-size:13px}.auth-err:empty{display:none}
+.auth-msg{margin:0 0 14px;padding:10px 12px;border-radius:8px;background:var(--accent-soft);color:var(--accent-ink);font-size:13px;line-height:1.5}
+.auth-link{display:flex;gap:8px;align-items:center;margin:0 0 14px}.auth-link .fin{height:38px;font-size:12px}
+.auth-links{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:16px;color:var(--mute);font-size:13px}
+.auth-foot{max-width:420px;margin:0;color:var(--faint);font-size:12px;line-height:1.5;text-align:center}
+#syncState[data-st=saving]{color:var(--accent)}#syncState[data-st=error]{color:var(--late)}
+.ro-banner{display:flex;align-items:center;gap:8px;margin:0 0 14px;padding:10px 14px;border:1px solid var(--accent-line);border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);font-size:13px}
+.srv-inline{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.srv-inline .fin{width:190px;height:38px}
+.srv-2fa{display:grid;gap:10px;max-width:520px}.srv-2fa p{margin:0;color:var(--mute);font-size:13px;line-height:1.5}
+.srv-linkbox{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--accent-soft)}.srv-linkbox p{margin:0 0 8px;font-size:13px;color:var(--accent-ink)}.srv-linkbox .auth-link{margin:0}
+.srv-invites{padding:14px 20px 18px;border-top:1px solid var(--line2)}.srv-invites h3{margin:0 0 8px;font-size:14px}.srv-invites ul{margin:0;padding:0;list-style:none}.srv-invites li{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;color:var(--text)}
+.gdpr{margin:0 22px 16px;padding:14px;border:1px solid var(--line2);border-radius:10px}.gdpr h3{margin:0 0 4px;font-size:14px}.gdpr p{margin:0 0 10px;color:var(--mute);font-size:13px;line-height:1.5}.gdpr div{display:flex;gap:8px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -1015,7 +1036,7 @@ mark{background:#FFE9A8;color:inherit;border-radius:3px;padding:0 1px}
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let _id = 0;
-const uid = p => p + Date.now().toString(36) + (++_id).toString(36);
+const uid = p => p + Date.now().toString(36) + (++_id).toString(36) + Math.random().toString(36).slice(2, 6);
 const norm = s => String(s ?? '').toLowerCase().replace(/ł/g, 'l').normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
 const pad = n => String(n).padStart(2, '0');
 const isoD = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -1335,6 +1356,8 @@ function snapshot() {
 }
 let saveOk = true;
 function save() {
+  if (SRV.on) { srvQueue(); return; }
+  if (document.documentElement.classList.contains('srv-wait')) return;
   try { localStorage.setItem(KEY, JSON.stringify(snapshot())); saveOk = true; } catch (e) { saveOk = false; }
 }
 /* v2 → v3: one contact per deal → many; leads become company + people */
@@ -1507,7 +1530,7 @@ function renderSide() {
   let labelN = 0;
   $('#side').innerHTML = `
     <button class="brand" data-act="go" data-page="overview">${LOGO}<span>Hermes</span></button>
-    <div class="workspace"><span class="workspace-avatar">${esc(initials(settings.company || 'Moja firma', false))}</span><span><b>${esc(settings.company || 'Moja firma')}</b><small>${saveOk ? 'Zapis lokalny · włączony' : 'Zapis niedostępny'}</small></span></div>
+    <div class="workspace"><span class="workspace-avatar">${esc(initials(settings.company || 'Moja firma', false))}</span><span><b>${esc(settings.company || 'Moja firma')}</b>${SRV.on ? `<small id="syncState" data-st="${readOnly() ? 'readonly' : SRV.status}">${SYNC_LABEL[readOnly() ? 'readonly' : SRV.status]}</small>` : `<small>${saveOk ? 'Zapis lokalny · włączony' : 'Zapis niedostępny'}</small>`}</span></div>
     <nav class="nav" aria-label="Nawigacja">${NAV.map(n => {
       if (n[0] === 'label') return `<span class="nav-label${labelN++ ? ' second' : ''}">${n[1]}</span>`;
       if (n[0].startsWith('list:')) {
@@ -1520,7 +1543,7 @@ function renderSide() {
     <div class="side-bottom">
       <div class="target"><span><b>Cel: ${esc(monthName())}</b><small>${kzl(won)} z ${kzl(settings.target)}</small></span><b>${att}%</b></div>
       <div class="progress"><i style="width:${Math.min(100, att)}%"></i></div>
-      <a href="#" class="profile" data-act="go" data-page="settings" title="Profil i ustawienia"><span class="profile-avatar">${settings.userName.trim() ? esc(initials(settings.userName, true)) : ic('person', 17)}</span><span><b>${esc(settings.userName.trim() || 'Twoje imię')}</b><small>${settings.userName.trim() ? 'Właściciel konta' : 'Uzupełnij profil'}</small></span></a>
+      <a href="#" class="profile" data-act="go" data-page="settings" title="Profil i ustawienia"><span class="profile-avatar">${settings.userName.trim() ? esc(initials(settings.userName, true)) : ic('person', 17)}</span><span><b>${esc(settings.userName.trim() || 'Twoje imię')}</b><small>${SRV.on && SRV.s ? esc(SRV.s.roleLabel) : settings.userName.trim() ? 'Właściciel konta' : 'Uzupełnij profil'}</small></span></a>
     </div>`;
 }
 const ADD_LABEL = { company: 'Nowa firma', contact: 'Nowy kontakt', lead: 'Nowy lead', deal: 'Nowa szansa' };
@@ -1588,7 +1611,7 @@ function onboardingSteps() {
     { done: settings.targetSet, title: 'Ustaw cel sprzedaży na miesiąc', desc: 'Na jego podstawie Hermes liczy postęp, prognozę i pokrycie celu.', acts: btn('go', '', 'Ustaw cel', true) },
     { done: db.company.length > 0 || db.contact.length > 0, title: 'Wgraj firmy i kontakty', desc: 'Z pliku CSV (eksport z Excela, Google Sheets lub innego systemu CRM) albo ręcznie.', acts: btn('import', 'company', `${ic('upload', 15)}Firmy z CSV`, true) + btn('import', 'contact', `${ic('upload', 15)}Kontakty z CSV`, true) },
     { done: db.lead.length > 0 || db.deal.length > 0, title: 'Dodaj pierwszego leada', desc: 'Lead to każdy potencjalny klient. Gdy pasuje do ICP i jest zainteresowany, jednym kliknięciem zmienisz go w szansę sprzedaży.', acts: `<button class="ghost-button sm" data-act="voice" data-hint="lead">${ic('mic', 15)}Powiedz</button>` + btn('add', 'deal', `${ic('plus', 15)}Szansa`, true) + btn('add', 'lead', `${ic('plus', 15)}Dodaj leada`) },
-    { done: !!aiCfg.key, optional: true, title: 'Podłącz Hermes AI', desc: 'Bez klucza AI działa lokalnie na Twoich danych; z kluczem Claude API odpowie na każde pytanie.', acts: btn('ai-setup', '', 'Podłącz', true) }
+    { done: aiLive(), optional: true, title: 'Podłącz Hermes AI', desc: 'Bez klucza AI działa lokalnie na Twoich danych; z kluczem Claude API odpowie na każde pytanie.', acts: btn('ai-setup', '', 'Podłącz', true) }
   ];
 }
 function onboardingPanel() {
@@ -2214,30 +2237,33 @@ function renderPipelineSettings(head) {
 }
 
 function renderSettings() {
+  if (!isAdmin() && !['general', 'team'].includes(state.settingsObj)) state.settingsObj = 'general';
   const o = state.settingsObj;
-  const tabs = [['general', 'Ogólne'], ['team', 'Zespół'], ['stages', 'Lejek'], ...OBJS.map(x => [x, SCHEMA[x].many])];
+  const tabs = isAdmin() ? [['general', 'Ogólne'], ['team', 'Zespół'], ['stages', 'Lejek'], ...OBJS.map(x => [x, SCHEMA[x].many])] : [['general', 'Ogólne'], ['team', 'Zespół']];
   const head = heading({ eyebrow: 'Konfiguracja', title: 'Ustawienia', accent: '.', sub: 'Cel sprzedaży, zespół, etapy lejka, kopia danych i pola obiektów.',
     actions: `<div class="seg" role="tablist" aria-label="Sekcja">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${k === o}" aria-pressed="${k === o}" data-act="stab" data-obj="${k}">${l}</button>`).join('')}</div>` });
   if (o === 'general') {
     const total = OBJS.reduce((a, x) => a + db[x].length, 0);
     main.innerHTML = head + `
     <section class="panel" style="max-width:1040px">
+${SRV.on ? srvProfileRows() : `
       <div class="set-row"><div><h3>Profil</h3><p>Twoje imię i nazwa firmy. Hermes wita Cię po imieniu, podpisuje nim szkice wiadomości i ustawia Cię jako opiekuna nowych szans.</p></div>
         <div class="acts"><label class="field-search" style="width:220px;background:#fff"><span class="sr">Imię i nazwisko</span><input type="text" data-setting="userName" value="${esc(settings.userName)}" placeholder="Imię i nazwisko" autocomplete="name"></label><label class="field-search" style="width:220px;background:#fff"><span class="sr">Nazwa firmy</span><input type="text" data-setting="company" value="${esc(settings.company)}" placeholder="Nazwa firmy" autocomplete="organization"></label></div></div>
-      <div class="set-row"><div><h3>Cel sprzedaży na miesiąc</h3><p>Wartość wygranych szans, do której dążysz w każdym miesiącu. Widać ją w menu, na Pulpicie i w Analityce.</p></div>
-        <label class="field-search" style="width:200px;background:#fff"><span class="sr">Cel w złotych</span><input type="text" inputmode="numeric" data-setting="target" value="${grp(settings.target)}"><span>zł</span></label></div>
-      <div class="set-row"><div><h3>Hermes AI</h3><p>Bez klucza Hermes AI działa w trybie lokalnym i odpowiada na najczęstsze pytania. Z kluczem Claude API zapytasz o wszystko, a dane CRM są wtedy wysyłane do API Anthropic. Klucz zostaje tylko w tej przeglądarce i nie trafia do kopii zapasowej.</p></div>
-        <div class="acts"><label class="field-search" style="width:250px;background:#fff"><span class="sr">Klucz Claude API</span><input type="password" data-setting="aiKey" value="${aiCfg.key ? '••••••••••••••••' : ''}" placeholder="Klucz API (sk-ant-…)" autocomplete="off"></label><label class="field-search" style="width:190px;background:#fff"><span class="sr">Model</span><input type="text" data-setting="aiModel" value="${esc(aiCfg.model)}" autocomplete="off"></label>${aiCfg.key ? '<button class="ghost-button sm danger" data-act="ai-forget">Usuń klucz</button>' : ''}</div></div>
-      <div class="set-row"><div><h3>Kopia zapasowa</h3><p>Hermes zapisuje dane w tej przeglądarce (${total} ${plural(total, 'rekord', 'rekordy', 'rekordów')}, ${db.activity.length} wpisów w historii). Zrób kopię, żeby przenieść je na inny komputer.</p></div>
-        <div class="acts"><button class="ghost-button" data-act="backup">${ic('download', 16)}Pobierz kopię</button><label class="ghost-button" for="backupfile" style="cursor:pointer">${ic('upload', 16)}Wczytaj kopię<input type="file" id="backupfile" accept=".json,application/json" class="sr"></label></div></div>
+`}
+${isAdmin() ? `      <div class="set-row"><div><h3>Cel sprzedaży na miesiąc</h3><p>Wartość wygranych szans, do której dążysz w każdym miesiącu. Widać ją w menu, na Pulpicie i w Analityce.</p></div>
+        <label class="field-search" style="width:200px;background:#fff"><span class="sr">Cel w złotych</span><input type="text" inputmode="numeric" data-setting="target" value="${grp(settings.target)}"><span>zł</span></label></div>` : ''}
+${SRV.on ? srvAiRow() : `      <div class="set-row"><div><h3>Hermes AI</h3><p>Bez klucza Hermes AI działa w trybie lokalnym i odpowiada na najczęstsze pytania. Z kluczem Claude API zapytasz o wszystko, a dane CRM są wtedy wysyłane do API Anthropic. Klucz zostaje tylko w tej przeglądarce i nie trafia do kopii zapasowej.</p></div>
+        <div class="acts"><label class="field-search" style="width:250px;background:#fff"><span class="sr">Klucz Claude API</span><input type="password" data-setting="aiKey" value="${aiCfg.key ? '••••••••••••••••' : ''}" placeholder="Klucz API (sk-ant-…)" autocomplete="off"></label><label class="field-search" style="width:190px;background:#fff"><span class="sr">Model</span><input type="text" data-setting="aiModel" value="${esc(aiCfg.model)}" autocomplete="off"></label>${aiCfg.key ? '<button class="ghost-button sm danger" data-act="ai-forget">Usuń klucz</button>' : ''}</div></div>`}
+      <div class="set-row"><div><h3>Kopia zapasowa</h3><p>${SRV.on ? 'Dane firmy są na serwerze. Kopia to plik z rekordami, które widzisz' : 'Hermes zapisuje dane w tej przeglądarce'} (${total} ${plural(total, 'rekord', 'rekordy', 'rekordów')}, ${db.activity.length} wpisów w historii). ${SRV.on ? 'Wczytanie kopii zastępuje dane firmy, dlatego może to zrobić tylko administrator.' : 'Zrób kopię, żeby przenieść je na inny komputer.'}</p></div>
+        <div class="acts"><button class="ghost-button" data-act="backup">${ic('download', 16)}Pobierz kopię</button>${isAdmin() ? `<label class="ghost-button" for="backupfile" style="cursor:pointer">${ic('upload', 16)}Wczytaj kopię<input type="file" id="backupfile" accept=".json,application/json" class="sr"></label>` : ''}</div></div>
       <div class="set-row"><div><h3>Eksport do CSV</h3><p>Każdy obiekt osobno, do Excela, Google Sheets albo innego systemu CRM.</p></div>
         <div class="acts">${OBJS.map(x => `<button class="ghost-button sm" data-act="export" data-obj="${x}">${SCHEMA[x].many}</button>`).join('')}</div></div>
-      <div class="set-row"><div><h3>Dane przykładowe</h3><p>Wczytaj przykładową firmę z lejkiem i historią, żeby obejrzeć Hermesa w akcji, albo wyczyść wszystko i zacznij od zera.</p></div>
-        <div class="acts"><button class="ghost-button" data-act="demo">Wczytaj dane demo</button><button class="ghost-button danger" data-act="wipe">${ic('trash', 16)}Wyczyść wszystko</button></div></div>
+${isAdmin() ? `      <div class="set-row"><div><h3>Dane przykładowe</h3><p>Wczytaj przykładową firmę z lejkiem i historią, żeby obejrzeć Hermesa w akcji, albo wyczyść wszystko i zacznij od zera.</p></div>
+        <div class="acts"><button class="ghost-button" data-act="demo">Wczytaj dane demo</button><button class="ghost-button danger" data-act="wipe">${ic('trash', 16)}Wyczyść wszystko</button></div></div>` : ''}
     </section>`;
     return;
   }
-  if (o === 'team') return renderTeamSettings(head);
+  if (o === 'team') return SRV.on ? renderSrvTeam(head) : renderTeamSettings(head);
   if (o === 'stages') return renderPipelineSettings(head);
   const S = SCHEMA[o];
   main.innerHTML = head + `
@@ -2267,6 +2293,7 @@ function renderSettings() {
 function renderMain() {
   syncOwners();
   ({ overview: renderOverview, pipeline: renderPipeline, list: renderList, record: renderRecord, analytics: renderAnalytics, settings: renderSettings })[state.page]();
+  if (readOnly()) main.insertAdjacentHTML('afterbegin', `<div class="ro-banner" role="note">${ic('flag', 15)}<span>Masz dostęp tylko do podglądu. Zmiany, które tu zrobisz, nie zapiszą się w danych firmy.</span></div>`);
   save();
 }
 function render() { renderSide(); renderTop(); renderMain(); }
@@ -2335,6 +2362,7 @@ function renderDrawer() {
     ${rel2.map(([t, o, items]) => `<section class="dsec"><h3>${t}<em>${items.length}</em></h3>
       ${items.map(x => `<button class="linked" data-act="open" data-obj="${o}" data-id="${x.id}">${avatar(o === 'contact' ? x.name : recLabel(o, x), o === 'contact' ? 'contact' : 'company', 32)}<div><b>${esc(x.name)}</b><small>${esc(sub({ ...x, _o: o }))}</small></div>${ic('chevron', 15)}</button>`).join('') || '<p class="hint">Brak powiązanych rekordów.</p>'}
       <button class="add-card" data-act="add" data-obj="${o}" ${o === 'contact' ? `data-pk="company" data-pid="${r.id}"` : pre}>${ic('plus', 15)}Dodaj</button></section>`).join('')}
+    ${SRV.on && isAdmin() && obj === 'contact' ? `<section class="gdpr"><h3>Dane osobowe (RODO)</h3><p>Na prośbę tej osoby pobierz jej dane albo usuń je trwale razem z wpisami w historii.</p><div><button class="ghost-button sm" data-act="srv-gdpr-export" data-id="${r.id}">${ic('download', 15)}Pobierz dane osoby</button><button class="ghost-button sm danger" data-act="srv-gdpr-erase" data-id="${r.id}">${ic('trash', 15)}Usuń trwale</button></div></section>` : ''}
     <footer><span>Utworzono ${esc(fdate(r.created))}</span><button class="text-button danger" data-act="del" data-obj="${obj}" data-id="${r.id}">${ic('trash', 15)}Usuń</button></footer>
   </aside>`;
 }
@@ -2772,11 +2800,11 @@ function closeAI() { ai.open = false; renderAI(); }
 function renderAI() {
   const L = $('#aiLayer');
   if (!ai.open) { L.innerHTML = ''; return; }
-  const live = !!aiCfg.key;
+  const live = aiLive();
   const c = ctxRec();
   L.innerHTML = `<div class="layer ai-scrim" data-act="ai-close"></div>
   <aside class="ai-panel" role="dialog" aria-modal="true" aria-label="Hermes AI">
-    <header class="ai-head"><span class="ai-orb">${SPARK(16)}</span><div><b>Hermes AI</b><small>${live ? `Połączono z Claude · ${esc(aiCfg.model)}` : 'Tryb lokalny · bez klucza API'}</small></div>
+    <header class="ai-head"><span class="ai-orb">${SPARK(16)}</span><div><b>Hermes AI</b><small>${live ? `Połączono z Claude · ${esc(aiModel())}` : 'Tryb lokalny · bez klucza API'}</small></div>
       <div class="ai-head-acts">${ai.msgs.length ? `<button class="sq-btn" data-act="ai-clear" aria-label="Nowa rozmowa" title="Nowa rozmowa">${ic('plus', 16)}</button>` : ''}<button class="sq-btn" data-act="ai-close" aria-label="Zamknij">${ic('close', 17)}</button></div></header>
     <div class="ai-body" id="ai-body" aria-live="polite">${ai.msgs.length ? ai.msgs.map(aiMsg).join('') : `<div class="ai-hello"><span class="ai-orb lg">${SPARK(26)}</span><h3>W czym pomóc${firstName() ? ', ' + esc(firstName()) : ''}?</h3><p>Pytaj o lejek, klientów i następne kroki. Hermes zna dane z Twojego CRM i napisze za Ciebie follow up.</p></div>`}
       ${ai.busy ? `<div class="ai-msg a"><span class="ai-av">${SPARK(13)}</span><div class="ai-bubble"><span class="ai-typing" aria-label="Hermes pisze"><i></i><i></i><i></i></span></div></div>` : ''}</div>
@@ -2784,7 +2812,7 @@ function renderAI() {
       ${ai.busy ? '' : `<div class="ai-chips">${suggestions().map(s => `<button class="chip-btn" data-act="ai-ask" data-q="${esc(s)}">${esc(s)}</button>`).join('')}</div>`}
       ${c ? `<div class="ai-ctx"><span>${ic('flag', 13)}Kontekst: ${esc(ctxLabel())}</span><button data-act="ai-ctx-x" aria-label="Usuń kontekst">${ic('close', 13)}</button></div>` : ''}
       <form id="aiForm" class="ai-input"><label class="sr" for="ai-input">Zapytaj Hermesa</label><textarea id="ai-input" rows="1" placeholder="Zapytaj o cokolwiek w CRM…"></textarea><button type="button" class="mic-mini" data-act="dictate" data-target="#ai-input" title="Zadaj pytanie głosem" aria-label="Zadaj pytanie głosem">${ic('mic', 16)}</button><button type="submit" class="ai-send" aria-label="Wyślij"${ai.busy ? ' disabled' : ''}>${ic('arrow', 17)}</button></form>
-      <p class="ai-note">${live ? 'Hermes może się mylić, sprawdzaj ważne informacje.' : 'Tryb lokalny rozumie najczęstsze pytania. <button class="linkish" data-act="ai-setup">Podłącz Claude API</button>, by pytać o wszystko.'}</p>
+      <p class="ai-note">${live ? 'Hermes może się mylić, sprawdzaj ważne informacje.' : SRV.on ? 'Tryb lokalny rozumie najczęstsze pytania. Administrator serwera może włączyć Claude, żeby pytać o wszystko.' : 'Tryb lokalny rozumie najczęstsze pytania. <button class="linkish" data-act="ai-setup">Podłącz Claude API</button>, by pytać o wszystko.'}</p>
     </div>
   </aside>`;
   const b = $('#ai-body'); b.scrollTop = b.scrollHeight;
@@ -2810,7 +2838,7 @@ async function askAI(q) {
   if (!q || ai.busy) return;
   ai.msgs.push({ role: 'user', text: q });
   ai.busy = true; renderAI();
-  if (aiCfg.key) {
+  if (aiLive()) {
     try {
       const text = await callClaude();
       ai.msgs.push({ role: 'assistant', text, html: md(text) });
@@ -2850,6 +2878,7 @@ async function callClaude() {
     else messages.push({ role, content });
   }
   while (messages.length && messages[0].role !== 'user') messages.shift();
+  if (SRV.on) return (await api('/api/ai/messages', 'POST', { system, messages: messages.slice(-14), max_tokens: 1200 })).text || '(pusta odpowiedź)';
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-api-key': aiCfg.key, 'anthropic-version': '2026-10-21', 'anthropic-dangerous-direct-browser-access': 'true' },
@@ -3171,6 +3200,11 @@ Zasady: "want" mówi, które rekordy utworzyć. Lead to potencjalny klient do kw
 Notatka: """${text}"""`;
 }
 async function aiExtract(text) {
+  if (SRV.on) {
+    if (!aiLive()) return null;
+    const t = (await api('/api/ai/messages', 'POST', { messages: [{ role: 'user', content: voicePrompt(text) }], max_tokens: 800 })).text || '';
+    return JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1));
+  }
   if (aiCfg.key) {
     const res = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': aiCfg.key, 'anthropic-version': '2026-10-21', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: aiCfg.model || 'claude-sonnet-5-5', max_tokens: 800, messages: [{ role: 'user', content: voicePrompt(text) }] }) });
     const data = await res.json().catch(() => ({}));
@@ -3610,7 +3644,7 @@ document.addEventListener('click', e => {
       const prev = JSON.parse(JSON.stringify(snapshot()));
       const fresh = demoData(); for (const o of [...OBJS, 'activity']) db[o] = fresh[o];
       for (const o of REC_OBJS) db[o].forEach(r => { if (r.owner === 'Kamil K.') r.owner = me(); });
-      if (!settings.team.some(u => u.name === 'Monika N.')) settings.team.push({ id: uid('u'), name: 'Monika N.', email: 'monika@przyklad.pl', role: 'Handlowiec', target: 40000 });
+      if (!SRV.on && !settings.team.some(u => u.name === 'Monika N.')) settings.team.push({ id: uid('u'), name: 'Monika N.', email: 'monika@przyklad.pl', role: 'Handlowiec', target: 40000 });
       state.recent = [];
       render(); toast('Wczytano dane demo', { label: 'Cofnij', fn: () => { applyState(prev); render(); toast(a === 'demo' ? 'Przywrócono poprzednie dane' : 'Wrócono do pustej wersji'); } });
       break;
@@ -4002,9 +4036,424 @@ function nbspText(root) {
 new MutationObserver(ms => { for (const m of ms) { if (m.type === 'characterData') continue; m.addedNodes.forEach(n => { if (n.nodeType === 1) nbspText(n); else if (n.nodeType === 3 && n.parentNode) nbspText(n.parentNode); }); } }).observe(document.body, { childList: true, subtree: true });
 nbspText(document.body);
 
+/* ================= server mode: accounts, team and sync with the Hermes API ================= */
+/* Bez serwera (plik, GitHub Pages, artefakt) wszystko działa lokalnie jak dotąd. Gdy index.html serwuje
+   serwer Hermesa, dane są w bazie firmy: logowanie, zespół z rolami, synchronizacja zmian i AI przez serwer. */
+const SRV = { on: false, s: null, shadow: new Map(), orgShadow: '', orgSeen: '', prefShadow: '', cursor: '', timer: 0, poll: 0, busy: false, again: false, status: 'ok', members: [], invites: [], link: null, totp: null, aiUse: null };
+const isAdmin = () => !SRV.on || (SRV.s && SRV.s.role === 'admin');
+const readOnly = () => SRV.on && SRV.s && SRV.s.role === 'viewer';
+const aiLive = () => SRV.on ? !!(SRV.s && SRV.s.ai && SRV.s.ai.enabled) : !!aiCfg.key;
+const aiModel = () => SRV.on ? ((SRV.s && SRV.s.ai && SRV.s.ai.model) || 'Claude') : aiCfg.model;
+const SYNC_LABEL = { ok: 'Zsynchronizowano', saving: 'Zapisywanie zmian', error: 'Brak połączenia, ponowię', readonly: 'Tylko podgląd' };
+const ROLE_OPTS = [['admin', 'Administrator'], ['sales', 'Handlowiec'], ['viewer', 'Podgląd']];
+const ORG_PICK = s => ({ target: s.target, targetSet: s.targetSet, company: s.company, stages: s.stages, labels: s.labels, custom: s.custom });
+
+async function api(path, method = 'GET', body) {
+  const opt = { method, credentials: 'same-origin', headers: { 'x-hermes': '1' } };
+  if (body !== undefined) { opt.headers['content-type'] = 'application/json'; opt.body = JSON.stringify(body); }
+  const r = await fetch(path, opt);
+  let j = null; try { j = await r.json(); } catch (e) { j = null; }
+  if (!r.ok) { const e = new Error((j && j.message) || 'Serwer nie odpowiada. Spróbuj ponownie.'); e.status = r.status; e.code = j && j.error; throw e; }
+  return j || {};
+}
+const rkey = (type, id) => type + '|' + id;
+function srvRecords() {
+  const m = new Map();
+  for (const o of [...OBJS, 'activity']) for (const r of db[o]) if (r && r.id) m.set(rkey(o, r.id), JSON.stringify(r));
+  return m;
+}
+function orgPart() { const s = snapshot(); return JSON.stringify(ORG_PICK({ ...settings, labels: s.labels, custom: s.custom })); }
+const prefPart = () => JSON.stringify({ aLayout: settings.aLayout, onboardingHidden: settings.onboardingHidden });
+function srvTeam() {
+  const s = SRV.s, mine = s.members.find(m => m.id === s.user.id) || s.user;
+  settings.userName = s.user.name; settings.userEmail = s.user.email;
+  settings.userRole = mine.title || s.roleLabel; settings.meTarget = mine.target || '';
+  settings.team = s.members.filter(m => m.id !== s.user.id).map(m => ({ id: m.id, name: m.name, email: m.email, role: m.title || (ROLE_OPTS.find(r => r[0] === m.role) || [])[1] || '', target: m.target || '', server: true }));
+}
+function srvBaseline(cursor) {
+  SRV.shadow = srvRecords(); SRV.orgShadow = orgPart(); SRV.prefShadow = prefPart();
+  if (cursor) SRV.cursor = cursor;
+}
+async function srvLoad() {
+  const [s, st] = await Promise.all([api('/api/session'), api('/api/state')]);
+  SRV.s = s;
+  const set = st.settings || {};
+  applyState({ v: 3, db: st.db, settings: { ...set, labels: undefined, custom: undefined, meTargets: undefined }, labels: set.labels || {}, custom: set.custom || {} });
+  delete settings.labels; delete settings.custom; delete settings.meTargets;
+  srvTeam();
+  SRV.orgSeen = JSON.stringify(ORG_PICK(set));
+  srvBaseline(st.cursor);
+}
+function setSync(st) {
+  if (SRV.status === st) return;
+  SRV.status = st;
+  const el = $('#syncState'); if (el) { el.textContent = SYNC_LABEL[st]; el.dataset.st = st; }
+}
+function srvQueue() {
+  if (!SRV.on || !SRV.s || readOnly()) return;
+  SRV.pending = true;
+  clearTimeout(SRV.timer); SRV.timer = setTimeout(srvSync, 450);
+}
+async function srvSync() {
+  if (!SRV.on || !SRV.s || readOnly()) return;
+  if (SRV.busy) { SRV.again = true; return; }
+  const cur = srvRecords(), ups = [], dels = [];
+  for (const [k, j] of cur) if (SRV.shadow.get(k) !== j) { const i = k.indexOf('|'); ups.push({ type: k.slice(0, i), id: k.slice(i + 1), data: JSON.parse(j) }); }
+  for (const k of SRV.shadow.keys()) if (!cur.has(k)) { const i = k.indexOf('|'); dels.push({ type: k.slice(0, i), id: k.slice(i + 1) }); }
+  const org = orgPart(), pref = prefPart(), body = { upserts: ups, deletes: dels };
+  if (org !== SRV.orgShadow && isAdmin()) body.settings = JSON.parse(org);
+  if (pref !== SRV.prefShadow) body.prefs = JSON.parse(pref);
+  if (!ups.length && !dels.length && !body.settings && !body.prefs) { SRV.pending = false; return; }
+  SRV.busy = true; setSync('saving');
+  try {
+    const r = await api('/api/sync', 'POST', body);
+    for (const u of ups) SRV.shadow.set(rkey(u.type, u.id), cur.get(rkey(u.type, u.id)));
+    for (const d of dels) SRV.shadow.delete(rkey(d.type, d.id));
+    if (body.settings) { SRV.orgShadow = org; SRV.orgSeen = JSON.stringify(ORG_PICK(body.settings)); }
+    if (body.prefs) SRV.prefShadow = pref;
+    SRV.pending = false; setSync('ok');
+    if (r.rejected && r.rejected.length) {
+      toast(r.rejected.some(x => x.reason === 'not_owner') ? 'Część zmian dotyczy rekordów innego opiekuna. Przywróciłem wersję z serwera.' : 'Serwer odrzucił część zmian. Przywróciłem wersję z serwera.');
+      await srvLoad(); srvRender(true);
+    }
+  } catch (e) {
+    if (e.status === 401) return srvExpired();
+    if (e.status === 403) { toast(e.message); await srvLoad().catch(() => {}); srvRender(true); setSync('ok'); }
+    else { setSync('error'); setTimeout(srvQueue, 5000); }
+  } finally {
+    SRV.busy = false;
+    if (SRV.again) { SRV.again = false; srvQueue(); }
+  }
+}
+function srvRender(force) {
+  const f = document.activeElement;
+  if (!force && (isModal() || vc.open || (f && f !== document.body && /INPUT|TEXTAREA|SELECT/.test(f.tagName)))) { SRV.stale = true; return; }
+  SRV.stale = false;
+  syncStages(); render(); renderDrawer();
+}
+function applySettingsFrom(set) {
+  for (const k of ['target', 'targetSet', 'company']) if (k in set) settings[k] = set[k];
+  if (Array.isArray(set.stages) && set.stages.length) settings.stages = set.stages;
+  for (const o of OBJS) {
+    const custom = ((set.custom && set.custom[o]) || []).filter(f => f && f.key && f.label && TYPES[f.type]);
+    SCHEMA[o].fields = SCHEMA[o].fields.filter(f => f.core).concat(custom);
+    const lab = (set.labels && set.labels[o]) || {};
+    SCHEMA[o].fields.forEach(f => { if (lab[f.key]) f.label = lab[f.key]; });
+  }
+  syncStages();
+}
+async function srvPoll() {
+  if (!SRV.on || !SRV.s || SRV.busy || document.hidden) return;
+  let r;
+  try { r = await api('/api/changes?since=' + encodeURIComponent(SRV.cursor)); }
+  catch (e) { if (e.status === 401) srvExpired(); else setSync('error'); return; }
+  if (SRV.busy) return;
+  if (SRV.status === 'error') setSync('ok');
+  let changed = false;
+  for (const c of r.changes || []) {
+    if (!db[c.type]) continue;
+    const k = rkey(c.type, c.id), base = SRV.shadow.get(k) ?? null;
+    const i = db[c.type].findIndex(x => x.id === c.id), local = i < 0 ? null : JSON.stringify(db[c.type][i]);
+    if (local !== base) continue; /* niezapisana zmiana na tym urządzeniu wygrywa i zaraz trafi na serwer */
+    const inc = c.data ? JSON.stringify(c.data) : null;
+    if (inc === base) continue;
+    if (!c.data) { db[c.type].splice(i, 1); SRV.shadow.delete(k); }
+    else {
+      if (i < 0) db[c.type].push(c.data); else db[c.type][i] = c.data;
+      SRV.shadow.set(k, inc);
+    }
+    changed = true;
+  }
+  if (changed) db.activity.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  const seen = JSON.stringify(ORG_PICK(r.settings || {}));
+  if (seen !== SRV.orgSeen && orgPart() === SRV.orgShadow) { applySettingsFrom(r.settings); SRV.orgSeen = seen; SRV.orgShadow = orgPart(); changed = true; }
+  if (r.cursor) SRV.cursor = r.cursor;
+  if (changed || SRV.stale) srvRender(false);
+}
+function srvExpired() {
+  if (!SRV.on) return;
+  clearInterval(SRV.poll); SRV.s = null;
+  showAuth('login', 'Sesja wygasła. Zaloguj się ponownie, Twoje zmiany zapisane do tej chwili są na serwerze.');
+}
+
+/* ---- logowanie, rejestracja, zaproszenie, reset hasła ---- */
+const AUTH = { mode: 'login', msg: '', err: '', code: false, invite: null, token: '', link: '' };
+function authField(name, label, type = 'text', ac = '', extra = '') {
+  return `<div class="f"><label for="au-${name}">${label}</label><input class="fin" id="au-${name}" name="${name}" type="${type}"${ac ? ` autocomplete="${ac}"` : ''}${extra}></div>`;
+}
+function renderAuth() {
+  let L = $('#authLayer');
+  if (!L) { L = document.createElement('div'); L.id = 'authLayer'; document.body.appendChild(L); }
+  document.body.classList.add('auth-on');
+  const m = AUTH.mode, inv = AUTH.invite;
+  const T = {
+    login: ['Zaloguj się', 'Twoje leady, szanse i zespół w jednym miejscu.'],
+    register: ['Załóż konto firmy', 'Zostaniesz administratorem i zaprosisz zespół w Ustawieniach.'],
+    forgot: ['Nie pamiętasz hasła?', 'Podaj email konta, a przygotujemy link do ustawienia nowego hasła.'],
+    reset: ['Ustaw nowe hasło', 'Po zmianie zalogujesz się nowym hasłem na wszystkich urządzeniach.'],
+    invite: [inv ? `Dołącz do firmy ${esc(inv.org)}` : 'Zaproszenie', inv ? `Rola: ${esc(inv.roleLabel)}. Konto: ${esc(inv.email)}.` : '']
+  }[m];
+  let body = '';
+  if (m === 'login') body = authField('email', 'Email', 'email', 'username') + authField('password', 'Hasło', 'password', 'current-password') + (AUTH.code ? authField('code', 'Kod z aplikacji uwierzytelniającej', 'text', 'one-time-code', ' inputmode="numeric" maxlength="6"') : '');
+  if (m === 'register') body = authField('name', 'Imię i nazwisko', 'text', 'name') + authField('company', 'Nazwa firmy', 'text', 'organization') + authField('email', 'Email', 'email', 'username') + authField('password', 'Hasło (co najmniej 10 znaków)', 'password', 'new-password');
+  if (m === 'forgot') body = authField('email', 'Email', 'email', 'username');
+  if (m === 'reset') body = authField('password', 'Nowe hasło (co najmniej 10 znaków)', 'password', 'new-password');
+  if (m === 'invite' && inv) body = inv.existingUser ? authField('password', 'Hasło do Twojego konta', 'password', 'current-password') : authField('name', 'Imię i nazwisko', 'text', 'name') + authField('password', 'Hasło (co najmniej 10 znaków)', 'password', 'new-password');
+  const btn = { login: 'Zaloguj się', register: 'Załóż konto', forgot: 'Przygotuj link', reset: 'Zapisz hasło', invite: 'Dołącz do zespołu' }[m];
+  const links = m === 'login' ? `<button type="button" class="linkish" data-act="auth-mode" data-m="forgot">Nie pamiętam hasła</button><span>Nowa firma? <button type="button" class="linkish" data-act="auth-mode" data-m="register">Załóż konto</button></span>`
+    : m === 'register' ? `<span>Masz konto? <button type="button" class="linkish" data-act="auth-mode" data-m="login">Zaloguj się</button></span>`
+    : `<button type="button" class="linkish" data-act="auth-mode" data-m="login">Wróć do logowania</button>`;
+  L.innerHTML = `<div class="auth" role="main">
+    <div class="auth-card">
+      <div class="auth-brand">${LOGO}<span>Hermes</span></div>
+      <h1>${T[0]}</h1><p class="auth-sub">${T[1]}</p>
+      ${AUTH.msg ? `<p class="auth-msg" role="status">${esc(AUTH.msg)}</p>` : ''}
+      ${AUTH.link ? `<div class="auth-link"><label class="sr" for="au-link">Link</label><input class="fin" id="au-link" readonly value="${esc(AUTH.link)}"><a class="ghost-button sm" href="${esc(AUTH.link)}">Otwórz</a></div>` : ''}
+      ${(m !== 'invite' || inv) ? `<form id="authForm" class="auth-form" novalidate>${body}
+        <p class="auth-err" id="authErr" role="alert">${esc(AUTH.err)}</p>
+        <button class="primary-button" type="submit">${btn}</button></form>` : `<p class="auth-err" role="alert">${esc(AUTH.err)}</p>`}
+      <div class="auth-links">${links}</div>
+    </div>
+    <p class="auth-foot">Dane firmy są przechowywane na serwerze Hermesa. Połączenie jest szyfrowane, a hasła zapisujemy wyłącznie w postaci skrótu.</p>
+  </div>`;
+  setTimeout(() => { const i = L.querySelector('input:not([readonly])'); if (i) i.focus(); }, 0);
+}
+async function showAuth(mode, msg) {
+  AUTH.mode = mode || 'login'; AUTH.msg = msg || ''; AUTH.err = ''; AUTH.link = '';
+  if (AUTH.mode === 'invite') {
+    try { AUTH.invite = await api('/api/invites/' + encodeURIComponent(AUTH.token)); }
+    catch (e) { AUTH.invite = null; AUTH.err = e.message; }
+  }
+  renderAuth();
+}
+function enterApp() { location.replace(location.pathname); }
+async function authSubmit(form) {
+  const v = Object.fromEntries(new FormData(form).entries()), m = AUTH.mode;
+  const btn = form.querySelector('[type=submit]'); btn.disabled = true;
+  AUTH.err = '';
+  try {
+    if (m === 'login') { await api('/api/auth/login', 'POST', { email: v.email, password: v.password, code: v.code || undefined }); return enterApp(); }
+    if (m === 'register') { await api('/api/auth/register', 'POST', v); return enterApp(); }
+    if (m === 'invite') { await api(`/api/invites/${encodeURIComponent(AUTH.token)}/accept`, 'POST', v); return enterApp(); }
+    if (m === 'forgot') {
+      const r = await api('/api/auth/reset/request', 'POST', { email: v.email });
+      AUTH.msg = 'Jeśli konto z tym adresem istnieje, link do zmiany hasła jest gotowy. Jest ważny 2 godziny.';
+      AUTH.link = r.link || ''; return renderAuth();
+    }
+    if (m === 'reset') {
+      await api('/api/auth/reset/confirm', 'POST', { token: AUTH.token, password: v.password });
+      history.replaceState(null, '', location.pathname);
+      AUTH.mode = 'login'; AUTH.msg = 'Hasło zmienione. Zaloguj się nowym hasłem.'; return renderAuth();
+    }
+  } catch (e) {
+    if (e.code === 'totp_required' || e.code === 'totp_invalid') { const keep = { email: v.email, password: v.password }; AUTH.code = true; AUTH.err = e.message; renderAuth(); const f = $('#authForm'); f.email.value = keep.email; f.password.value = keep.password; f.code.focus(); return; }
+    AUTH.err = e.message; const el = $('#authErr'); if (el) el.textContent = e.message;
+  } finally { btn.disabled = false; }
+}
+
+/* ---- Ustawienia w trybie serwera: konto, zespół, zaproszenia ---- */
+function srvProfileRows() {
+  const s = SRV.s, u = s.user;
+  const orgs = s.orgs.length > 1 ? `<label class="field-search" style="width:220px;background:#fff"><span class="sr">Firma</span><select data-srv="org" style="border:0;background:transparent;width:100%;font:inherit">${s.orgs.map(o => `<option value="${o.id}"${o.id === s.org.id ? ' selected' : ''}>${esc(o.name)}</option>`).join('')}</select></label>` : '';
+  const twofa = SRV.totp
+    ? `<div class="srv-2fa"><p>Dodaj konto w aplikacji uwierzytelniającej (Google Authenticator, 1Password, Authy): zeskanuj link albo wpisz klucz <code>${esc(SRV.totp.secret)}</code>. Potem podaj kod z aplikacji.</p><div class="auth-link"><label class="sr" for="srv-otp-uri">Link konfiguracyjny</label><input class="fin" id="srv-otp-uri" readonly value="${esc(SRV.totp.uri)}"><button class="ghost-button sm" data-act="srv-copy" data-src="#srv-otp-uri">Kopiuj</button></div><form id="srvTotp" class="srv-inline" novalidate><label class="sr" for="srv-otp">Kod</label><input class="fin" id="srv-otp" name="code" inputmode="numeric" maxlength="6" placeholder="Kod z aplikacji" autocomplete="one-time-code"><button class="primary-button sm" type="submit">Włącz</button><button class="ghost-button sm" type="button" data-act="srv-2fa-cancel">Anuluj</button></form></div>`
+    : u.totp ? `<span class="tag"><i class="dot" style="background:var(--ok)"></i>Włączona</span><button class="ghost-button sm" data-act="srv-2fa-off">Wyłącz</button>` : `<button class="ghost-button sm" data-act="srv-2fa-on">Włącz weryfikację dwuetapową</button>`;
+  return `
+      <div class="set-row"><div><h3>Twoje konto</h3><p>Zalogowano jako <b>${esc(u.email)}</b>, rola: ${esc(s.roleLabel)}${s.visibility === 'own' ? ', widzisz tylko swoje leady i szanse' : ''}. Imię widzą inni w zespole jako opiekuna rekordów.</p></div>
+        <div class="acts"><label class="field-search" style="width:220px;background:#fff"><span class="sr">Imię i nazwisko</span><input type="text" data-setting="userName" value="${esc(settings.userName)}" placeholder="Imię i nazwisko" autocomplete="name"></label>${orgs}<button class="ghost-button sm" data-act="srv-logout">Wyloguj</button></div></div>
+      <div class="set-row"><div><h3>Firma</h3><p>${isAdmin() ? 'Nazwa widoczna w menu i w zaproszeniach. Cel, etapy lejka i pola obiektów są wspólne dla całego zespołu.' : 'Ustawienia firmy, cel, etapy i pola zmienia administrator.'}</p></div>
+        <div class="acts"><label class="field-search" style="width:220px;background:#fff"><span class="sr">Nazwa firmy</span><input type="text" data-setting="company" value="${esc(settings.company)}" placeholder="Nazwa firmy" autocomplete="organization"${isAdmin() ? '' : ' disabled'}></label></div></div>
+      <div class="set-row"><div><h3>Hasło</h3><p>Zmiana hasła wyloguje Cię na pozostałych urządzeniach.</p></div>
+        <form id="srvPass" class="srv-inline acts" novalidate><label class="sr" for="srv-p1">Obecne hasło</label><input class="fin" id="srv-p1" name="current" type="password" placeholder="Obecne hasło" autocomplete="current-password"><label class="sr" for="srv-p2">Nowe hasło</label><input class="fin" id="srv-p2" name="next" type="password" placeholder="Nowe hasło" title="Co najmniej 10 znaków" autocomplete="new-password"><button class="ghost-button sm" type="submit">Zmień hasło</button></form></div>
+      <div class="set-row"><div><h3>Weryfikacja dwuetapowa</h3><p>Przy logowaniu poza hasłem podajesz kod z aplikacji w telefonie. Zalecamy ją każdemu, kto ma dostęp do danych klientów.</p></div>
+        <div class="acts">${twofa}</div></div>`;
+}
+function srvAiRow() {
+  const s = SRV.s, u = SRV.aiUse;
+  return `<div class="set-row"><div><h3>Hermes AI</h3><p>${s.ai.enabled ? `Hermes AI działa przez serwer firmy (model ${esc(s.ai.model)}). Klucz Claude API jest tylko na serwerze, a dane CRM trafiają do API Anthropic wyłącznie przy pytaniach do AI.${u ? ` Dziś wykorzystano ${u.used} z ${u.limit} zapytań.` : ''}` : 'Na tym serwerze Hermes AI działa w trybie lokalnym. Administrator serwera włącza Claude, ustawiając klucz API w konfiguracji.'}</p></div>
+        <div class="acts"><span class="tag"><i class="dot" style="background:${s.ai.enabled ? 'var(--ok)' : 'var(--amber)'}"></i>${s.ai.enabled ? 'Claude na serwerze' : 'Tryb lokalny'}</span></div></div>`;
+}
+async function srvRefreshTeam() {
+  try {
+    const [s, inv] = await Promise.all([api('/api/session'), isAdmin() ? api('/api/org/invites') : Promise.resolve({ invites: [] })]);
+    SRV.s = s; SRV.invites = inv.invites || []; srvTeam();
+    if (state.page === 'settings' && state.settingsObj === 'team') renderSettings();
+  } catch (e) { if (e.status === 401) srvExpired(); }
+}
+function renderSrvTeam(head) {
+  if (Date.now() - (SRV.teamAt || 0) > 3000) { SRV.teamAt = Date.now(); srvRefreshTeam(); }
+  const s = SRV.s, adm = isAdmin(), owners = ownerList();
+  const sel = (id, k, opts, v) => `<select class="in" id="mm-${k}-${id}" data-mm="${k}" data-id="${id}"${adm ? '' : ' disabled'}>${opts.map(([a, b]) => `<option value="${a}"${a === v ? ' selected' : ''}>${b}</option>`).join('')}</select>`;
+  main.innerHTML = head + `
+    <section class="panel" style="max-width:1180px">
+      <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Zespół</h2><p>${adm ? 'Rola decyduje, co ktoś może zmieniać. Widoczność „tylko swoje” ukrywa leady i szanse innych opiekunów.' : 'Osoby z dostępem do danych firmy. Role i zaproszenia zmienia administrator.'}</p></div></div>
+      <div class="tablewrap settings"><table>
+        <thead><tr><th scope="col">Osoba</th><th scope="col">Stanowisko</th><th scope="col">Rola</th><th scope="col">Widoczność</th><th scope="col">Cel miesięczny</th><th scope="col">Otwarty lejek</th><th scope="col"><span class="sr">Akcje</span></th></tr></thead>
+        <tbody>${s.members.map(m => { const me0 = m.id === s.user.id, op = db.deal.filter(d => isOpen(d) && d.owner === m.name), ld = db.lead.filter(l => isOpenLead(l) && l.owner === m.name);
+          return `<tr>
+          <td style="width:22%"><span class="chip">${avatar(m.name, 'contact', 30)}<span><b>${esc(m.name)}</b>${me0 ? ' <span class="mute" style="font-size:12px">(Ty)</span>' : ''}<br><small class="mute">${esc(m.email)}</small></span></span></td>
+          <td><label class="sr" for="mm-title-${m.id}">Stanowisko</label><input class="in" id="mm-title-${m.id}" data-mm="title" data-id="${m.id}" value="${esc(m.title || '')}" placeholder="np. Handlowiec"${adm ? '' : ' disabled'}></td>
+          <td style="min-width:150px"><label class="sr" for="mm-role-${m.id}">Rola</label>${sel(m.id, 'role', ROLE_OPTS, m.role)}</td>
+          <td style="min-width:180px"><label class="sr" for="mm-visibility-${m.id}">Widoczność</label>${sel(m.id, 'visibility', [['all', 'Wszystkie rekordy'], ['own', 'Tylko swoje']], m.visibility)}</td>
+          <td style="width:120px"><label class="sr" for="mm-target-${m.id}">Cel miesięczny</label><input class="in" id="mm-target-${m.id}" inputmode="numeric" data-mm="target" data-id="${m.id}" value="${m.target ? grp(m.target) : ''}" placeholder="${kzl(settings.target / Math.max(1, owners.length))} (auto)"${adm ? '' : ' disabled'}></td>
+          <td class="mute" style="font-size:13px">${kzl(sum(op))} · ${ld.length} ${plural(ld.length, 'lead', 'leady', 'leadów')}</td>
+          <td style="text-align:right;white-space:nowrap">${adm && !me0 ? `<div class="row-acts"><button class="text-button" data-act="srv-mreset" data-id="${m.id}" title="Link do ustawienia nowego hasła">Hasło</button><button class="text-button danger" data-act="srv-mdel" data-id="${m.id}">${ic('trash', 15)}Usuń</button></div>` : ''}</td>
+        </tr>`; }).join('')}</tbody>
+      </table></div>
+      ${adm ? `<form id="inviteForm" class="add-field" novalidate style="border-top:1px solid var(--line2)">
+        <h3>Zaproś osobę</h3>
+        <div class="grid3">
+          <div class="f"><label for="iv-email">Email <span class="req" aria-hidden="true">*</span></label><input id="iv-email" class="fin" type="email" name="email" placeholder="monika@firma.pl" autocomplete="off"></div>
+          <div class="f"><label for="iv-role">Rola</label><select id="iv-role" class="fin" name="role">${ROLE_OPTS.map(([a, b]) => `<option value="${a}"${a === 'sales' ? ' selected' : ''}>${b}</option>`).join('')}</select></div>
+          <div class="f" style="align-self:end"><button class="primary-button" type="submit">${ic('plus', 16)}Utwórz zaproszenie</button></div>
+        </div>
+        ${SRV.link ? `<div class="srv-linkbox" role="status"><p><b>${esc(SRV.link.title)}</b> ${esc(SRV.link.note)}</p><div class="auth-link"><label class="sr" for="srv-link">Link</label><input class="fin" id="srv-link" readonly value="${esc(SRV.link.url)}"><button class="ghost-button sm" type="button" data-act="srv-copy" data-src="#srv-link">Kopiuj link</button></div></div>` : `<p class="hint" id="ivErr" role="alert">Hermes przygotuje link ważny 7 dni. Wyślij go osobie, którą zapraszasz.</p>`}
+      </form>
+      ${SRV.invites.length ? `<div class="srv-invites"><h3>Oczekujące zaproszenia</h3><ul>${SRV.invites.map(i => `<li><span><b>${esc(i.email)}</b> · ${esc((ROLE_OPTS.find(r => r[0] === i.role) || ['', i.role])[1])} · ważne do ${esc(fdate(String(i.expires_at).slice(0, 10)))}</span><button class="text-button danger" data-act="srv-inv-del" data-id="${esc(i.id)}">Anuluj</button></li>`).join('')}</ul></div>` : ''}` : ''}
+    </section>
+    ${adm ? `<section class="panel" style="max-width:1180px;margin-top:14px">
+      <div class="panel-head"><div class="ttl"><span class="idx">02</span><h2>Dziennik zmian</h2><p>Kto i kiedy zmienił dane firmy. Pokazujemy 50 ostatnich wpisów.</p></div><button class="text-button" data-act="srv-audit">${SRV.audit ? 'Odśwież' : 'Pokaż dziennik'}</button></div>
+      ${SRV.audit ? `<div class="tablewrap settings"><table><thead><tr><th scope="col">Kiedy</th><th scope="col">Kto</th><th scope="col">Co</th></tr></thead><tbody>${SRV.audit.map(a => `<tr><td class="mute" style="white-space:nowrap">${esc((d => fdate(isoD(d)) + ', ' + pad(d.getHours()) + ':' + pad(d.getMinutes()))(new Date(a.at)))}</td><td>${esc(a.user_name || 'System')}</td><td>${esc(auditText(a))}</td></tr>`).join('') || '<tr><td colspan="3" class="mute">Brak wpisów</td></tr>'}</tbody></table></div>` : ''}
+    </section>` : ''}`;
+}
+const AUDIT_TXT = { login: 'Logowanie', org_created: 'Założenie konta firmy', record_created: 'Utworzenie', record_updated: 'Zmiana', record_deleted: 'Usunięcie', export: 'Eksport kopii danych', import: 'Import kopii danych', gdpr_export: 'Eksport danych osoby (RODO)', gdpr_erase: 'Usunięcie danych osoby (RODO)', invite_created: 'Zaproszenie', invite_accepted: 'Przyjęcie zaproszenia', member_updated: 'Zmiana uprawnień', member_removed: 'Usunięcie z zespołu', reset_link_created: 'Link do zmiany hasła', '2fa_enabled': 'Włączenie weryfikacji dwuetapowej', '2fa_disabled': 'Wyłączenie weryfikacji dwuetapowej', ai_first_use_today: 'Pierwsze dziś zapytanie do Hermes AI' };
+function auditText(a) {
+  let d = a.detail; try { d = typeof d === 'string' ? JSON.parse(d) : d; } catch (e) { d = null; }
+  const what = AUDIT_TXT[a.action] || a.action;
+  const obj = a.type && SCHEMA[a.type] ? SCHEMA[a.type].one.toLowerCase() : '';
+  const name = d && (d.name || d.email) ? `: ${d.name || d.email}` : '';
+  return `${what}${obj ? ' · ' + obj : ''}${name}`;
+}
+
+async function srvAction(a, t) {
+  try {
+    switch (a) {
+      case 'auth-mode': AUTH.mode = t.dataset.m; AUTH.err = ''; AUTH.msg = ''; AUTH.link = ''; AUTH.code = false; renderAuth(); return;
+      case 'srv-logout': await api('/api/auth/logout', 'POST', {}); location.replace(location.pathname); return;
+      case 'srv-copy': { const i = $(t.dataset.src); if (!i) return; i.select(); try { await navigator.clipboard.writeText(i.value); } catch (e) { document.execCommand && document.execCommand('copy'); } toast('Skopiowano link'); return; }
+      case 'srv-2fa-on': SRV.totp = await api('/api/auth/2fa/setup', 'POST', {}); renderSettings(); setTimeout(() => { const i = $('#srv-otp'); if (i) i.focus(); }, 0); return;
+      case 'srv-2fa-cancel': SRV.totp = null; renderSettings(); return;
+      case 'srv-2fa-off': {
+        if (!t.dataset.armed) { t.dataset.armed = '1'; t.outerHTML = `<form id="srvTotpOff" class="srv-inline" novalidate><label class="sr" for="srv-off-p">Hasło</label><input class="fin" id="srv-off-p" name="password" type="password" placeholder="Potwierdź hasłem" autocomplete="current-password"><button class="ghost-button sm danger" type="submit">Wyłącz</button></form>`; setTimeout(() => $('#srv-off-p').focus(), 0); }
+        return;
+      }
+      case 'srv-mdel': {
+        if (!t.dataset.armed) { t.dataset.armed = '1'; t.innerHTML = ic('trash', 15) + 'Na pewno?'; return; }
+        const m = SRV.s.members.find(x => x.id === t.dataset.id);
+        const r = await api('/api/org/members/' + encodeURIComponent(t.dataset.id), 'DELETE');
+        toast(`Usunięto z zespołu: ${m ? m.name : 'osoba'}${r.moved ? `. ${r.moved} ${plural(r.moved, 'rekord przeszedł', 'rekordy przeszły', 'rekordów przeszło')} do Ciebie` : ''}`);
+        await srvPoll(); await srvRefreshTeam(); return;
+      }
+      case 'srv-mreset': {
+        const m = SRV.s.members.find(x => x.id === t.dataset.id);
+        const r = await api(`/api/org/members/${encodeURIComponent(t.dataset.id)}/reset`, 'POST', {});
+        SRV.link = { title: `Link do nowego hasła dla: ${m ? m.name : 'osoby'}.`, note: 'Jest ważny 24 godziny i działa raz.', url: r.link }; renderSettings(); return;
+      }
+      case 'srv-inv-del': await api('/api/org/invites/' + encodeURIComponent(t.dataset.id), 'DELETE'); toast('Anulowano zaproszenie'); await srvRefreshTeam(); return;
+      case 'srv-audit': SRV.audit = (await api('/api/audit?limit=50')).entries || []; renderSettings(); return;
+      case 'srv-gdpr-export': {
+        const r = await api('/api/gdpr/contacts/' + encodeURIComponent(t.dataset.id));
+        download(`dane-osoby-${norm(r.contact.name || 'kontakt').replace(/\s+/g, '_')}-${today}.json`, JSON.stringify(r, null, 2), 'application/json');
+        toast('Pobrano dane osoby'); return;
+      }
+      case 'srv-gdpr-erase': {
+        if (!t.dataset.armed) { t.dataset.armed = '1'; t.innerHTML = ic('trash', 16) + 'Usunąć trwale? Kliknij ponownie'; return; }
+        await srvSync();
+        const name = nameOf('contact', t.dataset.id);
+        const r = await api('/api/gdpr/contacts/' + encodeURIComponent(t.dataset.id), 'DELETE');
+        openRec = null; await srvLoad(); srvRender(true);
+        toast(`Usunięto dane osoby ${name}. Wpisy w historii: ${r.activities}, powiązania: ${r.links}`); return;
+      }
+    }
+  } catch (e) { if (e.status === 401) srvExpired(); else toast(e.message); }
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  const a = t.dataset.act;
+  if (a === 'auth-mode' || (SRV.on && a.startsWith('srv-'))) { e.preventDefault(); srvAction(a, t); }
+});
+document.addEventListener('submit', async e => {
+  const f = e.target;
+  if (f.id === 'authForm') { e.preventDefault(); return authSubmit(f); }
+  if (!SRV.on) return;
+  const v = Object.fromEntries(new FormData(f).entries());
+  try {
+    if (f.id === 'inviteForm') {
+      e.preventDefault();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v.email || '').trim())) { const i = $('#iv-email'); i.classList.add('err'); i.focus(); toast('Podaj poprawny adres email'); return; }
+      const r = await api('/api/org/invites', 'POST', { email: v.email.trim(), role: v.role });
+      SRV.link = { title: `Zaproszenie dla ${v.email.trim()} jest gotowe.`, note: 'Skopiuj link i wyślij go tej osobie. Jest ważny 7 dni.', url: r.link };
+      await srvRefreshTeam(); return;
+    }
+    if (f.id === 'srvPass') {
+      e.preventDefault();
+      await api('/api/auth/password', 'POST', { current: v.current, next: v.next });
+      f.reset(); toast('Zmieniono hasło'); return;
+    }
+    if (f.id === 'srvTotp') {
+      e.preventDefault();
+      await api('/api/auth/2fa/enable', 'POST', { code: v.code });
+      SRV.totp = null; SRV.s.user.totp = true; renderSettings(); toast('Włączono weryfikację dwuetapową'); return;
+    }
+    if (f.id === 'srvTotpOff') {
+      e.preventDefault();
+      await api('/api/auth/2fa/disable', 'POST', { password: v.password });
+      SRV.s.user.totp = false; renderSettings(); toast('Wyłączono weryfikację dwuetapową'); return;
+    }
+  } catch (err) { if (err.status === 401) srvExpired(); else toast(err.message); }
+}, true);
+document.addEventListener('change', async e => {
+  if (!SRV.on || !SRV.s) return;
+  const t = e.target;
+  try {
+    if (t.dataset.srv === 'org') { await api('/api/auth/switch-org', 'POST', { orgId: t.value }); location.replace(location.pathname); return; }
+    if (t.dataset.setting === 'userName' && t.value.trim()) { await api('/api/me', 'PATCH', { name: t.value.trim() }); SRV.s.user.name = t.value.trim(); const m = SRV.s.members.find(x => x.id === SRV.s.user.id); if (m) m.name = SRV.s.user.name; return; }
+    if (t.dataset.mm) {
+      const k = t.dataset.mm, body = {};
+      body[k] = k === 'target' ? (Number(String(t.value).replace(/[^\d]/g, '')) || null) : t.value;
+      const r = await api('/api/org/members/' + encodeURIComponent(t.dataset.id), 'PATCH', body);
+      SRV.s.members = r.members; srvTeam(); renderSettings(); toast('Zapisano uprawnienia');
+    }
+  } catch (err) {
+    if (err.status === 401) return srvExpired();
+    toast(err.message); if (t.dataset.mm) renderSettings();
+  }
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden) srvPoll(); });
+window.addEventListener('beforeunload', e => {
+  if (!SRV.on || !SRV.s || readOnly()) return;
+  if (SRV.busy || SRV.pending || SRV.status === 'error') { e.preventDefault(); e.returnValue = ''; }
+});
+
+async function srvBoot() {
+  const P = new URLSearchParams(location.search);
+  let r;
+  try { r = await fetch('/api/session', { credentials: 'same-origin' }); } catch (e) { return false; }
+  const json = (r.headers.get('content-type') || '').includes('json');
+  if (!json || (r.status !== 200 && r.status !== 401)) return false;
+  SRV.on = true;
+  if (P.get('invite')) { AUTH.token = P.get('invite'); await showAuth('invite'); return true; }
+  if (P.get('reset')) { AUTH.token = P.get('reset'); await showAuth('reset'); return true; }
+  if (r.status === 401) { await showAuth('login'); return true; }
+  try { await srvLoad(); } catch (e) { await showAuth('login', e.message); return true; }
+  document.body.classList.remove('auth-on');
+  state.recent = []; openRec = null;
+  srvRender(true);
+  api('/api/ai/status').then(u => { SRV.aiUse = u; }).catch(() => {});
+  SRV.poll = setInterval(srvPoll, 20000);
+  return true;
+}
+
+const maybeServer = typeof fetch === 'function' && /^https?:$/.test(location.protocol);
+if (maybeServer) document.documentElement.classList.add('srv-wait');
 load();
 syncStages();
 render();
+if (maybeServer) {
+  const ready = () => document.documentElement.classList.remove('srv-wait');
+  setTimeout(ready, 4000);
+  srvBoot().then(ready, ready);
+}
 
 </script>
 </body>

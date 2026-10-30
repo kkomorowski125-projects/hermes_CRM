@@ -112,6 +112,10 @@ W Ustawieniach możesz dodać do każdego obiektu pola typu tekst, liczba, kwota
 | `aLayout` | Układ modułów analityki: `{ id, w }`, szerokość 4, 6, 8 lub 12 kolumn |
 | `onboardingHidden` | Czy ukryto listę „Zacznij tutaj” |
 
+## Zapis na serwerze
+
+W trybie serwera każdy rekord jest wierszem tabeli `records`: identyfikator firmy, typ (`company`, `contact`, `lead`, `deal`, `activity`), identyfikator, dane w JSON w tym samym kształcie co w przeglądarce, opiekun (dla leadów i szans), czas i autor zmiany oraz znacznik usunięcia. Ustawienia firmy (cel, etapy, nazwy pól, pola własne) są w tabeli `orgs`, a preferencje osoby (układ Analityki) w `users.prefs`. Pozostałe tabele: `users`, `memberships`, `sessions`, `invites`, `password_resets`, `audit_log`, `ai_usage` ([serwer](serwer.md)).
+
 ## Zapis w przeglądarce
 
 | Klucz `localStorage` | Zawartość |

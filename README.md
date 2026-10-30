@@ -6,7 +6,7 @@ Prosty, AI-native CRM dla małych i średnich firm, zaprojektowany dla foundera,
 
 ![Pulpit Hermesa z listą „Na dziś”](docs/img/pulpit.png)
 
-> **Status:** klikalny prototyp (wersja 0.9). Całość działa w jednym pliku `index.html`, a dane trzyma w przeglądarce. Plan przejścia na komercyjny produkt jest w [roadmapie](docs/roadmapa.md).
+> **Status:** wersja 0.10, początek fazy 1 [roadmapy](docs/roadmapa.md). `index.html` działa samodzielnie jako prototyp z danymi w przeglądarce, a z serwerem z folderu `server/` jako aplikacja dla zespołu: konta, 2FA, role, synchronizacja, RODO i Hermes AI przez serwer.
 
 ## Szybki start
 
@@ -14,7 +14,16 @@ Prosty, AI-native CRM dla małych i średnich firm, zaprojektowany dla foundera,
 2. Otwórz `index.html` w Chrome, Edge albo Safari, najlepiej na komputerze.
 3. Na Pulpicie kliknij **„Wczytaj dane demo”**, żeby zobaczyć Hermesa z przykładowym lejkiem, albo przejdź listę **„Zacznij tutaj”** z własnymi danymi.
 
-Nie trzeba niczego instalować. Do pracy nad kodem i testów potrzebujesz Node.js 18 lub nowszego ([CONTRIBUTING.md](CONTRIBUTING.md)).
+Nie trzeba niczego instalować. Do pracy nad kodem i testów potrzebujesz Node.js 22 lub nowszego ([CONTRIBUTING.md](CONTRIBUTING.md)).
+
+### Z serwerem, dla zespołu
+
+```bash
+cp .env.example .env
+docker compose up -d --build      # http://localhost:3000
+```
+
+Albo bez Dockera: `cd server && npm install && npm run dev` (baza SQLite w pliku). Pierwsze konto zakłada firmę i zostaje administratorem, resztę zespołu zapraszasz w Ustawieniach. Szczegóły: [serwer](docs/serwer.md) i [wdrożenie](docs/wdrozenie.md).
 
 ## Co potrafi
 
@@ -28,8 +37,8 @@ Nie trzeba niczego instalować. Do pracy nad kodem i testów potrzebujesz Node.j
 | Hermes AI | Plan dnia, zagrożone szanse, kolejność leadów, podsumowania i szkice maili. Działa lokalnie albo z kluczem Claude API. |
 | Analityka | Okresy od dnia do roku, porównanie z poprzednim okresem, prognoza ważona, układ modułów do przeciągania. |
 | Wyszukiwarka | Grupowane wyniki z podświetleniem, zakresy, klawiatura, szukanie po telefonach, emailach i historii. |
-| Zespół | Profile handlowców z celami, opiekunowie rekordów, filtry w lejku, listach i analityce. |
-| Dane | Import i eksport CSV z dopasowaniem kolumn, kopia zapasowa JSON, dane demo, cofanie operacji. |
+| Zespół | Konta z logowaniem i 2FA, zaproszenia, role (administrator, handlowiec, podgląd), widoczność „tylko swoje”, cele, dziennik zmian. Bez serwera: profile handlowców jako etykiety. |
+| Dane | Import i eksport CSV z dopasowaniem kolumn, kopia zapasowa JSON, dane demo, cofanie operacji. Na serwerze: synchronizacja zmian między osobami, eksport i usunięcie danych osoby (RODO). |
 
 Szczegóły i zrzuty ekranu są w [przewodniku użytkownika](docs/przewodnik.md).
 
@@ -39,6 +48,8 @@ Szczegóły i zrzuty ekranu są w [przewodniku użytkownika](docs/przewodnik.md)
 | --- | --- |
 | [Przewodnik użytkownika](docs/przewodnik.md) | Jak pracować w Hermesie, ekran po ekranie |
 | [Architektura](docs/architektura.md) | Jak zbudowana jest aplikacja i jak dodać funkcję |
+| [Serwer](docs/serwer.md) | API, role, synchronizacja, RODO, bezpieczeństwo |
+| [Wdrożenie](docs/wdrozenie.md) | Docker Compose, zmienne, HTTPS, kopie bazy |
 | [Model danych](docs/model-danych.md) | Obiekty, pola, relacje, zapis i migracje |
 | [Import i eksport](docs/import-eksport.md) | Formaty CSV, kolumny, kopia zapasowa |
 | [Hermes AI](docs/hermes-ai.md) | Tryb lokalny, Claude API, bezpieczeństwo klucza |
@@ -63,6 +74,8 @@ Szczegóły i zrzuty ekranu są w [przewodniku użytkownika](docs/przewodnik.md)
 
 ```
 index.html          cała aplikacja: HTML, CSS i JavaScript
+server/             serwer API (Fastify, TypeScript, PostgreSQL lub SQLite) i jego testy
+Dockerfile          obraz z serwerem i aplikacją; docker-compose.yml dodaje PostgreSQL
 docs/               dokumentacja i zrzuty ekranu (docs/img)
 tests/              testy w jsdom, uruchamiane przez npm test
 tools/              sprawdzenie składni i skrypt zrzutów ekranu
@@ -71,13 +84,13 @@ tools/              sprawdzenie składni i skrypt zrzutów ekranu
 
 ## Technologia
 
-Jeden plik HTML z czystym JavaScriptem, bez frameworka i bez zależności w przeglądarce. Dane w `localStorage`, fonty Space Grotesk i DM Sans z Google Fonts. Rozpoznawanie mowy przez Web Speech API przeglądarki. Testy w Node.js z jsdom, uruchamiane w GitHub Actions przy każdym pushu.
+Jeden plik HTML z czystym JavaScriptem, bez frameworka i bez zależności w przeglądarce. Dane w `localStorage`, fonty Space Grotesk i DM Sans z Google Fonts. Rozpoznawanie mowy przez Web Speech API przeglądarki. Serwer: Node.js 22, Fastify 5, TypeScript, PostgreSQL 16 albo wbudowany SQLite. Testy w Node.js z jsdom i `node:test`, uruchamiane w GitHub Actions przy każdym pushu na obu bazach.
 
-## Ograniczenia prototypu
+## Ograniczenia
 
-- Dane są tylko w tej przeglądarce. Przenosisz je kopią zapasową JSON.
-- Brak kont, serwera i synchronizacji między osobami.
-- Klucz Claude API jest trzymany w przeglądarce, co jest dopuszczalne tylko w prototypie.
+- Bez serwera dane są tylko w tej przeglądarce, a klucz Claude API jest trzymany lokalnie; to tryb prototypu.
+- Serwer nie wysyła jeszcze maili: linki zaproszeń i resetu hasła kopiuje się ręcznie.
+- Brak logowania przez Google i Microsoft, płatności oraz integracji z pocztą i kalendarzem (kolejne etapy roadmapy).
 - Rozpoznawanie mowy zależy od przeglądarki; Firefox go nie obsługuje.
 
 ## Licencja

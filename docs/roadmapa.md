@@ -6,6 +6,8 @@ W 18 miesięcy zamieniamy klikalny prototyp Hermesa w płatny CRM dla 300 polski
 
 **Założenia planu:** founder jako właściciel produktu, 2 do 3 programistów, projektant na pół etatu od fazy 2. Stan na 30 października 2026.
 
+**Postęp fazy 1 (wersja 0.10):** gotowe są backend z bazą, konta z 2FA i resetem hasła, zespoły z rolami i widocznością, AI na serwerze z limitami, dziennik zmian, eksport i usunięcie danych osoby, testy, CI i Docker. Zostały logowanie Google i Microsoft, wysyłka maili, wdrożenie w UE z kopiami i monitoringiem oraz program pilotażowy.
+
 ## Fazy i bramki
 
 | Faza | Okres | Zakres | Bramka wyjścia |

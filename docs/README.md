@@ -4,6 +4,8 @@
 | --- | --- |
 | [Przewodnik użytkownika](przewodnik.md) | Wszystkie ekrany i zasady pracy, ze zrzutami |
 | [Architektura](architektura.md) | Budowa aplikacji, przepływ akcji, jak dodać funkcję |
+| [Serwer](serwer.md) | API, konta, role, synchronizacja, RODO |
+| [Wdrożenie](wdrozenie.md) | Docker Compose, zmienne środowiskowe, HTTPS, kopie |
 | [Model danych](model-danych.md) | Obiekty, pola, relacje, zapis, migracje |
 | [Import i eksport](import-eksport.md) | CSV, kolumny, aliasy, duplikaty, kopia zapasowa |
 | [Hermes AI](hermes-ai.md) | Tryby działania, pytania lokalne, bezpieczeństwo |

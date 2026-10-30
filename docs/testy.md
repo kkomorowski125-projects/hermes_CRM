@@ -10,6 +10,14 @@ npm run check      # sprawdza składnię skryptu w index.html
 npm test           # uruchamia wszystkie testy
 ```
 
+Testy serwera są w `server/test` i uruchamiają się na SQLite w pamięci albo na PostgreSQL:
+
+```bash
+cd server && npm install
+npm test                                                     # SQLite
+TEST_DATABASE_URL=postgres://user@localhost/hermes_test npm test   # PostgreSQL, schemat jest czyszczony
+```
+
 Wynik pokazuje każdy przypadek (✓ albo ✗) i podsumowanie pliku. Polecenie kończy się błędem, gdy którykolwiek przypadek nie przejdzie albo w aplikacji wystąpi błąd JavaScript.
 
 ## Zestawy
@@ -19,6 +27,8 @@ Wynik pokazuje każdy przypadek (✓ albo ✗) i podsumowanie pliku. Polecenie k
 | `tests/rekordy.test.js` | Puste listy, dane demo, filtry i sortowanie list, karta leada i szansy, powiązania kontaktów i firmy, następny krok z pominięciem, konwersja i odrzucenie leada, wygrana i ponowne otwarcie, aktywności z wynikiem rozmowy, usuwanie z cofaniem, szybkie dodawanie, import CSV z osobą kontaktową, Hermes AI, migracja danych z wersji 2 |
 | `tests/zespol-lejek-wyszukiwarka.test.js` | Profile handlowców, filtry opiekuna, edycja etapów lejka, lejek leadów z przeciąganiem, moduły analityki, wyszukiwarka z klawiaturą i zakresami, twarde spacje i brak myślników |
 | `tests/analityka.test.js` | Okresy od dnia do roku, nawigacja po okresach, cel kwartału, filtr opiekuna |
+| `server/test/api.test.ts` | Rejestracja, CSRF, synchronizacja i zmiany, zaproszenia, role i widoczność, podgląd, ostatni administrator, 2FA i limit logowania, reset hasła, RODO, kopia i import, AI z limitem |
+| `server/test/frontend.test.ts` | `index.html` w jsdom połączony z prawdziwym API: ekran logowania, wczytanie i zapis danych, zmiany innych osób, zaproszenie z Ustawień, baner podglądu |
 | `tests/glos.test.js` | Parser Hermes Voice na przykładowych zdaniach, zapis i powiązania, wykrywanie istniejących rekordów, wejścia głosowe w formularzach i notatkach |
 
 ## Pisanie testu
@@ -60,5 +70,5 @@ Po zmianach wyglądu odśwież zrzuty, żeby dokumentacja pokazywała aktualny i
 ## Czego testy nie obejmują
 
 - Prawdziwego rozpoznawania mowy (jsdom nie ma mikrofonu); parser i zapis są testowane na tekście.
-- Połączenia z Claude API.
+- Połączenia z prawdziwym Claude API (w testach serwera odpowiedź jest podstawiona).
 - Wyglądu w różnych przeglądarkach; to sprawdzamy ręcznie i zrzutami ekranu.

@@ -83,13 +83,17 @@ Kilka zasad, które warto znać przed zmianami:
 
 `MutationObserver` na `document.body` przegląda każdy nowy fragment strony. Skleja twardą spacją jednoliterowe spójniki i przyimki (a, i, o, u, w, z) oraz krótkie słowa (do, na, od, po, za, nie…) z następnym słowem, a liczby z jednostkami. Pomija pola formularzy, `textarea` i `pre`. W CSS akapity mają `text-wrap: pretty`, a nagłówki `text-wrap: balance`, co usuwa wdowy i sieroty.
 
+## Tryb serwera
+
+Na końcu skryptu jest moduł serwera (obiekt `SRV`). Przy starcie sprawdza `GET /api/session`; bez serwera nic nie zmienia. Z serwerem:
+
+- `save()` zamiast `localStorage` planuje `srvSync()`, które wysyła różnice między `db` a ostatnią wersją z serwera;
+- `srvPoll()` co 20 sekund dociąga zmiany innych osób i odświeża widok, gdy nikt nie pisze w polu ani nie ma otwartego okna;
+- ekran logowania (`renderAuth`), Ustawienia konta (`srvProfileRows`) i zespołu (`renderSrvTeam`) korzystają z tych samych klas co reszta interfejsu;
+- `callClaude()` i `aiExtract()` idą przez `/api/ai/messages`.
+
+Opis API i synchronizacji: [serwer.md](serwer.md).
+
 ## Droga do wersji produkcyjnej
 
-Prototyp jest celowo jednoplikowy, żeby szybko testować pomysły z klientami. Wersja komercyjna (faza 1 [roadmapy](roadmapa.md)) wymaga podziału na:
-
-- **frontend** z komponentami (te same ekrany i zasady UX);
-- **API i bazę danych** z kontami, zespołami i uprawnieniami;
-- **serwis AI** po stronie serwera (klucz nigdy w przeglądarce);
-- **workery integracji** (poczta, kalendarz, importy).
-
-Model danych z [model-danych.md](model-danych.md) przenosi się wprost do tabel bazy danych.
+Kolejne kroki (fazy 1 i 2 [roadmapy](roadmapa.md)): wysyłka maili, logowanie przez Google i Microsoft, monitoring błędów, a potem workery integracji (poczta, kalendarz, importy). Gdy interfejs urośnie, frontend przejdzie na komponenty, z tymi samymi ekranami i zasadami UX.

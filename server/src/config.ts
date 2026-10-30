@@ -1,0 +1,31 @@
+// Konfiguracja z zmiennych środowiskowych. Wartości domyślne pozwalają uruchomić serwer lokalnie bez pliku .env.
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const num = (v: string | undefined, d: number) => (v && !Number.isNaN(Number(v)) ? Number(v) : d);
+
+export const config = {
+  port: num(process.env.PORT, 3000),
+  host: process.env.HOST || '0.0.0.0',
+  /** postgres://… dla PostgreSQL; pusty = SQLite w pliku SQLITE_PATH */
+  databaseUrl: process.env.DATABASE_URL || '',
+  sqlitePath: process.env.SQLITE_PATH || path.resolve(here, '..', 'data', 'hermes.db'),
+  /** Plik frontendu serwowany pod / */
+  appFile: process.env.APP_FILE || path.resolve(here, '..', '..', 'index.html'),
+  /** Adres aplikacji używany w linkach zaproszeń i resetu hasła */
+  publicUrl: (process.env.PUBLIC_URL || 'http://localhost:3000').replace(/\/$/, ''),
+  /** Ciasteczka tylko przez HTTPS (włącz w produkcji) */
+  secureCookies: process.env.SECURE_COOKIES === 'true',
+  sessionDays: num(process.env.SESSION_DAYS, 30),
+  /** Rejestracja nowych firm: open (każdy) albo closed (tylko zaproszenia) */
+  signup: (process.env.SIGNUP || 'open') as 'open' | 'closed',
+  anthropicKey: process.env.ANTHROPIC_API_KEY || '',
+  anthropicModel: process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5',
+  anthropicVersion: process.env.ANTHROPIC_VERSION || '2026-10-21',
+  aiDailyLimit: num(process.env.AI_DAILY_LIMIT, 200),
+  /** W trybie deweloperskim linki resetu i zaproszeń wracają w odpowiedzi API */
+  dev: process.env.NODE_ENV !== 'production',
+  logLevel: process.env.LOG_LEVEL || 'info'
+};
+export type Config = typeof config;

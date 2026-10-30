@@ -2,6 +2,21 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.10.0] · 30 października 2026
+
+### Dodane
+- Serwer w `server/` (Node.js 22, Fastify, TypeScript) z bazą PostgreSQL albo SQLite i migracjami.
+- Konta: rejestracja firmy, logowanie, weryfikacja dwuetapowa TOTP, reset hasła, zmiana hasła, kilka firm na jednym koncie.
+- Zespół: zaproszenia z linkiem, role administrator, handlowiec i podgląd, widoczność „tylko swoje”, cele i stanowiska, dziennik zmian.
+- Tryb serwera w `index.html`: ekran logowania, synchronizacja zmian z serwerem i od innych osób, stan synchronizacji w menu, Ustawienia konta i zespołu.
+- Hermes AI przez serwer: klucz Claude API tylko na serwerze, dzienny limit zapytań na firmę.
+- RODO: pobranie i trwałe usunięcie danych osoby na karcie kontaktu.
+- Dockerfile, `docker-compose.yml` z PostgreSQL, `.env.example`.
+- Testy API i aplikacji w trybie serwera, CI na SQLite i PostgreSQL, budowanie obrazu Docker.
+
+### Zmienione
+- Identyfikatory rekordów zawierają losową część, żeby nie powtarzały się między osobami.
+
 ## [0.9.0] · 30 października 2026
 
 ### Dodane
