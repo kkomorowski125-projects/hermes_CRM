@@ -1,83 +1,52 @@
 # Hermes CRM
 
-Hermes to prosty, minimalistyczny CRM dla małych i średnich firm, zaprojektowany dla foundera, który sam sprzedaje. To klikalny prototyp w jednym pliku HTML: nie trzeba niczego instalować ani uruchamiać serwera.
+[![Testy](https://github.com/kkomorowski125-projects/hermes_CRM/actions/workflows/tests.yml/badge.svg)](https://github.com/kkomorowski125-projects/hermes_CRM/actions/workflows/tests.yml)
 
-## Uruchomienie
+Prosty, AI-native CRM dla małych i średnich firm, zaprojektowany dla foundera, który sam sprzedaje. Hermes pilnuje, żeby każdy klient miał następny krok, a dane możesz dodawać głosem.
 
-Otwórz `index.html` w przeglądarce, najlepiej na komputerze, w pełnym oknie.
+![Pulpit Hermesa z listą „Na dziś”](docs/img/pulpit.png)
 
-Hermes startuje **pusty**. Na Pulpicie czeka lista „Zacznij tutaj”:
+> **Status:** klikalny prototyp (wersja 0.9). Całość działa w jednym pliku `index.html`, a dane trzyma w przeglądarce. Plan przejścia na komercyjny produkt jest w [roadmapie](docs/roadmapa.md).
 
-1. uzupełnij profil (imię i nazwa firmy),
-2. ustaw miesięczny cel sprzedaży,
-3. wgraj firmy i kontakty,
-4. dodaj pierwszego leada,
-5. opcjonalnie podłącz Hermes AI.
+## Szybki start
 
-Chcesz najpierw zobaczyć Hermesa w akcji? Kliknij „Wczytaj dane demo”. Usuniesz je przyciskiem „Wyczyść wszystko” w **Ustawieniach → Ogólne**.
+1. Pobierz repozytorium albo sam plik [`index.html`](index.html).
+2. Otwórz `index.html` w Chrome, Edge albo Safari, najlepiej na komputerze.
+3. Na Pulpicie kliknij **„Wczytaj dane demo”**, żeby zobaczyć Hermesa z przykładowym lejkiem, albo przejdź listę **„Zacznij tutaj”** z własnymi danymi.
 
-Dane zapisują się automatycznie w tej przeglądarce. W Ustawieniach pobierzesz **kopię zapasową** (plik JSON) i wczytasz ją na innym komputerze. Dane ze starszej wersji (v2) przenoszą się same.
+Nie trzeba niczego instalować. Do pracy nad kodem i testów potrzebujesz Node.js 18 lub nowszego ([CONTRIBUTING.md](CONTRIBUTING.md)).
 
-## Leady i szanse sprzedaży
+## Co potrafi
 
-- **Lead** to każdy potencjalny klient: zapytanie ze strony, polecenie albo kontakt z targów. Ma swoje statusy: Nowy → W kontakcie → Kwalifikacja, ocenę dopasowania do ICP, źródło i szacowaną wartość.
-- **Szansa sprzedaży** to klient, z którym jesteś już w procesie sprzedaży, bo pasuje do ICP i jest zainteresowany. Jej etapy to Nowe → Kontakt → Oferta → Negocjacje → Wygrana albo Przegrana.
-- **Konwersja.** Kliknięcie „Konwertuj na szansę” otwiera checklistę („pasuje do ICP”, „jest zainteresowany”). Potem podajesz wartość, etap startowy i następny krok. Szansa przejmuje firmę, wszystkie kontakty i historię leada.
-- **Odrzucenie.** Lead, który nie rokuje, odrzucasz z podaniem powodu. Możesz to cofnąć albo później przywrócić leada.
+| Obszar | Najważniejsze funkcje |
+| --- | --- |
+| Leady i szanse | Osobne obiekty: lead to potencjalny klient, szansa to klient w procesie sprzedaży. Konwersja z checklistą ICP i zainteresowania, odrzucenie z powodem. |
+| Następny krok | Każdy otwarty lead i szansa ma krok z terminem. Zamknięcie zadania wymusza kolejne, krok można świadomie pominąć krzyżykiem. |
+| Karty rekordów | Pełny ekran jak w HubSpocie czy Pipedrive: pasek etapów, kluczowe liczby, firma i wiele kontaktów, aktywności z wynikiem rozmowy, oś czasu z filtrami. |
+| Lejek | Kanban szans z edytowalnymi etapami i prostszy kanban leadów, przeciąganie, filtr opiekuna. |
+| Hermes Voice | Dodawanie firmy, kontaktu, leada i szansy głosem, także wszystko naraz, z podglądem przed zapisem. |
+| Hermes AI | Plan dnia, zagrożone szanse, kolejność leadów, podsumowania i szkice maili. Działa lokalnie albo z kluczem Claude API. |
+| Analityka | Okresy od dnia do roku, porównanie z poprzednim okresem, prognoza ważona, układ modułów do przeciągania. |
+| Wyszukiwarka | Grupowane wyniki z podświetleniem, zakresy, klawiatura, szukanie po telefonach, emailach i historii. |
+| Zespół | Profile handlowców z celami, opiekunowie rekordów, filtry w lejku, listach i analityce. |
+| Dane | Import i eksport CSV z dopasowaniem kolumn, kopia zapasowa JSON, dane demo, cofanie operacji. |
 
-## Karta leada i szansy
+Szczegóły i zrzuty ekranu są w [przewodniku użytkownika](docs/przewodnik.md).
 
-Kliknięcie leada lub szansy w dowolnym miejscu otwiera pełny ekran rekordu, podobny do kart w HubSpocie czy Pipedrive:
+## Dokumentacja
 
-- **Nagłówek** z edytowalną nazwą i akcjami: Wygrana/Przegrana albo Konwertuj/Odrzuć, Zapytaj AI, Usuń.
-- **Klikalny pasek etapów lub statusów.** Pokazuje też liczbę dni w etapie i prawdopodobieństwo.
-- **Kluczowe liczby**: wartość, prognoza ważona, planowane zamknięcie, ostatni kontakt, wiek leada.
-- **Powiązania.** Do rekordu dodajesz firmę i **dowolną liczbę kontaktów**. Wyszukiwarka pozwala też utworzyć nową osobę lub firmę w locie. Hermes podpowiada pozostałe osoby z tej samej firmy. Możesz ustawić kontakt główny i odłączyć kontakt z opcją cofnięcia. Po powiązaniu kontaktu Hermes sam uzupełnia firmę.
-- **Aktywności.** Dodajesz notatkę, telefon (z wynikiem rozmowy, np. „Nie odebrał(a)”), email lub spotkanie i wskazujesz, z kim rozmawiałeś.
-- **Oś czasu** jest pogrupowana według dni i ma filtry. Na górze widać zaplanowany krok, a pod nim wpisy z rekordu, z jego kontaktów i ze źródłowego leada.
-
-Firmy i kontakty otwierają się w panelu bocznym. Widać w nim powiązane leady i szanse, a jednym kliknięciem założysz nowego leada lub szansę dla tej osoby albo firmy.
-
-## Wprowadzanie głosem
-
-Ikona mikrofonu przy przycisku dodawania (w górnym pasku i na listach) albo klawisz `V` otwiera Hermes Voice. Mówisz naturalnie, np. „Nowy lead Kwiaciarnia Róża z Krakowa, kontakt Anna Mazur, właścicielka, telefon 501 300 200, źródło polecenie, wartość 8 tysięcy, następny krok zadzwonić jutro”, a Hermes rozpoznaje firmę, kontakt, leada i szansę, także wszystko naraz. Przed zapisem widzisz karty z polami do poprawienia i informację, które rekordy już istnieją (zostaną powiązane, a nie zdublowane). Zapis od razu wiąże kontakt z firmą, a leada i szansę z firmą i kontaktem; treść nagrania trafia do historii jako notatka.
-
-- Rozpoznawanie działa lokalnie (słowa kluczowe, kwoty, telefony, emaile mówione jako „małpa” i „kropka”, daty typu „jutro”, „w piątek”, „15 listopada”). Z kluczem Claude API Hermes AI dodatkowo dopracowuje pola.
-- „Wypełnij głosem” jest też w każdym formularzu dodawania, a mikrofon w notatkach na kartach rekordów i w Ask Hermes AI (dyktowanie tekstu).
-- Mowę rozpoznaje przeglądarka (Chrome, Edge, Safari). Gdy mikrofon jest niedostępny, możesz wpisać lub wkleić tekst albo użyć dyktowania systemowego.
-
-## Jak pracować z Hermesem
-
-1. Każdy otwarty lead i każda otwarta szansa ma **następny krok z terminem**.
-2. Rano otwierasz **Pulpit**. Lista „Na dziś” zbiera kroki na dziś, kroki po terminie, rekordy bez planu i leady czekające na pierwszy kontakt.
-3. **Zamknięcie zadania wymusza kolejny krok.** Po kliknięciu „Zrobione” zaplanuj kolejny krok albo zamknij rekord: szansę jako wygraną lub przegraną, leada przez konwersję lub odrzucenie. Krok możesz też **świadomie pominąć krzyżykiem ✕**. Rekord trafi wtedy na listę „bez planu”, a w historii zostanie ślad. Ta sama zasada działa przy zmianie etapu lub statusu (zmianę można cofnąć).
-4. Po rozmowie zapisujesz krótki wpis w historii i od razu zamykasz lub planujesz krok z powiadomienia. Pierwsza rozmowa z nowym leadem sama zmienia jego status na „W kontakcie”.
-5. Przegrana szansa i odrzucony lead wymagają **powodu**. Po kilku tygodniach Analityka pokaże, co blokuje sprzedaż.
-
-## Co jest w środku
-
-- **Pulpit**: wartość lejka, prognoza ważona, otwarte leady, lista „Na dziś” i największe szanse.
-- **Lejek szans**: kanban z przeciąganiem, prawdopodobieństwem etapu, oznaczeniem szans stojących 14+ dni i filtrem opiekuna. Etapy edytujesz w **Ustawieniach → Lejek**: zmiana nazwy (szanse przechodzą razem z nią), prawdopodobieństwo, podpowiedź kroku, dodawanie, usuwanie (szanse trafiają do sąsiedniego etapu) i zmiana kolejności. Etapy „Wygrana” i „Przegrana” są stałe.
-- **Lejek leadów**: prosty kanban kwalifikacji (Nowy, W kontakcie, Kwalifikacja, Szansa sprzedaży). Przeciągnięcie do kolumny „Szansa sprzedaży” otwiera konwersję.
-- **Listy**:
-  - filtry: otwarte, skonwertowane, odrzucone, wygrane, przegrane, cisza 30+ dni;
-  - sortowanie po kliknięciu w nagłówek kolumny;
-  - kolumny „Kontakty” i „Następny krok”;
-  - flaga czasu reakcji na nowe leady.
-- **Dodawanie ręczne**: lead lub szansa razem z firmą i osobą w jednym formularzu. Istniejące rekordy podpowiadają się z listy, a duplikaty są wykrywane.
-- **Import i eksport CSV**: automatyczne dopasowanie kolumn, także osoby kontaktowej (imię, email, telefon) przy leadach i szansach. Firmy i osoby są tworzone albo dopasowywane do istniejących.
-- **Cofnij**: usunięcie rekordu, odłączenie kontaktu, odrzucenie leada, dane demo i czyszczenie danych.
-- **Analityka** z wyborem okresu: **dzień, tydzień, miesiąc, kwartał, rok**. Strzałkami przechodzisz do poprzednich okresów, każdy wynik porównany jest z poprzednim okresem. W raporcie:
-  - wygrane względem celu okresu (cel miesięczny ×3 dla kwartału, ×12 dla roku, proporcjonalnie dla dnia i tygodnia) oraz tempo względem upływu okresu;
-  - nowe szanse, skuteczność i konwersja leadów w okresie;
-  - aktywność: telefony, emaile, spotkania, zamknięte zadania, nowe leady;
-  - wykres „Wygrane i prognoza” (wygrane w kolejnych okresach plus planowane zamknięcia) i pokrycie celu;
-  - zdrowie lejka, wyniki zespołu, jakość źródeł leadów i powody przegranych;
-  - **własny układ**: w trybie „Dostosuj układ” przeciągasz moduły, zmieniasz ich szerokość (⅓, ½, ⅔, całość), usuwasz je i dodajesz nowe (Lejek konwersji, Najbliższe zamknięcia, Leady według statusu). Siatka dopasowuje się do szerokości ekranu.
-- **Hermes AI** (⌘J): plan dnia, zagrożone szanse (także te z jedną osobą po stronie klienta), kolejność leadów (najpierw ICP, potem źródło), podsumowania rekordów, rada „konwertować czy nie”, szkice wiadomości i propozycje kroków. Bez klucza działa lokalnie. Z kluczem Claude API odpowiada na dowolne pytania.
-- **Wyszukiwarka** (⌘K albo `/`): szuka w nazwach, firmach, osobach, emailach, telefonach, domenach i historii. Wyniki są pogrupowane, z najlepszym dopasowaniem na górze, podświetleniem trafienia, zakresami (Tab) i nawigacją strzałkami. Bez wyników zaproponuje utworzenie leada, firmy albo kontaktu.
-- **Zespół**: profile handlowców (imię, email, rola, cel indywidualny). Handlowcy są opiekunami leadów i szans, mają filtry w lejku i na listach oraz wiersz w Analityce.
-- **Ustawienia**: profil, cel, zespół, etapy lejka, Hermes AI, kopia zapasowa, eksport CSV, dane demo i pola obiektów (zmiana nazw, własne pola).
+| Dokument | Dla kogo |
+| --- | --- |
+| [Przewodnik użytkownika](docs/przewodnik.md) | Jak pracować w Hermesie, ekran po ekranie |
+| [Architektura](docs/architektura.md) | Jak zbudowana jest aplikacja i jak dodać funkcję |
+| [Model danych](docs/model-danych.md) | Obiekty, pola, relacje, zapis i migracje |
+| [Import i eksport](docs/import-eksport.md) | Formaty CSV, kolumny, kopia zapasowa |
+| [Hermes AI](docs/hermes-ai.md) | Tryb lokalny, Claude API, bezpieczeństwo klucza |
+| [Hermes Voice](docs/hermes-voice.md) | Rozpoznawanie mowy i reguły parsera |
+| [Design system](docs/design-system.md) | Kolory, typografia, komponenty, zasady pisania |
+| [Testy](docs/testy.md) | Jak uruchomić i pisać testy |
+| [Roadmapa](docs/roadmapa.md) | Fazy, priorytety i metryki do wersji komercyjnej |
+| [Historia zmian](CHANGELOG.md) | Co zmieniło się w kolejnych wersjach |
 
 ## Skróty klawiszowe
 
@@ -86,28 +55,31 @@ Ikona mikrofonu przy przycisku dodawania (w górnym pasku i na listach) albo kla
 | `⌘K` / `Ctrl+K` / `/` | Wyszukiwarka |
 | `⌘J` / `Ctrl+J` | Ask Hermes AI |
 | `V` | Dodaj głosem |
-| `N` | Nowy rekord (lead na Pulpicie, szansa w Lejku) |
+| `N` | Nowy rekord (lead na Pulpicie, szansa w Lejku szans) |
 | `⌘↵` / `Ctrl+Enter` | Zapisz wpis w historii |
 | `Esc` | Zamknij okno lub panel; na karcie rekordu wróć do listy |
 
+## Struktura repozytorium
+
+```
+index.html          cała aplikacja: HTML, CSS i JavaScript
+docs/               dokumentacja i zrzuty ekranu (docs/img)
+tests/              testy w jsdom, uruchamiane przez npm test
+tools/              sprawdzenie składni i skrypt zrzutów ekranu
+.github/            CI (GitHub Actions) i szablony zgłoszeń
+```
+
 ## Technologia
 
-Całość to jeden plik `index.html` z HTML, CSS i czystym JavaScriptem, bez zależności. Dane trzymane są w `localStorage` przeglądarki (klucz `hermes-crm-v3`, z migracją z v2). Fonty Space Grotesk i DM Sans pochodzą z Google Fonts.
+Jeden plik HTML z czystym JavaScriptem, bez frameworka i bez zależności w przeglądarce. Dane w `localStorage`, fonty Space Grotesk i DM Sans z Google Fonts. Rozpoznawanie mowy przez Web Speech API przeglądarki. Testy w Node.js z jsdom, uruchamiane w GitHub Actions przy każdym pushu.
 
-Hermes AI w trybie z kluczem łączy się z API Anthropic bezpośrednio z przeglądarki. To rozwiązanie tylko na prototyp: w wersji produkcyjnej zapytania muszą iść przez serwer, a klucz nie może trafiać do przeglądarki.
+## Ograniczenia prototypu
 
-## Co dalej
+- Dane są tylko w tej przeglądarce. Przenosisz je kopią zapasową JSON.
+- Brak kont, serwera i synchronizacji między osobami.
+- Klucz Claude API jest trzymany w przeglądarce, co jest dopuszczalne tylko w prototypie.
+- Rozpoznawanie mowy zależy od przeglądarki; Firefox go nie obsługuje.
 
-Planowane:
+## Licencja
 
-- zadania i przypomnienia niezależne od kroków,
-- edytowalne etapy lejka,
-- zapisane widoki,
-- poranny email z planem dnia,
-- integracja z Gmailem i kalendarzem (automatyczne logowanie maili i spotkań),
-- formularz leadów na stronę,
-- aplikacja z bazą danych i kontami użytkowników.
-
-## Teksty
-
-Interfejs nie używa myślników ani półpauz. Krótkie spójniki i przyimki (np. „w”, „z”, „i”, „do”) są automatycznie sklejane twardą spacją z następnym słowem, liczby z jednostkami, a akapity łamią się bez wdów i sierot (`text-wrap: pretty`).
+Wszelkie prawa zastrzeżone. Kod jest publicznie widoczny w celach poglądowych; użycie komercyjne wymaga zgody autora.

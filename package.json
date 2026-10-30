@@ -1,0 +1,15 @@
+{
+  "name": "hermes-crm",
+  "version": "0.9.0",
+  "private": true,
+  "description": "Hermes CRM: prosty, AI-native CRM dla małych i średnich firm. Klikalny prototyp w jednym pliku HTML.",
+  "scripts": {
+    "test": "node tests/run.js",
+    "check": "node tools/check-syntax.js",
+    "start": "npx --yes serve -l 4173 ."
+  },
+  "engines": { "node": ">=18" },
+  "devDependencies": {
+    "jsdom": "^24.1.0"
+  }
+}
