@@ -182,7 +182,7 @@ tr.row:hover td:first-child{box-shadow:inset 3px 0 var(--lime)}
 .deal-card.lost{opacity:.6}
 .deal-card .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .deal-card h3{margin:14px 0 3px;font:600 15px var(--display);letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.deal-card p{margin:0;color:var(--mute);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.deal-card>p{margin:0;color:var(--mute);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .deal-card footer{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line2);font-size:13px}
 .deal-card footer b{font:600 16px var(--display);letter-spacing:-.02em}
 .deal-card footer span{color:var(--faint)}
@@ -370,7 +370,65 @@ textarea.fin{height:auto;padding:12px 13px;resize:vertical;font:13px ui-monospac
 
 .toast{position:fixed;z-index:90;left:50%;bottom:26px;display:flex;align-items:center;gap:10px;padding:10px 16px 10px 10px;border-radius:9px;background:#1B1E19;color:#fff;font-size:14px;box-shadow:0 14px 40px rgba(0,0,0,.22);opacity:0;transform:translate(-50%,15px);pointer-events:none;transition:.22s;max-width:calc(100% - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
-.toast span{width:24px;height:24px;display:grid;place-items:center;flex-shrink:0;border-radius:5px;background:var(--lime);color:var(--ink)}
+
+/* v2: next steps, history, settings */
+:root{--amber:#D5A445}
+.nostep{color:#9A6F14;font-weight:500}
+.clip{display:inline-block;max-width:240px;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
+.stale{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;background:#FBF3E2;color:#8A5E10;font-size:12px;font-weight:600}
+.deal-card>p.next,.next{display:flex;align-items:center;gap:6px;margin:12px 0 0;padding:8px 10px;border-radius:7px;background:#F4F6F1;color:var(--ink2)!important;font-size:13px!important;white-space:normal!important}
+.next span{flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+.deal-card>p.next{align-items:flex-start}.next svg,.next em{margin-top:1px}
+.next em{font-style:normal;color:var(--faint);font-size:12px;white-space:nowrap}
+.next svg{flex-shrink:0;color:var(--faint)}
+.next.today{background:#F2FBD4}.next.today em{color:var(--ok);font-weight:700}
+.next.late{background:#FDF0EC}.next.late em,.next.late svg{color:var(--late);font-weight:700}
+.next.none{background:#FBF3E2;color:#8A5E10!important}.next.none svg{color:#B98419}
+.task-check.plan{border-style:dashed;border-color:#B98419;color:#B98419}
+.task-check:not(.plan):hover{color:#8E9088}
+.nextbox{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 22px 20px;padding:16px 18px;border-radius:10px;background:#1B1E19;color:#fff}
+.nextbox .eyebrow{color:#9CA197}
+.nextbox b{display:block;margin-top:5px;font:600 17px var(--display);letter-spacing:-.02em}
+.nextbox small{display:block;margin-top:3px;color:var(--lime);font-size:13px;font-weight:600}
+.nextbox.late small{color:#FF9C88}
+.nextbox.empty-step b{color:#F5D27A}
+.nb-acts{display:flex;gap:6px;flex-shrink:0}
+.nextbox .ghost-button{background:transparent;color:#fff;border-color:#3A3D37}
+.nextbox .ghost-button:hover{background:#2B2E29;color:#fff}
+.nextbox .primary-button{background:var(--lime);color:var(--ink);border-color:var(--lime);box-shadow:none}
+.nextbox .primary-button:hover{background:#E4FF7A}
+.composer{display:flex;flex-direction:column;gap:10px}
+.composer textarea.fin{font:14px/1.5 'DM Sans',sans-serif}
+.composer-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.seg.sm{align-self:flex-start;flex-wrap:wrap}
+.seg.sm button{height:32px;padding:0 10px;font-size:12px;display:inline-flex;align-items:center;gap:6px}
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.timeline li{position:relative;display:flex;gap:12px;padding-bottom:16px}
+.timeline li:not(:last-child)::before{content:'';position:absolute;left:14px;top:32px;bottom:2px;width:1px;background:var(--line2)}
+.t-ic{width:29px;height:29px;display:grid;place-items:center;flex-shrink:0;border-radius:8px;background:var(--soft);color:#4D544B}
+.t-stage .t-ic{background:#1B1E19;color:var(--lime)}
+.t-task .t-ic{background:#EFF5E5;color:var(--ok)}
+.t-system .t-ic{background:#EDE6FF;color:#4F3F86}
+.timeline li>div{min-width:0;padding-top:4px}
+.timeline b{font-size:13px;font-weight:600;color:var(--ink2)}
+.timeline p{margin:3px 0;color:var(--text);font-size:14px;white-space:pre-wrap;word-break:break-word}
+.timeline small{color:var(--faint);font-size:12px}
+.date-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.date-row .fin{width:180px}
+.chip-btn{height:36px;display:inline-flex;align-items:center;padding:0 13px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--text);font-size:13px;font-weight:500;cursor:pointer}
+.chip-btn:hover{border-color:#1B1E19;color:var(--ink)}
+.chip-btn.radio:focus-within{outline:2px solid var(--ink);outline-offset:2px}
+.chip-btn.on{background:#1B1E19;border-color:#1B1E19;color:var(--lime)}
+.set-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;border-top:1px solid var(--line2)}
+.set-row:first-child{border-top:0}
+.set-row>div:first-child{flex:1 1 380px;min-width:0}
+.set-row h3{margin:0;font:600 16px var(--display);letter-spacing:-.02em}
+.set-row p{margin:5px 0 0;color:var(--mute);font-size:13px;max-width:560px}
+.set-row .acts{display:flex;gap:8px;flex-wrap:wrap}
+.toast .ok{width:24px;height:24px;display:grid;place-items:center;flex-shrink:0;border-radius:5px;background:var(--lime);color:var(--ink)}
+.toast button{margin-left:8px;padding:5px 10px;border:0;border-radius:6px;background:#2B2E29;color:var(--lime);font-size:13px;font-weight:600}
+.toast button:hover{background:#353931}
+.toast.has-act{pointer-events:auto}
 
 @media (max-width:1180px){
   .metrics,.kpis{grid-template-columns:repeat(2,1fr)}
@@ -406,30 +464,59 @@ textarea.fin{height:auto;padding:12px 13px;resize:vertical;font:13px ui-monospac
 /* ================= helpers ================= */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let _id = 100;
-const uid = p => p + (++_id);
+let _id = 0;
+const uid = p => p + Date.now().toString(36) + (++_id).toString(36);
 const norm = s => String(s ?? '').toLowerCase().replace(/ł/g, 'l').normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
-const today = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
+const pad = n => String(n).padStart(2, '0');
+const isoD = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const addDays = n => { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + n); return isoD(d); };
+const today = addDays(0);
+const thisMonth = today.slice(0, 7);
+const nowISO = () => { const d = new Date(); return `${isoD(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
 const grp = n => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 const money = n => grp(n) + ' zł';
 const kzl = n => n >= 1000 ? String(Math.round(n / 100) / 10).replace('.', ',') + ' tys.' : grp(n);
 const sum = list => list.reduce((a, d) => a + (Number(d.value) || 0), 0);
 const plural = (n, one, few, many) => n === 1 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? few : many;
 const pct = (a, b) => b ? Math.round(a / b * 100) : null;
-const TARGET = 100000; // monthly won-revenue target (demo)
+const dayDiff = v => Math.round((new Date(String(v).slice(0, 10) + 'T12:00:00') - new Date(today + 'T12:00:00')) / 864e5);
 function fdate(v) {
   if (!v) return '';
-  const d = new Date(v + 'T00:00:00');
+  const d = new Date(String(v).slice(0, 10) + 'T12:00:00');
   if (isNaN(d)) return v;
   const o = { day: 'numeric', month: 'short' };
   if (d.getFullYear() !== new Date().getFullYear()) o.year = 'numeric';
   return d.toLocaleDateString('pl-PL', o);
+}
+function rel(v) {
+  if (!v) return '';
+  const n = dayDiff(v);
+  if (n === 0) return 'dziś';
+  if (n === 1) return 'jutro';
+  if (n === -1) return 'wczoraj';
+  if (n > 1 && n < 7) return `za ${n} dni`;
+  if (n < -1 && n > -7) return `${-n} dni temu`;
+  return fdate(v);
+}
+function relTime(at) {
+  const n = dayDiff(at), t = String(at).slice(11, 16);
+  const base = n === 0 ? 'Dziś' : n === -1 ? 'Wczoraj' : fdate(at);
+  return t ? `${base}, ${t}` : base;
 }
 function normDate(v) {
   if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
   const m = v.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})$/);
   return m ? `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}` : '';
 }
+const monthName = (k = thisMonth) => new Date(k + '-01T12:00:00').toLocaleDateString('pl-PL', { month: 'long' });
+function download(name, content, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const csvq = v => /[",;\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
 
 /* ================= icons & logo ================= */
 const P = {
@@ -446,25 +533,30 @@ const P = {
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
-  more: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
   chevron: '<path d="m9 18 6-6-6-6"/>',
   close: '<path d="M6 6l12 12M18 6 6 18"/>',
   upload: '<path d="M12 15V3m-5 5 5-5 5 5"/><path d="M5 21h14"/>',
   download: '<path d="M12 3v12m-5-5 5 5 5-5"/><path d="M5 20h14"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/>',
-  trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'
+  trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  note: '<path d="M5 4h14v11l-5 5H5z"/><path d="M9 9h6M9 13h4"/>',
+  meet: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  flag: '<path d="M5 21V4h11l-2 4 2 4H5"/>'
 };
 const ic = (n, s = 18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
 const LOGO = `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><path fill="#D7FF3F" d="M3 21.5h7.2L24.8 7h-7.2L3 21.5Zm10.2 0h6.3L29 12h-6.3l-9.5 9.5ZM3 14.9h6.1L17 7h-6.1L3 14.9Z"/></svg>`;
 
-/* select options: [label, tone] — tone only colours a small dot */
 const TONE = { gray: '#AEB0A6', teal: '#709486', olive: '#A3B82C', amber: '#D5A445', green: '#89B840', red: '#DD644E', blue: '#7F95E8', violet: '#9A86E0' };
 const TYPES = { text: 'Tekst', number: 'Liczba', money: 'Kwota', date: 'Data', select: 'Lista wyboru', email: 'E-mail', phone: 'Telefon', relation: 'Powiązanie' };
 const CYCLE = ['teal', 'olive', 'amber', 'blue', 'violet', 'green', 'gray'];
+const ACT = { note: ['Notatka', 'note'], call: ['Telefon', 'phone'], email: ['E-mail', 'mail'], meeting: ['Spotkanie', 'meet'], task: ['Zrobione', 'tick'], stage: ['Zmiana etapu', 'arrow'], system: ['Hermes', 'spark'] };
+const ACT_PH = { note: 'Co warto zapamiętać?', call: 'Jak poszła rozmowa? Co ustaliliście?', email: 'Czego dotyczył mail?', meeting: 'Kto był, co ustaliliście?' };
 
 /* ================= objects ================= */
 const OBJS = ['company', 'contact', 'lead', 'deal'];
+const SLUG = { company: 'firmy', contact: 'kontakty', lead: 'leady', deal: 'szanse' };
+const LOST = [['Cena','amber'],['Wybrali konkurencję','red'],['Brak budżetu','gray'],['Cisza / brak decyzji','gray'],['Zły moment','blue'],['Inne','gray']];
 const SCHEMA = {
   company: { one: 'Firma', many: 'Firmy', gen: 'firmę', icon: 'building', av: '', dir: 'Katalog firm', sub: 'Konta, branże i potencjał sprzedażowy w jednym miejscu.', fields: [
     { key: 'name', label: 'Nazwa', type: 'text', req: 1, core: 1, quick: 1 },
@@ -472,7 +564,7 @@ const SCHEMA = {
     { key: 'industry', label: 'Branża', type: 'text', core: 1, quick: 1 },
     { key: 'city', label: 'Miasto', type: 'text', core: 1 },
     { key: 'employees', label: 'Pracownicy', type: 'number', core: 1 },
-    { key: 'nip', label: 'NIP', type: 'text', core: 1 }
+    { key: 'nip', label: 'NIP', type: 'text', core: 1, hideInTable: 1 }
   ]},
   contact: { one: 'Kontakt', many: 'Kontakty', gen: 'kontakt', icon: 'users', av: 'person', dir: 'Katalog osób', sub: 'Każdy klient, decydent i kolejna rozmowa w kontekście.', fields: [
     { key: 'name', label: 'Imię i nazwisko', type: 'text', req: 1, core: 1, quick: 1 },
@@ -492,76 +584,149 @@ const SCHEMA = {
   deal: { one: 'Szansa', many: 'Szanse', gen: 'szansę', icon: 'deal', av: '', dir: 'Wszystkie szanse', sub: 'Pełna lista szans sprzedaży — także zamkniętych.', fields: [
     { key: 'name', label: 'Nazwa', type: 'text', req: 1, core: 1, quick: 1 },
     { key: 'company', label: 'Firma', type: 'relation', to: 'company', core: 1, quick: 1 },
-    { key: 'contact', label: 'Kontakt', type: 'relation', to: 'contact', core: 1 },
+    { key: 'contact', label: 'Kontakt', type: 'relation', to: 'contact', core: 1, hideInTable: 1 },
     { key: 'value', label: 'Wartość', type: 'money', core: 1, quick: 1 },
     { key: 'stage', label: 'Etap', type: 'select', core: 1, quick: 1, options: [['Nowe','gray'],['Kontakt','teal'],['Oferta','olive'],['Negocjacje','amber'],['Wygrana','green'],['Przegrana','red']] },
-    { key: 'close', label: 'Zamknięcie', type: 'date', core: 1 },
-    { key: 'owner', label: 'Opiekun', type: 'select', core: 1, options: [['Kamil K.','blue'],['Monika N.','violet']] }
+    { key: 'nextStep', label: 'Następny krok', type: 'text', core: 1, quick: 1, inBox: 1 },
+    { key: 'nextDate', label: 'Termin kroku', type: 'date', core: 1, quick: 1, inBox: 1 },
+    { key: 'close', label: 'Planowane zamknięcie', type: 'date', core: 1, hideInTable: 1 },
+    { key: 'owner', label: 'Opiekun', type: 'select', core: 1, hideInTable: 1, options: [['Kamil K.','blue'],['Monika N.','violet']] },
+    { key: 'lostReason', label: 'Powód przegranej', type: 'select', core: 1, hideInTable: 1, onlyLost: 1, options: LOST }
   ]}
 };
 const ALIAS = {
   name: ['nazwa','name','imie i nazwisko','full name','osoba'], email: ['e-mail','email','mail'], phone: ['telefon','tel','phone','nr telefonu'],
   company: ['firma','company','organizacja'], companyName: ['firma','company','organizacja'], value: ['wartosc','kwota','value','amount'],
-  stage: ['etap','stage'], close: ['zamkniecie','data zamkniecia','close date'], owner: ['opiekun','owner','handlowiec'],
+  stage: ['etap','stage'], close: ['zamkniecie','data zamkniecia','close date','planowane zamkniecie'], owner: ['opiekun','owner','handlowiec'],
   domain: ['domena','www','strona','website'], industry: ['branza','industry'], city: ['miasto','city'], role: ['stanowisko','rola','title'],
-  source: ['zrodlo','source'], status: ['status'], employees: ['pracownicy','liczba pracownikow','employees']
+  source: ['zrodlo','source'], status: ['status'], employees: ['pracownicy','liczba pracownikow','employees'],
+  nextStep: ['nastepny krok','next step'], nextDate: ['termin kroku','termin','next step date'], lostReason: ['powod przegranej','powod']
 };
 const field = (obj, key) => SCHEMA[obj].fields.find(f => f.key === key);
 const find = (obj, id) => db[obj].find(r => r.id === id);
 const nameOf = (obj, id) => (find(obj, id) || {}).name;
 const CLOSED = ['Wygrana', 'Przegrana'];
+const isOpen = d => !CLOSED.includes(d.stage);
+const dealLabel = d => nameOf('company', d.company) || d.name;
 
 /* ================= demo data ================= */
-const db = {
-  company: [
-    ['c1','Meble Dębowe','meble-debowe.pl','Meble','Warszawa',24],
-    ['c2','Hurtownia Bartex','bartex.pl','Hurt','Łódź',60],
-    ['c3','Drukarnia Ponton','ponton.com.pl','Poligrafia','Poznań',35],
-    ['c4','Kancelaria Lex','kancelaria-lex.pl','Prawo','Warszawa',8],
-    ['c5','Optyk Nowak','optyknowak.pl','Handel','Kraków',5],
-    ['c6','Szprycha','szprycha.pl','Rowery','Gdańsk',12],
-    ['c7','Klinika Vet-Med','vetmed.pl','Weterynaria','Wrocław',18],
-    ['c8','Auto-Serwis Mazur','automazur.pl','Motoryzacja','Lublin',9],
-    ['c9','Piekarnia Złoty Kłos','zlotyklos.pl','Gastronomia','Kraków',30],
-    ['c10','Studio Forma','studioforma.pl','Design','Warszawa',4]
-  ].map(([id,name,domain,industry,city,employees]) => ({ id, name, domain, industry, city, employees, nip: '', created: '2026-06-01' })),
-  contact: [
-    ['p1','Jan Dąb','jan@meble-debowe.pl','602 114 870','c1','Właściciel'],
-    ['p2','Piotr Bartos','p.bartos@bartex.pl','511 908 233','c2','Kierownik zakupów'],
-    ['p3','Kamil Żak','kamil@ponton.com.pl','698 220 415','c3','Dyrektor'],
-    ['p4','Marta Lis','m.lis@kancelaria-lex.pl','604 377 120','c4','Partnerka'],
-    ['p5','Ewa Nowak','ewa@optyknowak.pl','533 641 002','c5','Właścicielka'],
-    ['p6','Bartek Sowa','bartek@szprycha.pl','722 019 556','c6','Współwłaściciel'],
-    ['p7','Iza Rak','recepcja@vetmed.pl','691 555 384','c7','Kierowniczka'],
-    ['p8','Tomasz Mazur','serwis@automazur.pl','605 811 947','c8','Właściciel'],
-    ['p9','Anna Wróbel','anna@zlotyklos.pl','508 302 761','c9','Menedżerka'],
-    ['p10','Ola Kępa','hello@studioforma.pl','517 440 698','c10','Projektantka']
-  ].map(([id,name,email,phone,company,role]) => ({ id, name, email, phone, company, role, created: '2026-07-05' })),
-  lead: [
-    ['l1','Agata Kwiatkowska','Kwiaciarnia Bukiet','agata@bukiet.pl','501 222 333','Strona www','Nowy'],
-    ['l2','Robert Glinka','Pracownia Ceramiki Glina','robert@glina.art','600 111 909','Targi','W kontakcie'],
-    ['l3','Halina Saldo','Biuro Rachunkowe Saldo','kontakt@saldo-biuro.pl','512 404 808','Polecenie','Nowy'],
-    ['l4','Marek Lipa','Hotel Pod Lipami','recepcja@podlipami.pl','698 707 101','Cold mailing','Odrzucony'],
-    ['l5','Zofia Wilk','Gabinet Fizjo Ruch','zofia@fizjoruch.pl','533 909 120','Polecenie','Zakwalifikowany']
-  ].map(([id,name,companyName,email,phone,source,status]) => ({ id, name, companyName, email, phone, source, status, created: '2026-10-27' })),
-  deal: [
-    ['d1','Wyposażenie salonu','c1','p1',54000,'Oferta','2026-11-15','Kamil K.','2026-09-12'],
-    ['d2','Dostawa opakowań','c2','p2',36000,'Kontakt','2026-11-20','Kamil K.','2026-10-02'],
-    ['d3','Druk katalogów 2027','c3','p3',61000,'Negocjacje','2026-11-09','Monika N.','2026-08-20'],
-    ['d4','Obsługa IT kancelarii','c4','p4',22500,'Oferta','2026-11-27','Kamil K.','2026-09-30'],
-    ['d5','Witryna i ekspozycja','c5','p5',7800,'Kontakt','2026-10-29','Monika N.','2026-10-08'],
-    ['d6','Wdrożenie sklepu online','c6','p6',29000,'Wygrana','2026-10-24','Kamil K.','2026-07-15'],
-    ['d7','System rezerwacji','c7','p7',18400,'Negocjacje','2026-11-10','Kamil K.','2026-08-28'],
-    ['d8','Strona www serwisu','c8','p8',12000,'Nowe','2026-12-05','Monika N.','2026-10-21'],
-    ['d9','Kasy fiskalne x3','c9','p9',8500,'Nowe','2026-12-01','Kamil K.','2026-10-25'],
-    ['d10','Identyfikacja wizualna','c10','p10',4200,'Nowe','2026-10-20','Kamil K.','2026-10-01'],
-    ['d11','Rozbudowa magazynu','c2','p2',13000,'Przegrana','2026-10-15','Monika N.','2026-06-10'],
-    ['d12','Meble biurowe','c4','p4',11500,'Wygrana','2026-10-09','Monika N.','2026-08-01']
-  ].map(([id,name,company,contact,value,stage,close,owner,created]) => ({ id, name, company, contact, value, stage, close, owner, created }))
-};
+function demoData() {
+  const D = addDays;
+  const at = (n, t) => `${D(n)}T${t}`;
+  return {
+    company: [
+      ['c1','Meble Dębowe','meble-debowe.pl','Meble','Warszawa',24],
+      ['c2','Hurtownia Bartex','bartex.pl','Hurt','Łódź',60],
+      ['c3','Drukarnia Ponton','ponton.com.pl','Poligrafia','Poznań',35],
+      ['c4','Kancelaria Lex','kancelaria-lex.pl','Prawo','Warszawa',8],
+      ['c5','Optyk Nowak','optyknowak.pl','Handel','Kraków',5],
+      ['c6','Szprycha','szprycha.pl','Rowery','Gdańsk',12],
+      ['c7','Klinika Vet-Med','vetmed.pl','Weterynaria','Wrocław',18],
+      ['c8','Auto-Serwis Mazur','automazur.pl','Motoryzacja','Lublin',9],
+      ['c9','Piekarnia Złoty Kłos','zlotyklos.pl','Gastronomia','Kraków',30],
+      ['c10','Studio Forma','studioforma.pl','Design','Warszawa',4]
+    ].map(([id,name,domain,industry,city,employees]) => ({ id, name, domain, industry, city, employees, nip: '', created: D(-120) })),
+    contact: [
+      ['p1','Jan Dąb','jan@meble-debowe.pl','602 114 870','c1','Właściciel'],
+      ['p2','Piotr Bartos','p.bartos@bartex.pl','511 908 233','c2','Kierownik zakupów'],
+      ['p3','Kamil Żak','kamil@ponton.com.pl','698 220 415','c3','Dyrektor'],
+      ['p4','Marta Lis','m.lis@kancelaria-lex.pl','604 377 120','c4','Partnerka'],
+      ['p5','Ewa Nowak','ewa@optyknowak.pl','533 641 002','c5','Właścicielka'],
+      ['p6','Bartek Sowa','bartek@szprycha.pl','722 019 556','c6','Współwłaściciel'],
+      ['p7','Iza Rak','recepcja@vetmed.pl','691 555 384','c7','Kierowniczka'],
+      ['p8','Tomasz Mazur','serwis@automazur.pl','605 811 947','c8','Właściciel'],
+      ['p9','Anna Wróbel','anna@zlotyklos.pl','508 302 761','c9','Menedżerka'],
+      ['p10','Ola Kępa','hello@studioforma.pl','517 440 698','c10','Projektantka']
+    ].map(([id,name,email,phone,company,role]) => ({ id, name, email, phone, company, role, created: D(-90) })),
+    lead: [
+      ['l1','Agata Kwiatkowska','Kwiaciarnia Bukiet','agata@bukiet.pl','501 222 333','Strona www','Nowy',-1],
+      ['l2','Robert Glinka','Pracownia Ceramiki Glina','robert@glina.art','600 111 909','Targi','W kontakcie',-6],
+      ['l3','Halina Saldo','Biuro Rachunkowe Saldo','kontakt@saldo-biuro.pl','512 404 808','Polecenie','Nowy',-2],
+      ['l4','Marek Lipa','Hotel Pod Lipami','recepcja@podlipami.pl','698 707 101','Cold mailing','Odrzucony',-20],
+      ['l5','Zofia Wilk','Gabinet Fizjo Ruch','zofia@fizjoruch.pl','533 909 120','Polecenie','Zakwalifikowany',-12]
+    ].map(([id,name,companyName,email,phone,source,status,c]) => ({ id, name, companyName, email, phone, source, status, created: D(c) })),
+    deal: [
+      // id, name, company, contact, value, stage, close, owner, daysInStage, nextStep, nextIn, closedAgo, lostReason
+      ['d1','Wyposażenie salonu','c1','p1',54000,'Oferta',16,'Kamil K.',8,'Follow-up po ofercie',0],
+      ['d2','Dostawa opakowań','c2','p2',36000,'Kontakt',21,'Kamil K.',12,'Wysłać cennik hurtowy',2],
+      ['d3','Druk katalogów 2027','c3','p3',61000,'Negocjacje',10,'Monika N.',20,'Potwierdzić rabat z zarządem',1],
+      ['d4','Obsługa IT kancelarii','c4','p4',22500,'Oferta',28,'Kamil K.',6,'Demo dla wspólników',5],
+      ['d5','Witryna i ekspozycja','c5','p5',7800,'Kontakt',5,'Monika N.',22,'Oddzwonić w sprawie wyceny',-3],
+      ['d6','Wdrożenie sklepu online','c6','p6',29000,'Wygrana',-6,'Kamil K.',6,'',null,6],
+      ['d7','System rezerwacji','c7','p7',18400,'Negocjacje',11,'Kamil K.',15,'Wysłać umowę do akceptacji',4],
+      ['d8','Strona www serwisu','c8','p8',12000,'Nowe',36,'Monika N.',9,'',null],
+      ['d9','Kasy fiskalne x3','c9','p9',8500,'Nowe',32,'Kamil K.',5,'Umówić rozmowę wstępną',7],
+      ['d10','Identyfikacja wizualna','c10','p10',4200,'Nowe',12,'Kamil K.',29,'Przypomnieć się mailem',-9],
+      ['d11','Rozbudowa magazynu','c2','p2',13000,'Przegrana',-15,'Monika N.',15,'',null,15,'Cena'],
+      ['d12','Meble biurowe','c4','p4',11500,'Wygrana',-21,'Monika N.',21,'',null,21],
+      ['d13','Strona dla piekarni','c9','p9',15000,'Wygrana',-45,'Kamil K.',45,'',null,45]
+    ].map(([id,name,company,contact,value,stage,close,owner,inStage,nextStep,nextIn,closedAgo,lostReason]) => ({
+      id, name, company, contact, value, stage, close: D(close), owner, stageAt: D(-inStage), created: D(-inStage - 14),
+      nextStep, nextDate: nextIn === null || nextIn === undefined ? '' : D(nextIn), closedAt: closedAgo ? D(-closedAgo) : '', lostReason: lostReason || ''
+    })),
+    activity: [
+      ['deal','d1','email','Wysłano ofertę na 12 zestawów + montaż. Termin realizacji 3 tygodnie.',-4,'11:20'],
+      ['deal','d1','stage','Kontakt → Oferta',-8,'15:10'],
+      ['deal','d1','meeting','Spotkanie w showroomie — klient chce dąb naturalny, decyzja razem ze wspólnikiem.',-8,'14:00'],
+      ['deal','d2','call','Rozmowa o wolumenach. Prosi o cennik hurtowy.',-2,'10:05'],
+      ['deal','d3','call','Negocjacje rabatu 5% przy płatności z góry.',-3,'16:30'],
+      ['deal','d5','email','Przypomnienie o wycenie — brak odpowiedzi.',-15,'09:15'],
+      ['deal','d7','meeting','Prezentacja systemu dla recepcji, pozytywny odbiór.',-7,'12:00'],
+      ['deal','d6','stage','Negocjacje → Wygrana',-6,'17:45'],
+      ['deal','d10','note','Klient prosił o kontakt po urlopie.',-25,'08:40'],
+      ['lead','l2','call','Zainteresowany, oddzwonić po targach.',-2,'13:20'],
+      ['contact','p4','email','Podziękowanie za współpracę przy meblach biurowych.',-18,'10:00']
+    ].map(([obj, rid, type, text, n, t], i) => ({ id: 'a' + i, obj, rid, type, text, at: at(n, t) }))
+  };
+}
+const db = demoData();
+const settings = { target: 100000 };
+
+/* ================= persistence ================= */
+const KEY = 'hermes-crm-v1';
+function snapshot() {
+  return {
+    app: 'hermes-crm', v: 1, savedAt: nowISO(), db, settings,
+    labels: Object.fromEntries(OBJS.map(o => [o, Object.fromEntries(SCHEMA[o].fields.map(f => [f.key, f.label]))])),
+    custom: Object.fromEntries(OBJS.map(o => [o, SCHEMA[o].fields.filter(f => !f.core)]))
+  };
+}
+let saveOk = true;
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(snapshot())); saveOk = true; } catch (e) { saveOk = false; }
+}
+function applyState(s) {
+  if (!s || typeof s !== 'object' || !s.db) return false;
+  for (const o of [...OBJS, 'activity']) db[o] = Array.isArray(s.db[o]) ? s.db[o] : [];
+  Object.assign(settings, s.settings || {});
+  for (const o of OBJS) {
+    const custom = ((s.custom && s.custom[o]) || []).filter(f => f && f.key && f.label && TYPES[f.type]);
+    SCHEMA[o].fields = SCHEMA[o].fields.filter(f => f.core).concat(custom);
+    const lab = (s.labels && s.labels[o]) || {};
+    SCHEMA[o].fields.forEach(f => { if (lab[f.key]) f.label = lab[f.key]; });
+  }
+  return true;
+}
+function load() {
+  try { return applyState(JSON.parse(localStorage.getItem(KEY) || 'null')); } catch (e) { return false; }
+}
+
+/* ================= activity ================= */
+function logAct(obj, rid, type, text) { db.activity.unshift({ id: uid('a'), obj, rid, type, text, at: nowISO() }); }
+function linkedIds(obj, r) {
+  const ids = [[obj, r.id]];
+  if (obj === 'company') {
+    db.contact.filter(c => c.company === r.id).forEach(c => ids.push(['contact', c.id]));
+    db.deal.filter(d => d.company === r.id).forEach(d => ids.push(['deal', d.id]));
+  }
+  if (obj === 'contact') db.deal.filter(d => d.contact === r.id).forEach(d => ids.push(['deal', d.id]));
+  return ids;
+}
+const actsOf = (obj, r) => { const ids = linkedIds(obj, r); return db.activity.filter(a => ids.some(([o, i]) => a.obj === o && a.rid === i)).sort((a, b) => b.at.localeCompare(a.at)); };
+const lastTouch = (obj, r) => { const a = actsOf(obj, r).find(a => a.type !== 'stage' && a.type !== 'system'); return a ? a.at : ''; };
 
 /* ================= state ================= */
-const state = { page: 'overview', obj: 'company', q: '', settingsObj: 'company', aOwner: '', showLost: false, done: new Set() };
+const state = { page: 'overview', obj: 'company', q: '', settingsObj: 'general', aOwner: '', showLost: false, atype: 'note', allActs: false };
 let openRec = null, imp = null;
 const main = $('#main');
 
@@ -581,25 +746,26 @@ function tag(f, v) {
   const o = (f.options || []).find(o => o[0] === v);
   return `<span class="tag"><i class="dot" style="background:${TONE[o ? o[1] : 'gray']}"></i>${esc(v)}</span>`;
 }
-const dateCell = (v, closed) => {
+function dateCell(v, closed) {
   if (!v) return '<span class="mute">—</span>';
-  if (!closed && v < today) return `<span class="late-date"><i class="dot" style="background:var(--lateDot)"></i>${esc(fdate(v))}</span>`;
-  if (!closed && v === today) return `<span class="today-date"><i class="dot" style="background:#89B840"></i>Dziś</span>`;
-  return `<span class="mute">${esc(fdate(v))}</span>`;
-};
+  const n = dayDiff(v);
+  if (!closed && n < 0) return `<span class="late-date"><i class="dot" style="background:var(--lateDot)"></i>${esc(rel(v))}</span>`;
+  if (!closed && n === 0) return `<span class="today-date"><i class="dot" style="background:#89B840"></i>Dziś</span>`;
+  return `<span class="mute">${esc(closed ? fdate(v) : rel(v))}</span>`;
+}
 function cell(f, r) {
   const v = r[f.key];
-  if (f.type === 'date') return dateCell(v, CLOSED.includes(r.stage));
-  if (v === undefined || v === null || v === '') return '<span class="mute">—</span>';
+  if (f.type === 'date') return dateCell(v, f.key === 'close' ? CLOSED.includes(r.stage) : (r.stage ? !isOpen(r) : false));
+  if (v === undefined || v === null || v === '') return f.key === 'nextStep' && r.stage && isOpen(r) ? '<span class="nostep">Brak — ustal</span>' : '<span class="mute">—</span>';
   switch (f.type) {
     case 'money': return `<span class="val">${money(v)}</span>`;
     case 'select': return tag(f, v);
     case 'relation': { const n = nameOf(f.to, v); return n ? `<span class="chip">${avatar(n, f.to, 26)}${esc(n)}</span>` : '<span class="mute">—</span>'; }
     case 'email': return `<span class="mute">${esc(v)}</span>`;
-    default: return esc(v);
+    default: return `<span class="clip">${esc(v)}</span>`;
   }
 }
-function control(f, v, mode) {
+function control(f, v, mode, obj) {
   const id = (mode === 'edit' ? 'e-' : 'n-') + f.key;
   const a = mode === 'edit' ? `class="in" id="${id}" data-edit="${f.key}"` : `class="fin" id="${id}" name="${f.key}"`;
   v = v ?? '';
@@ -607,7 +773,12 @@ function control(f, v, mode) {
   if (f.type === 'relation') return `<select ${a}><option value="">—</option>${db[f.to].map(r => `<option value="${r.id}"${r.id === v ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select>`;
   const type = { email: 'email', phone: 'tel', date: 'date' }[f.type] || 'text';
   const im = (f.type === 'money' || f.type === 'number') ? ' inputmode="decimal"' : '';
-  const ph = mode === 'form' ? ({ money: '0 zł', email: 'nazwa@firma.pl', phone: '600 000 000', number: '0', text: f.key === 'name' ? 'np. ' + ({ company: 'Meble Dębowe', contact: 'Jan Kowalski', lead: 'Anna Nowak', deal: 'Wdrożenie sklepu' }[f._obj] || '') : '' }[f.type] || '') : '';
+  let ph = '';
+  if (mode === 'form') {
+    ph = { money: '0 zł', email: 'nazwa@firma.pl', phone: '600 000 000', number: '0' }[f.type] || '';
+    if (f.key === 'name') ph = 'np. ' + ({ company: 'Meble Dębowe', contact: 'Jan Kowalski', lead: 'Anna Nowak', deal: 'Wdrożenie sklepu' }[obj] || '');
+    if (f.key === 'nextStep') ph = 'np. Zadzwonić po decyzję';
+  }
   return `<input type="${type}" ${a}${im} value="${esc(v)}"${ph ? ` placeholder="${esc(ph)}"` : ''} autocomplete="off">`;
 }
 function parseVal(f, raw) {
@@ -623,6 +794,8 @@ const subtitle = (obj, r) => ({
   lead: [r.companyName, r.source].filter(Boolean).join(' · '),
   deal: [nameOf('company', r.company), r.stage].filter(Boolean).join(' · ')
 }[obj] || '');
+const wonIn = (deals, month = thisMonth) => deals.filter(d => d.stage === 'Wygrana' && (d.closedAt || '').slice(0, 7) === month);
+const daysIn = d => Math.max(0, -dayDiff(d.stageAt || d.created || today));
 
 /* ================= shell ================= */
 const NAV = [
@@ -631,12 +804,13 @@ const NAV = [
   ['label', 'Wgląd'], ['analytics', 'Analityka', 'chart'], ['settings', 'Ustawienia', 'sliders']
 ];
 function renderSide() {
-  const won = sum(db.deal.filter(d => d.stage === 'Wygrana'));
-  const openN = db.deal.filter(d => !CLOSED.includes(d.stage)).length;
+  const won = sum(wonIn(db.deal));
+  const att = pct(won, settings.target) || 0;
+  const openN = db.deal.filter(isOpen).length;
   let labelN = 0;
   $('#side').innerHTML = `
     <button class="brand" data-act="go" data-page="overview">${LOGO}<span>Hermes</span></button>
-    <div class="workspace"><span class="workspace-avatar">MF</span><span><b>Moja firma</b><small>Przestrzeń robocza</small></span></div>
+    <div class="workspace"><span class="workspace-avatar">MF</span><span><b>Moja firma</b><small>${saveOk ? 'Zapis lokalny · włączony' : 'Zapis niedostępny'}</small></span></div>
     <nav class="nav" aria-label="Nawigacja">${NAV.map(n => {
       if (n[0] === 'label') return `<span class="nav-label${labelN++ ? ' second' : ''}">${n[1]}</span>`;
       if (n[0].startsWith('list:')) {
@@ -647,17 +821,17 @@ function renderSide() {
       return `<a href="#" data-act="go" data-page="${n[0]}"${on ? ' class="on" aria-current="page"' : ''}>${ic(n[2])}<span>${n[1]}</span>${n[0] === 'pipeline' ? `<em>${openN}</em>` : ''}</a>`;
     }).join('')}</nav>
     <div class="side-bottom">
-      <div class="target"><span><b>Cel miesiąca</b><small>${kzl(won)} z ${kzl(TARGET)}</small></span><b>${pct(won, TARGET)}%</b></div>
-      <div class="progress"><i style="width:${Math.min(100, pct(won, TARGET))}%"></i></div>
-      <div class="profile"><span class="profile-avatar">KK</span><span><b>Kamil K.</b><small>Handlowiec · właściciel konta</small></span></div>
+      <div class="target"><span><b>Cel: ${esc(monthName())}</b><small>${kzl(won)} z ${kzl(settings.target)}</small></span><b>${att}%</b></div>
+      <div class="progress"><i style="width:${Math.min(100, att)}%"></i></div>
+      <div class="profile"><span class="profile-avatar">KK</span><span><b>Kamil K.</b><small>Właściciel konta</small></span></div>
     </div>`;
 }
-function addLabel() {
-  if (state.page === 'list') return ['add', state.obj, 'Nowa ' + ({ company: 'firma', contact: 'osoba', lead: 'lead', deal: 'szansa' }[state.obj])].map((x, i) => i === 2 && state.obj === 'lead' ? 'Nowy lead' : i === 2 && state.obj === 'contact' ? 'Nowy kontakt' : x);
-  return ['add', 'deal', 'Nowa szansa'];
+function addTarget() {
+  if (state.page === 'list') return [state.obj, { company: 'Nowa firma', contact: 'Nowy kontakt', lead: 'Nowy lead', deal: 'Nowa szansa' }[state.obj]];
+  return ['deal', 'Nowa szansa'];
 }
 function renderTop() {
-  const [, obj, label] = addLabel();
+  const [obj, label] = addTarget();
   $('#topbar').innerHTML = `
     <button class="search" data-act="cmdk">${ic('search', 18)}<span>Szukaj firm, kontaktów, leadów, szans…</span><kbd>⌘ K</kbd></button>
     <div class="top-actions">
@@ -676,69 +850,68 @@ const dayLabel = () => { const s = new Date().toLocaleDateString('pl-PL', { week
 
 /* ================= overview ================= */
 function sparkPath(vals) {
-  const max = Math.max(1, ...vals), min = Math.min(...vals), n = vals.length - 1;
-  const pts = vals.map((v, i) => [i / n * 400, 62 - (v - min) / Math.max(1, max - min) * 52]);
+  const max = Math.max(1, ...vals), n = vals.length - 1;
+  const pts = vals.map((v, i) => [i / n * 400, 64 - v / max * 54]);
   return pts.map((p, i) => {
     if (!i) return `M${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
     const q = pts[i - 1], cx = (q[0] + p[0]) / 2;
     return `C${cx.toFixed(1)} ${q[1].toFixed(1)} ${cx.toFixed(1)} ${p[1].toFixed(1)} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
   }).join(' ');
 }
-function trend6(deals) {
+function wonByMonth(deals, n = 6) {
   const out = [];
-  for (let i = 5; i >= 0; i--) {
+  for (let i = n - 1; i >= 0; i--) {
     const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - i);
-    const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    out.push({ k, v: sum(deals.filter(x => (x.created || '').slice(0, 7) <= k && x.stage !== 'Przegrana')) });
+    const k = `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
+    out.push({ k, v: sum(wonIn(deals, k)) });
   }
   return out;
 }
 function todayItems() {
   const items = [];
-  db.deal.filter(d => !CLOSED.includes(d.stage) && d.close && d.close <= today).sort((a, b) => a.close.localeCompare(b.close)).forEach(d => {
-    const late = d.close < today;
-    items.push({ id: 'd-' + d.id, obj: 'deal', rid: d.id, hot: late, title: `Odezwij się: ${nameOf('company', d.company) || d.name}`, meta: late ? `Po terminie · ${fdate(d.close)} · ${money(d.value)}` : `Dziś · ${money(d.value)}` });
+  const open = db.deal.filter(isOpen);
+  open.filter(d => d.nextDate && d.nextDate <= today).sort((a, b) => a.nextDate.localeCompare(b.nextDate)).forEach(d => {
+    const late = d.nextDate < today;
+    items.push({ kind: 'step', obj: 'deal', id: d.id, hot: late, title: d.nextStep || 'Następny krok', meta: `${dealLabel(d)} · ${late ? 'po terminie, ' + rel(d.nextDate) : 'dziś'}` });
   });
-  db.lead.filter(l => l.status === 'Nowy').forEach(l => items.push({ id: 'l-' + l.id, obj: 'lead', rid: l.id, hot: false, title: `Zakwalifikuj lead: ${l.name}`, meta: `Nowy lead · ${l.source || 'bez źródła'}` }));
+  open.filter(d => !d.nextStep && !d.nextDate).forEach(d => items.push({ kind: 'nostep', obj: 'deal', id: d.id, hot: false, title: 'Ustal następny krok', meta: `${dealLabel(d)} · ${money(d.value)}` }));
+  db.lead.filter(l => l.status === 'Nowy').forEach(l => items.push({ kind: 'lead', obj: 'lead', id: l.id, hot: false, title: `Pierwszy kontakt: ${l.name}`, meta: `Nowy lead · ${l.companyName || l.source || 'bez źródła'}` }));
   return items;
 }
 function renderOverview() {
-  const deals = db.deal, open = deals.filter(d => !CLOSED.includes(d.stage));
+  const deals = db.deal, open = deals.filter(isOpen);
   const won = deals.filter(d => d.stage === 'Wygrana'), lost = deals.filter(d => d.stage === 'Przegrana');
-  const tr = trend6(deals), first = tr[0].v || 1, growth = Math.round((tr[5].v - tr[4].v) / Math.max(1, tr[4].v) * 100);
+  const monthWon = sum(wonIn(deals)), att = pct(monthWon, settings.target) || 0;
+  const series = wonByMonth(deals);
   const items = todayItems(), lateN = items.filter(i => i.hot).length;
-  const neg = open.filter(d => d.stage === 'Negocjacje').length;
+  const noStep = open.filter(d => !d.nextStep).length;
   const wr = pct(won.length, won.length + lost.length);
   const top = [...open].sort((a, b) => (b.value || 0) - (a.value || 0)).slice(0, 5);
   const h = new Date().getHours();
-  main.innerHTML = heading({ eyebrow: dayLabel(), live: true, title: `${h < 18 ? 'Dzień dobry' : 'Dobry wieczór'}, `, accent: 'Kamil.', sub: 'Oto, co dzieje się dziś w Twojej sprzedaży.' }) + `
+  main.innerHTML = heading({ eyebrow: dayLabel(), live: true, title: `${h < 18 ? 'Dzień dobry' : 'Dobry wieczór'}, `, accent: 'Kamil.', sub: items.length ? `Masz ${items.length} ${plural(items.length, 'rzecz', 'rzeczy', 'rzeczy')} do zrobienia dziś${lateN ? `, w tym ${lateN} po terminie` : ''}.` : 'Wszystko na bieżąco — dobra robota.' }) + `
     <section class="metrics" aria-label="Kluczowe wskaźniki">
       <article class="metric featured">
-        <div class="metric-label"><span>Wartość lejka</span><span class="trend">${growth >= 0 ? '+' : ''}${growth}% m/m</span></div>
+        <div class="metric-label"><span>Wartość lejka</span><span class="trend">${att}% celu</span></div>
         <strong>${money(sum(open))}</strong>
-        <div class="sparkline" aria-hidden="true"><svg viewBox="0 0 400 70" preserveAspectRatio="none"><path d="${sparkPath(tr.map(t => t.v))}"/></svg></div>
-        <p>Wygrane: <b>${money(sum(won))}</b></p>
+        <div class="sparkline" role="img" aria-label="Wygrane w ostatnich 6 miesiącach"><svg viewBox="0 0 400 70" preserveAspectRatio="none" aria-hidden="true"><path d="${sparkPath(series.map(t => t.v))}"/></svg></div>
+        <p>Wygrane w tym miesiącu: <b>${money(monthWon)}</b></p>
       </article>
-      <article class="metric"><div class="metric-label"><span>Otwarte szanse</span><span class="metric-icon">${ic('pipeline', 17)}</span></div><strong>${open.length}</strong><p><b>${neg}</b> w negocjacjach</p></article>
+      <article class="metric"><div class="metric-label"><span>Otwarte szanse</span><span class="metric-icon">${ic('pipeline', 17)}</span></div><strong>${open.length}</strong><p>${noStep ? `<i class="dot" style="background:var(--amber)"></i><b>${noStep}</b> bez następnego kroku` : 'Każda ma następny krok'}</p></article>
       <article class="metric"><div class="metric-label"><span>Skuteczność</span><span class="metric-icon">${ic('chart', 17)}</span></div><strong>${wr === null ? '—' : wr + '%'}</strong><p><b>${won.length}</b> wygrane z ${won.length + lost.length} zamkniętych</p></article>
-      <article class="metric"><div class="metric-label"><span>Na dziś</span><span class="metric-icon">${ic('check', 17)}</span></div><strong>${items.length}</strong><p>${lateN ? `<i class="dot" style="background:var(--lateDot)"></i>${lateN} po terminie` : 'Wszystko na bieżąco'}</p></article>
+      <article class="metric"><div class="metric-label"><span>Na dziś</span><span class="metric-icon">${ic('check', 17)}</span></div><strong>${items.length}</strong><p>${lateN ? `<i class="dot" style="background:var(--lateDot)"></i>${lateN} po terminie` : 'Nic nie zalega'}</p></article>
     </section>
     <div class="dash-grid">
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Priorytetowe szanse</h2><p>Największe otwarte szanse w lejku</p></div><button class="text-button" data-act="go" data-page="pipeline">Zobacz lejek ${ic('arrow', 15)}</button></div>
-        ${top.length ? `<div class="tablewrap"><table><thead><tr><th scope="col">Firma</th><th scope="col">Etap</th><th scope="col">Wartość</th><th scope="col">Zamknięcie</th></tr></thead>
-        <tbody>${top.map(d => { const cn = nameOf('company', d.company) || d.name; return `<tr class="row" data-act="open" data-obj="deal" data-id="${d.id}">
-          <td><button class="identity" data-act="open" data-obj="deal" data-id="${d.id}">${avatar(cn, 'company', 36)}<span class="t"><b>${esc(cn)}</b><small>${esc(d.name)}</small></span></button></td>
-          <td>${tag(field('deal', 'stage'), d.stage)}</td><td><span class="val">${money(d.value)}</span></td><td>${dateCell(d.close)}</td></tr>`; }).join('')}</tbody></table></div>`
-        : `<div class="empty"><h3>Brak otwartych szans</h3><p>Dodaj pierwszą szansę, by zobaczyć ją tutaj.</p></div>`}
+        <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Na dziś</h2><p>Następne kroki, szanse bez planu i nowe leady</p></div></div>
+        <div class="tasks">${items.length ? items.map(it => `<div class="task">
+          <button class="task-check${it.hot ? ' hot' : ''}${it.kind === 'nostep' ? ' plan' : ''}" data-act="done" data-kind="${it.kind}" data-id="${it.id}" aria-label="${it.kind === 'nostep' ? 'Ustal następny krok' : 'Oznacz jako zrobione'}" title="${it.kind === 'nostep' ? 'Ustal krok' : 'Zrobione'}">${ic(it.kind === 'nostep' ? 'plus' : 'tick', 13)}</button>
+          <button class="task-body" data-act="open" data-obj="${it.obj}" data-id="${it.id}"><b>${esc(it.title)}</b><small${it.hot ? ' style="color:var(--late)"' : ''}>${esc(it.meta)}</small></button>${ic('chevron', 16)}</div>`).join('')
+        : '<div class="empty" style="padding:40px 10px"><h3>Czysto!</h3><p>Nic nie zalega. Może czas na nowe leady?</p></div>'}</div>
       </section>
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">02</span><h2>Na dziś</h2><p>Zaległe szanse i nowe leady</p></div></div>
-        <div class="tasks">${items.length ? items.map(it => { const done = state.done.has(it.id); return `<div class="task${done ? ' done' : ''}">
-          <button class="task-check${it.hot ? ' hot' : ''}" data-act="task" data-id="${it.id}" aria-pressed="${done}" aria-label="${done ? 'Oznacz jako niezrobione' : 'Oznacz jako zrobione'}">${ic('tick', 13)}</button>
-          <button class="task-body" data-act="open" data-obj="${it.obj}" data-id="${it.rid}"><b>${esc(it.title)}</b><small${it.hot ? ' style="color:var(--late)"' : ''}>${esc(it.meta)}</small></button>${ic('chevron', 16)}</div>`; }).join('')
-        : '<div class="empty" style="padding:40px 10px"><h3>Czysto!</h3><p>Nic nie zalega.</p></div>'}</div>
-        <button class="wide-btn" data-act="go" data-page="list" data-obj="lead">Wszystkie leady ${ic('arrow', 15)}</button>
+        <div class="panel-head"><div class="ttl"><span class="idx">02</span><h2>Największe szanse</h2><p>Gdzie leżą największe pieniądze</p></div><button class="text-button" data-act="go" data-page="pipeline">Lejek ${ic('arrow', 15)}</button></div>
+        <div class="tasks">${top.length ? top.map(d => `<div class="task"><button class="task-body" data-act="open" data-obj="deal" data-id="${d.id}" style="flex-direction:row;align-items:center;gap:12px">${avatar(dealLabel(d), 'company', 34)}<span style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1"><b>${esc(dealLabel(d))}</b><small>${esc(d.stage)} · ${d.nextStep ? esc(d.nextStep) : 'brak następnego kroku'}</small></span><b style="white-space:nowrap">${kzl(d.value)}</b></button></div>`).join('')
+        : '<div class="empty"><h3>Brak otwartych szans</h3></div>'}</div>
       </section>
     </div>`;
 }
@@ -746,52 +919,66 @@ function renderOverview() {
 /* ================= pipeline ================= */
 function renderPipeline() {
   const f = field('deal', 'stage');
-  const open = db.deal.filter(d => !CLOSED.includes(d.stage));
-  const late = open.filter(d => d.close && d.close < today);
+  const open = db.deal.filter(isOpen);
+  const late = open.filter(d => d.nextDate && d.nextDate < today);
+  const noStep = open.filter(d => !d.nextStep);
   const lostN = db.deal.filter(d => d.stage === 'Przegrana').length;
   const stages = f.options.filter(o => state.showLost || o[0] !== 'Przegrana');
-  main.innerHTML = heading({ eyebrow: `${open.length} ${plural(open.length, 'otwarta szansa', 'otwarte szanse', 'otwartych szans')} · ${money(sum(open))}`, title: 'Lejek', accent: '.', sub: 'Przeciągaj karty między etapami. Kliknij kartę, aby ją edytować.',
+  const warn = [];
+  if (late.length) warn.push(`${late.length} ${plural(late.length, 'krok', 'kroki', 'kroków')} po terminie`);
+  if (noStep.length) warn.push(`${noStep.length} ${plural(noStep.length, 'szansa', 'szanse', 'szans')} bez następnego kroku`);
+  const first = late[0] || noStep[0];
+  main.innerHTML = heading({ eyebrow: `${open.length} ${plural(open.length, 'otwarta szansa', 'otwarte szanse', 'otwartych szans')} · ${money(sum(open))}`, title: 'Lejek', accent: '.', sub: 'Przeciągnij kartę do innego etapu — Hermes zapyta o następny krok.',
     actions: `<button class="ghost-button" data-act="lost" aria-pressed="${state.showLost}">${state.showLost ? 'Ukryj' : 'Pokaż'} przegrane · ${lostN}</button>` }) +
-    (late.length ? `<div class="note kanban-note"><span>!</span><div><b>${late.length} ${plural(late.length, 'szansa jest', 'szanse są', 'szans jest')} po terminie</b><p>${esc(late.slice(0, 3).map(d => nameOf('company', d.company) || d.name).join(', '))} — razem ${money(sum(late))}. Ustal nową datę albo przesuń etap.</p></div><button class="text-button" data-act="open" data-obj="deal" data-id="${late[0].id}">Otwórz ${ic('arrow', 15)}</button></div>` : '') + `
-    <section class="kanban" style="grid-template-columns:repeat(${stages.length},minmax(238px,1fr))">${stages.map(o => {
+    (warn.length ? `<div class="note kanban-note"><span>!</span><div><b>${warn.join(' · ')}</b><p>Każda otwarta szansa powinna mieć konkretny krok i termin — inaczej łatwo o niej zapomnieć.</p></div><button class="text-button" data-act="open" data-obj="deal" data-id="${first.id}">Zacznij od ${esc(dealLabel(first))} ${ic('arrow', 15)}</button></div>` : '') + `
+    <section class="kanban" style="grid-template-columns:repeat(${stages.length},minmax(244px,1fr))">${stages.map(o => {
       const ds = db.deal.filter(d => d.stage === o[0]);
       return `<div class="kcol" data-stage="${esc(o[0])}" aria-label="Etap ${esc(o[0])}">
         <div class="khead"><span><i class="dot" style="background:${TONE[o[1]]}"></i>${esc(o[0])}</span><em>${ds.length}</em></div>
         <div class="ksum">${money(sum(ds))}</div>
         ${ds.map(card).join('')}
-        <button class="add-card" data-act="add" data-obj="deal" data-stage="${esc(o[0])}">${ic('plus', 15)}Dodaj szansę</button>
+        ${CLOSED.includes(o[0]) ? '' : `<button class="add-card" data-act="add" data-obj="deal" data-stage="${esc(o[0])}">${ic('plus', 15)}Dodaj szansę</button>`}
       </div>`;
     }).join('')}</section>`;
 }
 function card(d) {
   const cn = nameOf('company', d.company), pn = nameOf('contact', d.contact);
-  const won = d.stage === 'Wygrana', lost = d.stage === 'Przegrana';
-  const late = d.close && d.close < today && !won && !lost;
+  const won = d.stage === 'Wygrana', lost = d.stage === 'Przegrana', open = !won && !lost;
+  const late = open && d.nextDate && d.nextDate < today, isToday = open && d.nextDate === today;
+  const days = daysIn(d);
+  let next = '';
+  if (open) next = d.nextStep
+    ? `<p class="next${late ? ' late' : ''}${isToday ? ' today' : ''}">${ic('arrow', 13)}<span>${esc(d.nextStep)}</span>${d.nextDate ? `<em>${esc(rel(d.nextDate))}</em>` : ''}</p>`
+    : `<p class="next none">${ic('flag', 13)}<span>Brak następnego kroku</span></p>`;
+  const badge = won ? '<span class="won-badge">Wygrana</span>' : lost ? `<span class="tag">${esc(d.lostReason || 'Przegrana')}</span>` : (days >= 14 ? `<span class="stale" title="Bez zmiany etapu od ${days} dni">${days} dni w etapie</span>` : '');
   return `<article class="deal-card${won ? ' won' : ''}${lost ? ' lost' : ''}" draggable="true" tabindex="0" data-act="open" data-obj="deal" data-id="${d.id}" aria-label="${esc((cn || d.name) + ', ' + money(d.value))}">
-    <div class="top">${avatar(cn || d.name, 'company', 30)}${won ? '<span class="won-badge">Wygrana</span>' : late ? '<span class="late-date" style="font-size:12px"><i class="dot" style="background:var(--lateDot)"></i>Po terminie</span>' : ''}</div>
-    <h3>${esc(cn || d.name)}</h3><p>${esc(cn ? d.name : (pn || ''))}${cn && pn ? ' · ' + esc(pn) : ''}</p>
-    <footer><b>${money(d.value)}</b><span>${esc(fdate(d.close))}</span></footer>
+    <div class="top">${avatar(cn || d.name, 'company', 30)}${badge}</div>
+    <h3>${esc(cn || d.name)}</h3><p>${esc(cn ? d.name : (pn || ''))}</p>
+    ${next}
+    <footer><b>${money(d.value)}</b><span>${open ? (pn ? esc(pn) : '') : esc(fdate(d.closedAt))}</span></footer>
   </article>`;
 }
 
-/* ================= directory (objects) ================= */
+/* ================= directory ================= */
 function dirStats(o) {
   const L = db[o];
-  const deals = db.deal, open = deals.filter(d => !CLOSED.includes(d.stage));
+  const open = db.deal.filter(isOpen);
+  const month = r => (r.created || '').slice(0, 7) === thisMonth;
   if (o === 'company') {
     const withOpen = L.filter(c => open.some(d => d.company === c.id));
-    return [['Wszystkie firmy', L.length, `${L.filter(c => (c.created || '') >= today.slice(0, 7)).length} dodane w tym miesiącu`], ['Z otwartą szansą', withOpen.length, `${pct(withOpen.length, L.length) ?? 0}% kont`], ['Wartość lejka', kzl(sum(open)), `${open.length} otwartych szans`], ['Bez aktywnej szansy', L.length - withOpen.length, 'Warto się odezwać']];
+    const quiet = L.filter(c => { const t = lastTouch('company', c); return !t || dayDiff(t) < -30; });
+    return [['Wszystkie firmy', L.length, `${L.filter(month).length} dodane w tym miesiącu`], ['Z otwartą szansą', withOpen.length, `${pct(withOpen.length, L.length) ?? 0}% kont`], ['Wartość lejka', kzl(sum(open)), `${open.length} otwartych szans`], ['Cisza od 30+ dni', quiet.length, quiet.length ? 'Warto się odezwać' : 'Wszyscy zaopiekowani']];
   }
   if (o === 'contact') {
-    const noCo = L.filter(c => !c.company).length;
-    return [['Wszystkie kontakty', L.length, 'Osoby w bazie'], ['Z e-mailem', L.filter(c => c.email).length, 'Gotowe do wysyłki'], ['Przypisane do firmy', L.length - noCo, `${pct(L.length - noCo, L.length) ?? 0}% kontaktów`], ['Bez firmy', noCo, noCo ? 'Uzupełnij powiązanie' : 'Wszystko powiązane']];
+    const quiet = L.filter(c => { const t = lastTouch('contact', c); return !t || dayDiff(t) < -30; });
+    return [['Wszystkie kontakty', L.length, 'Osoby w bazie'], ['Z e-mailem', L.filter(c => c.email).length, 'Gotowe do wysyłki'], ['Przypisane do firmy', L.filter(c => c.company).length, `${pct(L.filter(c => c.company).length, L.length) ?? 0}% kontaktów`], ['Cisza od 30+ dni', quiet.length, quiet.length ? 'Warto się przypomnieć' : 'Wszyscy zaopiekowani']];
   }
   if (o === 'lead') {
     const by = s => L.filter(l => l.status === s).length;
-    return [['Wszystkie leady', L.length, 'W skrzynce'], ['Nowe', by('Nowy'), 'Do pierwszego kontaktu'], ['Zakwalifikowane', by('Zakwalifikowany'), `${pct(by('Zakwalifikowany'), L.length) ?? 0}% konwersji`], ['Odrzucone', by('Odrzucony'), 'Poza grupą docelową']];
+    return [['Wszystkie leady', L.length, `${L.filter(month).length} w tym miesiącu`], ['Nowe', by('Nowy'), 'Czekają na pierwszy kontakt'], ['Zakwalifikowane', by('Zakwalifikowany'), `${pct(by('Zakwalifikowany'), L.length) ?? 0}% konwersji`], ['Odrzucone', by('Odrzucony'), 'Poza grupą docelową']];
   }
-  const late = open.filter(d => d.close && d.close < today);
-  return [['Wszystkie szanse', L.length, `${open.length} otwartych`], ['Wartość otwartych', kzl(sum(open)), 'Bez wygranych i przegranych'], ['Wygrane', kzl(sum(L.filter(d => d.stage === 'Wygrana'))), `${L.filter(d => d.stage === 'Wygrana').length} zamknięte z sukcesem`], ['Po terminie', late.length, late.length ? money(sum(late)) + ' do odzyskania' : 'Wszystko na czas']];
+  const late = open.filter(d => d.nextDate && d.nextDate < today), noStep = open.filter(d => !d.nextStep);
+  return [['Wszystkie szanse', L.length, `${open.length} otwartych`], ['Wartość otwartych', kzl(sum(open)), 'Bez wygranych i przegranych'], ['Wygrane w tym miesiącu', kzl(sum(wonIn(L))), `${wonIn(L).length} zamknięte z sukcesem`], ['Wymaga uwagi', late.length + noStep.length, `${late.length} po terminie · ${noStep.length} bez kroku`]];
 }
 function renderList() {
   const o = state.obj, S = SCHEMA[o];
@@ -801,7 +988,8 @@ function renderList() {
       <div class="toolbar">
         <div class="ttl"><h2>${S.dir}</h2><span id="shown"></span></div>
         <label class="field-search"><span class="sr">Szukaj</span>${ic('search', 16)}<input type="search" data-role="q" placeholder="Szukaj w: ${S.many.toLowerCase()}" value="${esc(state.q)}"></label>
-        <button class="ghost-button sm" data-act="import" data-obj="${o}">${ic('upload', 16)}Import CSV</button>
+        <button class="ghost-button sm" data-act="export" data-obj="${o}">${ic('download', 16)}Eksport</button>
+        <button class="ghost-button sm" data-act="import" data-obj="${o}">${ic('upload', 16)}Import</button>
         <button class="primary-button sm" data-act="add" data-obj="${o}">${ic('plus', 16)}Dodaj ${S.gen}</button>
       </div>
       <div id="rows"></div>
@@ -809,7 +997,8 @@ function renderList() {
   renderRows();
 }
 function renderRows() {
-  const o = state.obj, S = SCHEMA[o], cols = S.fields.slice(0, 7);
+  const o = state.obj, S = SCHEMA[o];
+  const cols = S.fields.filter(f => !f.hideInTable).slice(0, 6);
   const box = $('#rows'); if (!box) return;
   let rows = db[o];
   if (state.q) {
@@ -822,11 +1011,11 @@ function renderRows() {
     return;
   }
   if (!rows.length) { box.innerHTML = `<div class="empty"><h3>Brak wyników</h3><p>Nic nie pasuje do „${esc(state.q)}”.</p></div>`; return; }
-  box.innerHTML = `<div class="tablewrap"><table style="min-width:960px">
-    <thead><tr>${cols.map(f => `<th scope="col">${esc(f.label)}</th>`).join('')}<th scope="col"><span class="sr">Otwórz</span></th></tr></thead>
-    <tbody>${rows.map(r => `<tr class="row" data-act="open" data-obj="${o}" data-id="${r.id}">${cols.map((f, i) => `<td>${i === 0
+  box.innerHTML = `<div class="tablewrap"><table style="min-width:980px">
+    <thead><tr>${cols.map(f => `<th scope="col">${esc(f.label)}</th>`).join('')}<th scope="col">Ostatni kontakt</th><th scope="col"><span class="sr">Otwórz</span></th></tr></thead>
+    <tbody>${rows.map(r => { const lt = lastTouch(o, r); return `<tr class="row" data-act="open" data-obj="${o}" data-id="${r.id}">${cols.map((f, i) => `<td>${i === 0
       ? `<button class="identity" data-act="open" data-obj="${o}" data-id="${r.id}">${avatar(r.name, o, 36)}<span class="t"><b>${esc(r.name)}</b><small>${esc(subtitle(o, r)) || '&nbsp;'}</small></span></button>`
-      : cell(f, r)}</td>`).join('')}<td style="width:30px;color:#A3A9A0">${ic('chevron', 16)}</td></tr>`).join('')}</tbody>
+      : cell(f, r)}</td>`).join('')}<td>${lt ? `<span class="${dayDiff(lt) < -30 ? 'late-date' : 'mute'}">${esc(rel(lt))}</span>` : '<span class="mute">—</span>'}</td><td style="width:30px;color:#A3A9A0">${ic('chevron', 16)}</td></tr>`; }).join('')}</tbody>
   </table></div>`;
 }
 
@@ -835,29 +1024,28 @@ function renderAnalytics() {
   const owners = field('deal', 'owner').options.map(o => o[0]);
   const ow = state.aOwner;
   const deals = db.deal.filter(d => !ow || d.owner === ow);
-  const open = deals.filter(d => !CLOSED.includes(d.stage));
+  const open = deals.filter(isOpen);
   const won = deals.filter(d => d.stage === 'Wygrana'), lost = deals.filter(d => d.stage === 'Przegrana');
   const leads = db.lead, qual = leads.filter(l => l.status === 'Zakwalifikowany');
-  const target = ow ? TARGET / owners.length : TARGET;
-  const wonV = sum(won), att = pct(wonV, target);
+  const target = ow ? settings.target / owners.length : settings.target;
+  const monthWon = wonIn(deals), wonV = sum(monthWon), att = pct(wonV, target) || 0;
   const wr = pct(won.length, won.length + lost.length), lc = pct(qual.length, leads.length);
   const avg = open.length ? sum(open) / open.length : 0;
+  const late = open.filter(d => d.nextDate && d.nextDate < today);
 
   const months = {};
   open.filter(d => d.close).forEach(d => { const k = d.close.slice(0, 7); (months[k] = months[k] || []).push(d); });
-  const mkeys = Object.keys(months).sort();
+  const mkeys = Object.keys(months).sort().slice(0, 6);
   const mmax = Math.max(1, ...mkeys.map(k => sum(months[k])));
   const peak = mkeys.reduce((a, k) => sum(months[k]) > sum(months[a] || []) ? k : a, mkeys[0]);
-  const mlabel = k => { const s = new Date(k + '-01T00:00:00').toLocaleDateString('pl-PL', { month: 'short', year: '2-digit' }); return s.charAt(0).toUpperCase() + s.slice(1); };
+  const mlabel = k => { const s = new Date(k + '-01T12:00:00').toLocaleDateString('pl-PL', { month: 'short', year: '2-digit' }); return s.charAt(0).toUpperCase() + s.slice(1); };
   const ystep = Math.ceil(mmax / 4 / 10000) * 10000 || 10000;
 
-  const thisMonth = today.slice(0, 7);
-  const closingNow = open.filter(d => (d.close || '').slice(0, 7) <= thisMonth);
+  const closingNow = open.filter(d => (d.close || '9999').slice(0, 7) <= thisMonth);
   const commit = wonV, best = sum(closingNow), gap = Math.max(0, target - commit - best);
-  const cov = pct(commit + best, target);
+  const cov = pct(commit + best, target) || 0;
   const C = 2 * Math.PI * 48;
   const segC = Math.min(1, commit / target) * C, segB = Math.min(1 - segC / C, best / target) * C;
-  const late = open.filter(d => d.close && d.close < today);
 
   const stageRows = field('deal', 'stage').options.filter(o => !CLOSED.includes(o[0]));
   const smax = Math.max(1, ...stageRows.map(o => sum(deals.filter(d => d.stage === o[0]))));
@@ -866,62 +1054,90 @@ function renderAnalytics() {
     return { label: o[0], n: L.length, q, rate: pct(q, L.length) };
   }).filter(r => r.n).sort((a, b) => b.n - a.n);
   const nmax = Math.max(1, ...srcRows.map(r => r.n));
+  const reasons = {};
+  lost.forEach(d => { const k = d.lostReason || 'Nie podano'; (reasons[k] = reasons[k] || []).push(d); });
+  const rkeys = Object.keys(reasons).sort((a, b) => reasons[b].length - reasons[a].length);
+  const rmax = Math.max(1, ...rkeys.map(k => reasons[k].length));
 
-  main.innerHTML = heading({ eyebrow: `Raport · ${new Date().toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })}`, title: 'Analityka', accent: '.', sub: 'Przychód, prognoza i wyniki zespołu w jednym widoku.',
+  main.innerHTML = heading({ eyebrow: `Raport · ${new Date().toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })}`, title: 'Analityka', accent: '.', sub: 'Przychód, prognoza i jakość lejka w jednym widoku.',
     actions: `<div class="seg" role="group" aria-label="Opiekun">${['', ...owners].map(o => `<button data-act="aowner" data-v="${esc(o)}" aria-pressed="${o === ow}">${o ? esc(o) : 'Cały zespół'}</button>`).join('')}</div>` }) + `
     <section class="kpis" aria-label="Wyniki sprzedaży">
-      <article class="kpi dark"><div class="h"><span>Wygrane w miesiącu</span><em>${att}% celu</em></div><strong>${money(wonV)}</strong>
+      <article class="kpi dark"><div class="h"><span>Wygrane w tym miesiącu</span><em>${att}% celu</em></div><strong>${money(wonV)}</strong>
         <footer><span><i class="dot" style="background:var(--lime)"></i>${wonV >= target ? 'Cel osiągnięty' : money(target - wonV) + ' do celu'}</span><b>cel ${kzl(target)}</b></footer><div class="kpi-progress"><i style="width:${Math.min(100, att)}%"></i></div></article>
       <article class="kpi"><div class="h"><span>Wartość otwartych</span><em>${open.length} szans</em></div><strong>${money(sum(open))}</strong><footer><span>Średnio ${money(avg)}</span><b>${late.length ? late.length + ' po terminie' : 'Na czas'}</b></footer></article>
-      <article class="kpi"><div class="h"><span>Skuteczność</span><em>${won.length}/${won.length + lost.length}</em></div><strong>${wr === null ? '—' : wr + '%'}</strong><footer><span>Wygrane z zamkniętych</span><b>${wr === null ? '—' : wr >= 50 ? 'Dobrze' : 'Do poprawy'}</b></footer></article>
+      <article class="kpi"><div class="h"><span>Skuteczność</span><em>${won.length}/${won.length + lost.length}</em></div><strong>${wr === null ? '—' : wr + '%'}</strong><footer><span>Wygrane ze wszystkich zamkniętych</span></footer></article>
       <article class="kpi"><div class="h"><span>Konwersja leadów</span><em>${qual.length}/${leads.length}</em></div><strong>${lc === null ? '—' : lc + '%'}</strong><footer><span>Zakwalifikowane leady</span><b>${leads.filter(l => l.status === 'Nowy').length} nowych</b></footer></article>
     </section>
     <div class="rgrid">
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Prognoza zamknięć</h2><p>Wartość otwartych szans wg miesiąca zamknięcia</p></div></div>
+        <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Prognoza zamknięć</h2><p>Wartość otwartych szans wg planowanego miesiąca zamknięcia</p></div></div>
         ${mkeys.length ? `<div class="cols-chart"><div class="cols-y">${[4, 3, 2, 1, 0].map(i => `<span>${kzl(ystep * i).replace(' tys.', 'k')}</span>`).join('')}</div>
           <div class="cols-area"><div class="cols">${mkeys.map(k => { const s = sum(months[k]), n = months[k].length, t = `${mlabel(k)} · ${n} ${plural(n, 'szansa', 'szanse', 'szans')} · ${money(s)}`;
             return `<div class="colb" tabindex="0" data-tip="${esc(t)}" aria-label="${esc(t)}"><span class="v">${kzl(s)}</span><span class="c${k === peak ? ' peak' : ''}" style="height:${s / (ystep * 4) * 100}%"></span></div>`; }).join('')}</div>
           <div class="colx">${mkeys.map(k => `<span>${mlabel(k)}</span>`).join('')}</div></div></div>` : '<div class="empty"><p>Brak otwartych szans z datą zamknięcia.</p></div>'}
       </section>
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">02</span><h2>Pokrycie celu</h2><p>Wygrane + szanse na ten miesiąc</p></div></div>
+        <div class="panel-head"><div class="ttl"><span class="idx">02</span><h2>Pokrycie celu</h2><p>Wygrane + szanse planowane na ${esc(monthName())}</p></div></div>
         <div class="ring-wrap"><svg viewBox="0 0 120 120" role="img" aria-label="Pokrycie celu ${cov}%"><circle cx="60" cy="60" r="48" stroke="#EDF0EB"/><circle cx="60" cy="60" r="48" stroke="#B8C0FF" stroke-dasharray="${segB.toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-segC).toFixed(1)}"/><circle cx="60" cy="60" r="48" stroke="#1B1E19" stroke-dasharray="${segC.toFixed(1)} ${C.toFixed(1)}"/></svg><div><strong>${cov}%</strong><span>pokrycia</span></div></div>
         <div class="flist">
           <div><span><i style="background:#1B1E19"></i>Wygrane</span><b>${kzl(commit)}</b><em>${pct(commit, target)}%</em></div>
           <div><span><i style="background:#B8C0FF"></i>Do zamknięcia w tym mies.</span><b>${kzl(best)}</b><em>${pct(best, target)}%</em></div>
           <div><span><i style="background:#E3E6E0"></i>Brakuje do celu</span><b>${kzl(gap)}</b><em>${pct(gap, target)}%</em></div>
         </div>
-        ${late.length ? `<div class="note rnote"><span>!</span><div><b>${late.length} ${plural(late.length, 'szansa wymaga', 'szanse wymagają', 'szans wymaga')} uwagi</b><p>${esc(late.slice(0, 2).map(d => nameOf('company', d.company) || d.name).join(' i '))} — termin minął.</p></div></div>` : '<div style="height:22px"></div>'}
+        ${late.length ? `<div class="note rnote"><span>!</span><div><b>${late.length} ${plural(late.length, 'krok', 'kroki', 'kroków')} po terminie</b><p>${esc(late.slice(0, 2).map(dealLabel).join(' i '))} czekają na Twój ruch.</p></div></div>` : '<div style="height:22px"></div>'}
       </section>
     </div>
     <div class="rgrid2">
       <section class="panel">
         <div class="panel-head"><div class="ttl"><span class="idx">03</span><h2>Zdrowie lejka</h2><p>Wartość i liczba szans na każdym etapie</p></div><button class="text-button" data-act="go" data-page="pipeline">Zobacz lejek ${ic('arrow', 15)}</button></div>
-        <div style="padding:6px 0">${stageRows.map(o => { const ds = deals.filter(d => d.stage === o[0]), s = sum(ds), t = `${o[0]} · ${ds.length} ${plural(ds.length, 'szansa', 'szanse', 'szans')} · ${money(s)}`;
-          return `<div class="frow" tabindex="0" data-tip="${esc(t)}" aria-label="${esc(t)}"><div><span>${esc(o[0])}</span><small>${ds.length} ${plural(ds.length, 'szansa', 'szanse', 'szans')}</small></div><div class="track"><i style="width:${s / smax * 100}%"></i></div><b>${kzl(s)}</b></div>`; }).join('')}</div>
-        <div class="fsum"><div><span>Pokrycie celu</span><b>${(sum(open) / Math.max(1, target - wonV)).toFixed(1).replace('.', ',')}×</b></div><div><span>Po terminie</span><b class="${late.length ? 'warn' : ''}">${late.length}</b></div><div><span>Średnia szansa</span><b>${kzl(avg)}</b></div></div>
+        <div style="padding:6px 0">${stageRows.map(o => { const ds = deals.filter(d => d.stage === o[0]), s = sum(ds), avgD = ds.length ? Math.round(ds.reduce((a, d) => a + daysIn(d), 0) / ds.length) : 0, t = `${o[0]} · ${ds.length} ${plural(ds.length, 'szansa', 'szanse', 'szans')} · ${money(s)} · średnio ${avgD} dni w etapie`;
+          return `<div class="frow" tabindex="0" data-tip="${esc(t)}" aria-label="${esc(t)}"><div><span>${esc(o[0])}</span><small>${ds.length} ${plural(ds.length, 'szansa', 'szanse', 'szans')} · ~${avgD} dni</small></div><div class="track"><i style="width:${s / smax * 100}%"></i></div><b>${kzl(s)}</b></div>`; }).join('')}</div>
+        <div class="fsum"><div><span>Lejek ÷ brakujący cel</span><b>${(sum(open) / Math.max(1, target - wonV)).toFixed(1).replace('.', ',')}×</b></div><div><span>Bez następnego kroku</span><b class="${open.some(d => !d.nextStep) ? 'warn' : ''}">${open.filter(d => !d.nextStep).length}</b></div><div><span>Średnia szansa</span><b>${kzl(avg)}</b></div></div>
       </section>
       <section class="panel">
-        <div class="panel-head"><div class="ttl"><span class="idx">04</span><h2>Zespół</h2><p>Realizacja celu i skuteczność</p></div></div>
+        <div class="panel-head"><div class="ttl"><span class="idx">04</span><h2>Zespół</h2><p>Wygrane w tym miesiącu względem celu</p></div></div>
         <div class="tablewrap"><table><thead><tr><th scope="col">Handlowiec</th><th scope="col">Wygrane</th><th scope="col">Otwarte</th><th scope="col">Cel</th></tr></thead>
-        <tbody>${owners.map(o => { const ds = db.deal.filter(d => d.owner === o), w = sum(ds.filter(d => d.stage === 'Wygrana')), op = sum(ds.filter(d => !CLOSED.includes(d.stage))), a = pct(w, TARGET / owners.length);
+        <tbody>${owners.map(o => { const ds = db.deal.filter(d => d.owner === o), w = sum(wonIn(ds)), op = sum(ds.filter(isOpen)), a = pct(w, settings.target / owners.length) || 0;
           return `<tr><td><span class="chip">${avatar(o, 'contact', 32)}<b style="font-weight:600;color:var(--ink2)">${esc(o)}</b></span></td><td>${kzl(w)}</td><td>${kzl(op)}</td><td><div class="attain"><span><i style="width:${Math.min(100, a)}%"></i></span><b>${a}%</b></div></td></tr>`; }).join('')}</tbody></table></div>
       </section>
     </div>
-    <section class="panel">
-      <div class="panel-head"><div class="ttl"><span class="idx">05</span><h2>Jakość źródeł leadów</h2><p>Liczba leadów i odsetek zakwalifikowanych</p></div></div>
-      ${srcRows.length ? `<div class="src">${srcRows.map(r => `<div tabindex="0" data-tip="${esc(`${r.label} · ${r.n} ${plural(r.n, 'lead', 'leady', 'leadów')} · ${r.q} zakwalifikowanych`)}"><span>${esc(r.label)}</span><b>${r.n}</b><div class="track"><i style="width:${r.n / nmax * 100}%"></i></div><small>${r.rate}% kwalifikacji</small></div>`).join('')}</div>` : '<div class="empty"><p>Brak leadów.</p></div>'}
-    </section>`;
+    <div class="rgrid2">
+      <section class="panel">
+        <div class="panel-head"><div class="ttl"><span class="idx">05</span><h2>Jakość źródeł leadów</h2><p>Liczba leadów i odsetek zakwalifikowanych</p></div></div>
+        ${srcRows.length ? `<div class="src">${srcRows.map(r => `<div tabindex="0" data-tip="${esc(`${r.label} · ${r.n} ${plural(r.n, 'lead', 'leady', 'leadów')} · ${r.q} zakwalifikowanych`)}"><span>${esc(r.label)}</span><b>${r.n}</b><div class="track"><i style="width:${r.n / nmax * 100}%"></i></div><small>${r.rate}% kwalifikacji</small></div>`).join('')}</div>` : '<div class="empty"><p>Brak leadów.</p></div>'}
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div class="ttl"><span class="idx">06</span><h2>Dlaczego przegrywamy</h2><p>Powody przegranych szans</p></div></div>
+        ${rkeys.length ? `<div class="src">${rkeys.map(k => `<div tabindex="0" data-tip="${esc(`${k} · ${reasons[k].length} ${plural(reasons[k].length, 'szansa', 'szanse', 'szans')} · ${money(sum(reasons[k]))}`)}"><span>${esc(k)}</span><b>${reasons[k].length}</b><div class="track"><i style="width:${reasons[k].length / rmax * 100}%;background:var(--lateDot)"></i></div><small>${kzl(sum(reasons[k]))}</small></div>`).join('')}</div>` : '<div class="empty"><p>Brak przegranych — oby tak dalej.</p></div>'}
+      </section>
+    </div>`;
 }
 
 /* ================= settings ================= */
 function renderSettings() {
-  const o = state.settingsObj, S = SCHEMA[o];
-  main.innerHTML = heading({ eyebrow: 'Konfiguracja', title: 'Ustawienia', accent: '.', sub: 'Dopasuj obiekty do swojej firmy — zmiany od razu widać w tabelach, formularzach i imporcie CSV.',
-    actions: `<div class="seg" role="tablist" aria-label="Obiekt">${OBJS.map(x => `<button role="tab" aria-selected="${x === o}" aria-pressed="${x === o}" data-act="stab" data-obj="${x}">${SCHEMA[x].many}</button>`).join('')}</div>` }) + `
+  const o = state.settingsObj;
+  const tabs = [['general', 'Ogólne'], ...OBJS.map(x => [x, SCHEMA[x].many])];
+  const head = heading({ eyebrow: 'Konfiguracja', title: 'Ustawienia', accent: '.', sub: 'Cel sprzedaży, kopia danych i pola obiektów.',
+    actions: `<div class="seg" role="tablist" aria-label="Sekcja">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${k === o}" aria-pressed="${k === o}" data-act="stab" data-obj="${k}">${l}</button>`).join('')}</div>` });
+  if (o === 'general') {
+    const total = OBJS.reduce((a, x) => a + db[x].length, 0);
+    main.innerHTML = head + `
     <section class="panel" style="max-width:1040px">
-      <div class="panel-head"><div class="ttl"><span class="idx">${String(OBJS.indexOf(o) + 1).padStart(2, '0')}</span><h2>Pola obiektu: ${S.one.toLowerCase()}</h2><p>Kliknij nazwę, by ją zmienić</p></div></div>
+      <div class="set-row"><div><h3>Cel sprzedaży na miesiąc</h3><p>Wartość wygranych szans, do której dążysz w każdym miesiącu. Widać ją w menu, na Pulpicie i w Analityce.</p></div>
+        <label class="field-search" style="width:200px;background:#fff"><span class="sr">Cel w złotych</span><input type="text" inputmode="numeric" data-setting="target" value="${grp(settings.target)}"><span>zł</span></label></div>
+      <div class="set-row"><div><h3>Kopia zapasowa</h3><p>Hermes zapisuje dane w tej przeglądarce (${total} ${plural(total, 'rekord', 'rekordy', 'rekordów')}, ${db.activity.length} wpisów w historii). Zrób kopię, żeby przenieść je na inny komputer.</p></div>
+        <div class="acts"><button class="ghost-button" data-act="backup">${ic('download', 16)}Pobierz kopię</button><label class="ghost-button" for="backupfile" style="cursor:pointer">${ic('upload', 16)}Wczytaj kopię<input type="file" id="backupfile" accept=".json,application/json" class="sr"></label></div></div>
+      <div class="set-row"><div><h3>Eksport do CSV</h3><p>Każdy obiekt osobno — do Excela, Google Sheets albo innego CRM-a.</p></div>
+        <div class="acts">${OBJS.map(x => `<button class="ghost-button sm" data-act="export" data-obj="${x}">${SCHEMA[x].many}</button>`).join('')}</div></div>
+      <div class="set-row"><div><h3>Dane przykładowe</h3><p>Zacznij od zera albo wróć do danych demonstracyjnych.</p></div>
+        <div class="acts"><button class="ghost-button" data-act="demo">Przywróć demo</button><button class="ghost-button danger" data-act="wipe">${ic('trash', 16)}Wyczyść wszystko</button></div></div>
+    </section>`;
+    return;
+  }
+  const S = SCHEMA[o];
+  main.innerHTML = head + `
+    <section class="panel" style="max-width:1040px">
+      <div class="panel-head"><div class="ttl"><span class="idx">${pad(OBJS.indexOf(o) + 1)}</span><h2>Pola obiektu: ${S.one.toLowerCase()}</h2><p>Kliknij nazwę, by ją zmienić</p></div></div>
       <div class="tablewrap settings"><table>
         <thead><tr><th scope="col">Nazwa pola</th><th scope="col">Typ</th><th scope="col">Opcje</th><th scope="col"><span class="sr">Akcje</span></th></tr></thead>
         <tbody>${S.fields.map(f => `<tr>
@@ -945,6 +1161,7 @@ function renderSettings() {
 
 function renderMain() {
   ({ overview: renderOverview, pipeline: renderPipeline, list: renderList, analytics: renderAnalytics, settings: renderSettings })[state.page]();
+  save();
 }
 function render() { renderSide(); renderTop(); renderMain(); }
 
@@ -957,44 +1174,66 @@ function renderDrawer() {
   const acts = [];
   if (r.email) acts.push(`<a href="mailto:${esc(r.email)}">${ic('mail', 16)}E-mail</a>`);
   if (r.phone) acts.push(`<a href="tel:${esc(String(r.phone).replace(/\s/g, ''))}">${ic('phone', 16)}Zadzwoń</a>`);
-  if (obj === 'lead') acts.push(`<button class="lime" data-act="convert">${ic('arrow', 16)}Konwertuj</button>`);
+  if (obj === 'lead' && r.status !== 'Zakwalifikowany') acts.push(`<button class="lime" data-act="convert">${ic('arrow', 16)}Konwertuj</button>`);
   if (obj === 'company') acts.push(`<button data-act="add" data-obj="deal" data-pk="company" data-pid="${r.id}">${ic('plus', 16)}Szansa</button>`);
   let metrics = '';
   if (obj === 'company') {
-    const ds = db.deal.filter(d => d.company === r.id), op = ds.filter(d => !CLOSED.includes(d.stage));
+    const ds = db.deal.filter(d => d.company === r.id), op = ds.filter(isOpen);
     metrics = `<div><span>Otwarty lejek</span><strong>${kzl(sum(op))}</strong></div><div><span>Otwarte szanse</span><strong>${op.length}</strong></div><div><span>Kontakty</span><strong>${db.contact.filter(c => c.company === r.id).length}</strong></div>`;
   } else if (obj === 'deal') {
-    metrics = `<div><span>Wartość</span><strong>${money(r.value)}</strong></div><div><span>Etap</span><strong>${esc(r.stage || '—')}</strong></div><div><span>Zamknięcie</span><strong${r.close && r.close < today && !CLOSED.includes(r.stage) ? ' style="color:var(--late)"' : ''}>${esc(fdate(r.close) || '—')}</strong></div>`;
+    metrics = `<div><span>Wartość</span><strong>${money(r.value)}</strong></div><div><span>Etap</span><strong>${esc(r.stage || '—')}</strong></div><div><span>${isOpen(r) ? 'W etapie od' : 'Zamknięto'}</span><strong>${isOpen(r) ? `${daysIn(r)} ${plural(daysIn(r), 'dnia', 'dni', 'dni')}` : esc(fdate(r.closedAt) || '—')}</strong></div>`;
   } else if (obj === 'contact') {
     const ds = db.deal.filter(d => d.contact === r.id);
-    metrics = `<div><span>Szanse</span><strong>${ds.length}</strong></div><div><span>Wartość</span><strong>${kzl(sum(ds))}</strong></div>`;
+    metrics = `<div><span>Szanse</span><strong>${ds.length}</strong></div><div><span>Wartość</span><strong>${kzl(sum(ds))}</strong></div><div><span>Ostatni kontakt</span><strong>${esc(rel(lastTouch('contact', r)) || '—')}</strong></div>`;
   } else {
-    metrics = `<div><span>Status</span><strong>${esc(r.status || '—')}</strong></div><div><span>Źródło</span><strong>${esc(r.source || '—')}</strong></div>`;
+    metrics = `<div><span>Status</span><strong>${esc(r.status || '—')}</strong></div><div><span>Źródło</span><strong>${esc(r.source || '—')}</strong></div><div><span>Ostatni kontakt</span><strong>${esc(rel(lastTouch('lead', r)) || '—')}</strong></div>`;
   }
-  const rel = [];
+  let nextbox = '';
+  if (obj === 'deal' && isOpen(r)) {
+    const late = r.nextDate && r.nextDate < today;
+    nextbox = `<section class="nextbox${late ? ' late' : ''}${r.nextStep ? '' : ' empty-step'}"><div><span class="eyebrow">Następny krok</span><b>${r.nextStep ? esc(r.nextStep) : 'Brak — ustal, co dalej'}</b>${r.nextDate ? `<small>${late ? 'Po terminie · ' : ''}${esc(rel(r.nextDate))}${dayDiff(r.nextDate) > 1 || dayDiff(r.nextDate) < -1 ? '' : ' · ' + esc(fdate(r.nextDate))}</small>` : ''}</div>
+      <div class="nb-acts">${r.nextStep ? `<button class="primary-button sm" data-act="done" data-kind="step" data-id="${r.id}">${ic('tick', 15)}Zrobione</button>` : ''}<button class="ghost-button sm" data-act="nextstep" data-id="${r.id}">${r.nextStep ? 'Zmień' : 'Ustal krok'}</button></div></section>`;
+  }
+  const list = actsOf(obj, r);
+  const shown = state.allActs ? list : list.slice(0, 6);
+  const rel2 = [];
   if (obj === 'company') {
-    rel.push(['Kontakty', 'contact', db.contact.filter(x => x.company === r.id), 'company']);
-    rel.push(['Szanse', 'deal', db.deal.filter(x => x.company === r.id), 'company']);
+    rel2.push(['Kontakty', 'contact', db.contact.filter(x => x.company === r.id), 'company']);
+    rel2.push(['Szanse', 'deal', db.deal.filter(x => x.company === r.id), 'company']);
   }
-  if (obj === 'contact') rel.push(['Szanse', 'deal', db.deal.filter(x => x.contact === r.id), 'contact']);
+  if (obj === 'contact') rel2.push(['Szanse', 'deal', db.deal.filter(x => x.contact === r.id), 'contact']);
   const heroCls = { company: '', contact: 'person', lead: 'lead', deal: 'deal' }[obj];
+  const attrs = S.fields.filter(f => f.key !== 'name' && !f.inBox && !(f.onlyLost && r.stage !== 'Przegrana'));
   L.innerHTML = `<div class="layer" data-act="close-drawer"></div>
   <aside class="drawer" role="dialog" aria-modal="true" aria-label="${esc(S.one)}: ${esc(r.name)}">
     <header><span>Rekord · ${S.one}</span><div><button class="sq-btn" data-act="close-drawer" aria-label="Zamknij">${ic('close', 17)}</button></div></header>
     <section class="hero"><span class="hero-av ${heroCls}">${esc(initials(r.name, obj === 'contact' || obj === 'lead'))}</span><div><label class="sr" for="e-name">${esc(field(obj, 'name').label)}</label><input class="title-in" id="e-name" data-edit="name" value="${esc(r.name)}" autocomplete="off"><p id="hero-sub">${esc(subtitle(obj, r)) || '&nbsp;'}</p></div></section>
     ${acts.length ? `<div class="actions">${acts.join('')}</div>` : ''}
+    ${nextbox}
     <section class="dmetrics">${metrics}</section>
-    <section class="dsec"><h3>Atrybuty</h3>${S.fields.filter(f => f.key !== 'name').map(f => `<div class="attr"><label for="e-${f.key}">${esc(f.label)}</label>${control(f, r[f.key], 'edit')}</div>`).join('')}</section>
-    ${rel.map(([t, o, list, pk]) => `<section class="dsec"><h3>${t}<em>${list.length}</em></h3>
-      ${list.map(x => `<button class="linked" data-act="open" data-obj="${o}" data-id="${x.id}">${avatar(x.name, o, 32)}<div><b>${esc(x.name)}</b><small>${o === 'deal' ? esc(x.stage + ' · ' + money(x.value)) : esc(x.role || x.email || '')}</small></div>${ic('chevron', 15)}</button>`).join('') || '<p class="hint">Brak powiązanych rekordów.</p>'}
+    <section class="dsec"><h3>Dodaj do historii</h3>
+      <div class="composer">
+        <div class="seg sm" role="group" aria-label="Rodzaj wpisu">${['note', 'call', 'email', 'meeting'].map(t => `<button type="button" data-act="atype" data-t="${t}" aria-pressed="${state.atype === t}">${ic(ACT[t][1], 15)}${ACT[t][0]}</button>`).join('')}</div>
+        <label class="sr" for="act-text">Treść wpisu</label><textarea id="act-text" class="fin" rows="3" placeholder="${esc(ACT_PH[state.atype])}"></textarea>
+        <div class="composer-foot"><span class="hint">⌘↵ zapisuje</span><button class="primary-button sm" data-act="log">${ic('plus', 15)}Dodaj wpis</button></div>
+      </div>
+    </section>
+    <section class="dsec"><h3>Historia<em>${list.length}</em></h3>
+      ${list.length ? `<ol class="timeline">${shown.map(a => { const other = !(a.obj === obj && a.rid === r.id); return `<li class="t-${a.type}"><span class="t-ic">${ic(ACT[a.type] ? ACT[a.type][1] : 'note', 14)}</span><div><b>${ACT[a.type] ? ACT[a.type][0] : 'Wpis'}${other ? ` · ${esc(nameOf(a.obj, a.rid) || '')}` : ''}</b><p>${esc(a.text)}</p><small>${esc(relTime(a.at))}</small></div></li>`; }).join('')}</ol>${list.length > shown.length ? `<button class="text-button" data-act="allacts">Pokaż całą historię (${list.length})</button>` : ''}`
+      : '<p class="hint">Brak wpisów. Zapisz pierwszą notatkę albo rozmowę — Hermes zapamięta datę ostatniego kontaktu.</p>'}
+    </section>
+    <section class="dsec"><h3>Atrybuty</h3>${attrs.map(f => `<div class="attr"><label for="e-${f.key}">${esc(f.label)}</label>${control(f, r[f.key], 'edit', obj)}</div>`).join('')}</section>
+    ${rel2.map(([t, o, items, pk]) => `<section class="dsec"><h3>${t}<em>${items.length}</em></h3>
+      ${items.map(x => `<button class="linked" data-act="open" data-obj="${o}" data-id="${x.id}">${avatar(x.name, o, 32)}<div><b>${esc(x.name)}</b><small>${o === 'deal' ? esc(x.stage + ' · ' + money(x.value)) : esc(x.role || x.email || '')}</small></div>${ic('chevron', 15)}</button>`).join('') || '<p class="hint">Brak powiązanych rekordów.</p>'}
       <button class="add-card" data-act="add" data-obj="${o}" data-pk="${pk}" data-pid="${r.id}">${ic('plus', 15)}Dodaj</button></section>`).join('')}
     <footer><span>Utworzono ${esc(fdate(r.created))}</span><button class="text-button danger" data-act="del">${ic('trash', 15)}Usuń</button></footer>
   </aside>`;
 }
+function refreshDrawer() { if (openRec) renderDrawer(); }
 
 /* ================= modals ================= */
 function modal(html, cls = '') {
-  $('#modalLayer').innerHTML = `<div class="mlayer" data-act="close-modal-bg"><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div></div>`;
+  $('#modalLayer').innerHTML = `<div class="mlayer"><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div></div>`;
 }
 function closeModal() { $('#modalLayer').innerHTML = ''; imp = null; }
 const isModal = () => !!$('#modalLayer').innerHTML;
@@ -1002,11 +1241,11 @@ const mhead = (eyebrow, title) => `<div class="mhead"><div><p class="eyebrow">${
 
 function openAdd(obj, preset = {}) {
   const S = SCHEMA[obj];
-  const fs = S.fields.filter(f => f.quick || f.req).map(f => ({ ...f, _obj: obj }));
+  const fs = S.fields.filter(f => (f.quick || f.req) && !f.onlyLost);
   const hidden = Object.keys(preset).filter(k => !fs.some(f => f.key === k));
   const [first, ...rest] = fs;
   const pairs = []; for (let i = 0; i < rest.length; i += 2) pairs.push(rest.slice(i, i + 2));
-  const fl = f => `<div class="f"><label for="n-${f.key}">${esc(f.label)}${f.req ? ' <span class="req" aria-hidden="true">*</span>' : ''}</label>${control(f, preset[f.key], 'form')}</div>`;
+  const fl = f => `<div class="f"><label for="n-${f.key}">${esc(f.label)}${f.req ? ' <span class="req" aria-hidden="true">*</span>' : ''}</label>${control(f, preset[f.key] ?? (f.key === 'stage' ? 'Nowe' : ''), 'form', obj)}</div>`;
   modal(`<form id="addForm" data-obj="${obj}" novalidate>
     ${mhead(`Nowy rekord · ${S.one}`, `Dodaj ${S.gen}`)}
     <div class="mbody">${fl(first)}${pairs.map(p => p.length === 2 ? `<div class="form-row">${p.map(fl).join('')}</div>` : fl(p[0])).join('')}
@@ -1015,6 +1254,32 @@ function openAdd(obj, preset = {}) {
     <div class="mfoot"><button type="button" class="ghost-button" data-act="close-modal">Anuluj</button><button type="submit" class="primary-button">Utwórz ${ic('arrow', 16)}</button></div>
   </form>`);
   setTimeout(() => $('#n-name') && $('#n-name').focus(), 0);
+}
+
+function openNextStep(id, title) {
+  const d = find('deal', id); if (!d) return;
+  modal(`<form id="nextForm" data-id="${id}" novalidate>
+    ${mhead(esc(dealLabel(d)) + ' · ' + esc(d.stage), esc(title || 'Następny krok'))}
+    <div class="mbody">
+      <div class="f"><label for="ns-text">Co zrobisz?</label><input id="ns-text" class="fin" name="text" value="${esc(d.nextStep || '')}" placeholder="np. Zadzwonić po decyzję" autocomplete="off"></div>
+      <div class="f"><label for="ns-date">Kiedy?</label><div class="date-row"><input id="ns-date" class="fin" type="date" name="date" value="${d.nextDate || addDays(3)}">${[['Dziś', 0], ['Jutro', 1], ['Za 3 dni', 3], ['Za tydzień', 7]].map(([l, n]) => `<button type="button" class="chip-btn" data-act="qdate" data-d="${addDays(n)}">${l}</button>`).join('')}</div></div>
+      <p class="hint" id="nsErr" role="alert">Krok pojawi się na Pulpicie w dniu terminu.</p>
+    </div>
+    <div class="mfoot"><button type="button" class="ghost-button" data-act="close-modal">Pomiń</button><button type="submit" class="primary-button">Zapisz krok</button></div>
+  </form>`);
+  setTimeout(() => $('#ns-text') && $('#ns-text').focus(), 0);
+}
+function openLost(id) {
+  const d = find('deal', id); if (!d) return;
+  modal(`<form id="lostForm" data-id="${id}" novalidate>
+    ${mhead(esc(dealLabel(d)) + ' · ' + money(d.value), 'Dlaczego przegrana?')}
+    <div class="mbody">
+      <div class="f"><span style="font-size:13px;font-weight:600;color:#4C5249">Powód</span><div class="date-row" role="radiogroup" aria-label="Powód przegranej">${LOST.map(([l]) => `<label class="chip-btn radio"><input type="radio" name="reason" value="${esc(l)}" class="sr"${d.lostReason === l ? ' checked' : ''}>${esc(l)}</label>`).join('')}</div></div>
+      <div class="f"><label for="lost-note">Notatka (opcjonalnie)</label><textarea id="lost-note" class="fin" name="note" rows="3" style="font:14px 'DM Sans'" placeholder="Czego się nauczyliśmy?"></textarea></div>
+      <p class="hint" id="lostErr" role="alert">Po kilku tygodniach zobaczysz w Analityce, co najczęściej blokuje sprzedaż.</p>
+    </div>
+    <div class="mfoot"><button type="button" class="ghost-button" data-act="close-modal">Pomiń</button><button type="submit" class="primary-button">Zapisz powód</button></div>
+  </form>`);
 }
 
 function openCmd() {
@@ -1030,7 +1295,7 @@ function renderCmd(q) {
     + `<div class="cmdsep">Utwórz</div>` + OBJS.map(o => `<button class="cmdrow" data-act="add" data-obj="${o}">${ic('plus', 17)}Dodaj ${SCHEMA[o].gen}</button>`).join('');
 }
 
-/* ================= CSV import ================= */
+/* ================= CSV import / export ================= */
 function openImport(obj) { imp = { obj, step: 1 }; renderImport(); }
 function renderImport() {
   const S = SCHEMA[imp.obj];
@@ -1039,7 +1304,7 @@ function renderImport() {
     <div class="mbody">
       <label class="drop" for="csvfile">${ic('upload', 24)}<b>Wybierz plik .csv</b><span class="mute">albo przeciągnij go tutaj</span><input type="file" id="csvfile" accept=".csv,text/csv,text/plain" class="sr"></label>
       <div class="f"><label for="csvpaste">…lub wklej dane</label><textarea id="csvpaste" rows="4" class="fin" placeholder="${esc(S.fields.slice(0, 4).map(f => f.label).join(';'))}"></textarea></div>
-      <p class="hint">Pierwszy wiersz to nagłówki. Rozpoznamy: ${S.fields.map(f => esc(f.label)).join(', ')}. Separator: przecinek lub średnik.</p>
+      <p class="hint">Pierwszy wiersz to nagłówki. Rozpoznamy: ${S.fields.map(f => esc(f.label)).join(', ')}. Separator: przecinek lub średnik. Duplikaty (ten sam e-mail lub nazwa) pominiemy.</p>
     </div>
     <div class="mfoot"><button type="button" class="text-button" data-act="tmpl">${ic('download', 16)}Pobierz szablon</button><button class="ghost-button" data-act="close-modal">Anuluj</button><button class="primary-button" data-act="imp-paste">Dalej ${ic('arrow', 16)}</button></div>`, 'wide');
   } else {
@@ -1089,11 +1354,12 @@ function loadCSV(text, name) {
   imp.step = 2; renderImport();
 }
 function readFile(file) { const r = new FileReader(); r.onload = () => loadCSV(String(r.result), file.name); r.readAsText(file, 'UTF-8'); }
+const isDup = (obj, rec) => db[obj].some(x => (rec.email && x.email && norm(x.email) === norm(rec.email)) || (obj !== 'deal' && norm(x.name) === norm(rec.name)));
 function runImport() {
-  const obj = imp.obj; let n = 0;
+  const obj = imp.obj; let n = 0, dup = 0;
   for (const row of imp.rows) {
     const rec = { id: uid(obj[0]), created: today };
-    if (obj === 'deal') { rec.stage = 'Nowe'; rec.owner = 'Kamil K.'; }
+    if (obj === 'deal') { rec.stage = 'Nowe'; rec.owner = 'Kamil K.'; rec.stageAt = today; }
     if (obj === 'lead') rec.status = 'Nowy';
     imp.map.forEach((k, i) => {
       if (!k) return;
@@ -1108,45 +1374,98 @@ function runImport() {
       else if (f.type === 'date') { v = normDate(v); if (!v) return; }
       rec[k] = v;
     });
-    if (rec.name) { db[obj].push(rec); n++; }
+    if (!rec.name) continue;
+    if (isDup(obj, rec)) { dup++; continue; }
+    db[obj].push(rec); n++;
   }
   closeModal();
   if (!(state.page === 'pipeline' && obj === 'deal')) { state.page = 'list'; state.obj = obj; state.q = ''; }
   render();
-  toast(`Zaimportowano ${n} ${plural(n, 'rekord', 'rekordy', 'rekordów')}`);
+  toast(`Zaimportowano ${n} ${plural(n, 'rekord', 'rekordy', 'rekordów')}${dup ? ` · pominięto ${dup} ${plural(dup, 'duplikat', 'duplikaty', 'duplikatów')}` : ''}`);
 }
 function downloadTemplate() {
   const S = SCHEMA[imp.obj], r = db[imp.obj][0] || {};
   const ex = S.fields.map(f => f.type === 'relation' ? (nameOf(f.to, r[f.key]) || '') : (r[f.key] ?? ''));
-  const q = v => /[",;\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
-  const csv = [S.fields.map(f => f.label), ex].map(row => row.map(q).join(';')).join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
-  a.download = `hermes-${imp.obj}-szablon.csv`;
-  document.body.appendChild(a); a.click(); a.remove();
+  download(`hermes-${SLUG[imp.obj]}-szablon.csv`, '﻿' + [S.fields.map(f => f.label), ex].map(row => row.map(csvq).join(';')).join('\n'), 'text/csv;charset=utf-8');
   toast('Pobrano szablon CSV');
+}
+function exportCSV(o) {
+  const S = SCHEMA[o];
+  const head = [...S.fields.map(f => f.label), 'Ostatni kontakt', 'Utworzono'];
+  const rows = db[o].map(r => [...S.fields.map(f => f.type === 'relation' ? (nameOf(f.to, r[f.key]) || '') : (r[f.key] ?? '')), lastTouch(o, r).slice(0, 10), r.created || '']);
+  download(`hermes-${SLUG[o]}-${today}.csv`, '﻿' + [head, ...rows].map(row => row.map(csvq).join(';')).join('\n'), 'text/csv;charset=utf-8');
+  toast(`Wyeksportowano ${db[o].length} ${plural(db[o].length, 'rekord', 'rekordy', 'rekordów')}: ${S.many.toLowerCase()}`);
 }
 
 /* ================= actions ================= */
+function setStage(d, stage) {
+  if (!stage || d.stage === stage) return;
+  const prev = d.stage;
+  d.stage = stage; d.stageAt = today;
+  logAct('deal', d.id, 'stage', `${prev || '—'} → ${stage}`);
+  if (CLOSED.includes(stage)) { d.closedAt = today; if (stage === 'Wygrana') { d.nextStep = ''; d.nextDate = ''; } }
+  else { d.closedAt = ''; d.lostReason = ''; }
+  render(); refreshDrawer();
+  if (stage === 'Przegrana') openLost(d.id);
+  else if (stage === 'Wygrana') toast(`Wygrana: ${dealLabel(d)} · ${money(d.value)}`);
+  else openNextStep(d.id, `${stage} — co dalej?`);
+}
+function completeStep(id) {
+  const d = find('deal', id); if (!d) return;
+  logAct('deal', id, 'task', d.nextStep || 'Następny krok');
+  d.nextStep = ''; d.nextDate = '';
+  render(); refreshDrawer();
+  toast(`Zrobione: ${dealLabel(d)}`, { label: 'Ustal kolejny krok', fn: () => openNextStep(id, 'Kolejny krok') });
+}
 function convertLead() {
   const l = find('lead', openRec.id); let comp = null;
   if (l.companyName) {
     comp = db.company.find(c => norm(c.name) === norm(l.companyName));
     if (!comp) { comp = { id: uid('c'), name: l.companyName, created: today }; db.company.unshift(comp); }
   }
-  const ct = { id: uid('p'), name: l.name, email: l.email || '', phone: l.phone || '', company: comp ? comp.id : '', created: today };
-  db.contact.unshift(ct);
-  const d = { id: uid('d'), name: (l.companyName || l.name) + ' — nowa szansa', company: comp ? comp.id : '', contact: ct.id, value: 0, stage: 'Nowe', owner: 'Kamil K.', created: today };
+  let ct = l.email ? db.contact.find(c => norm(c.email) === norm(l.email)) : null;
+  if (!ct) { ct = { id: uid('p'), name: l.name, email: l.email || '', phone: l.phone || '', company: comp ? comp.id : '', created: today }; db.contact.unshift(ct); }
+  const d = { id: uid('d'), name: (l.companyName || l.name) + ' — nowa szansa', company: comp ? comp.id : '', contact: ct.id, value: 0, stage: 'Nowe', stageAt: today, owner: 'Kamil K.', created: today, nextStep: '', nextDate: '' };
   db.deal.unshift(d);
   l.status = 'Zakwalifikowany';
+  logAct('lead', l.id, 'system', 'Skonwertowano na szansę');
+  logAct('deal', d.id, 'system', `Utworzono z leada: ${l.name}`);
   openRec = { obj: 'deal', id: d.id };
   render(); renderDrawer();
-  toast('Lead skonwertowany — firma, kontakt i szansa gotowe');
+  openNextStep(d.id, 'Pierwszy krok w nowej szansie');
 }
-let toastT;
-function toast(msg) {
-  const t = $('#toast'); t.innerHTML = `<span>${ic('tick', 14)}</span>${esc(msg)}`; t.classList.add('show');
-  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600);
+function deleteRecord() {
+  const { obj, id } = openRec, idx = db[obj].findIndex(x => x.id === id), r = db[obj][idx];
+  const cleared = [];
+  for (const o of OBJS) for (const f of SCHEMA[o].fields) if (f.type === 'relation' && f.to === obj) db[o].forEach(x => { if (x[f.key] === id) { cleared.push([x, f.key]); x[f.key] = ''; } });
+  const removedActs = db.activity.filter(a => a.obj === obj && a.rid === id);
+  db[obj].splice(idx, 1);
+  db.activity = db.activity.filter(a => !(a.obj === obj && a.rid === id));
+  openRec = null; renderDrawer(); render();
+  toast(`Usunięto: ${r.name}`, { label: 'Cofnij', fn: () => {
+    db[obj].splice(Math.min(idx, db[obj].length), 0, r);
+    cleared.forEach(([x, k]) => { x[k] = id; });
+    db.activity.push(...removedActs);
+    render(); toast('Przywrócono');
+  } });
+}
+let toastT, toastFn = null;
+function toast(msg, action) {
+  const t = $('#toast');
+  toastFn = action ? action.fn : null;
+  t.innerHTML = `<span class="ok">${ic('tick', 14)}</span><span>${esc(msg)}</span>${action ? `<button data-act="toast-act">${esc(action.label)}</button>` : ''}`;
+  t.classList.toggle('has-act', !!action);
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => { t.classList.remove('show'); toastFn = null; }, action ? 7000 : 2600);
+}
+function logEntry() {
+  const ta = $('#act-text'); if (!ta || !openRec) return;
+  const text = ta.value.trim();
+  if (!text) { ta.classList.add('err'); ta.focus(); return; }
+  logAct(openRec.obj, openRec.id, state.atype, text);
+  renderDrawer(); renderSide(); renderMain();
+  toast(`Dodano do historii: ${ACT[state.atype][0].toLowerCase()}`);
 }
 
 document.addEventListener('click', e => {
@@ -1160,7 +1479,7 @@ document.addEventListener('click', e => {
       openRec = null; renderDrawer(); render(); window.scrollTo(0, 0); break;
     case 'open':
       if (isModal()) closeModal();
-      openRec = { obj: t.dataset.obj, id: t.dataset.id }; renderDrawer();
+      openRec = { obj: t.dataset.obj, id: t.dataset.id }; state.allActs = false; renderDrawer();
       setTimeout(() => { const b = $('.drawer .sq-btn'); if (b) b.focus(); }, 0); break;
     case 'close-drawer': openRec = null; renderDrawer(); break;
     case 'add': {
@@ -1170,27 +1489,58 @@ document.addEventListener('click', e => {
       openAdd(t.dataset.obj, preset); break;
     }
     case 'import': openImport(t.dataset.obj); break;
+    case 'export': exportCSV(t.dataset.obj); break;
     case 'close-modal': closeModal(); break;
     case 'cmdk': openCmd(); break;
     case 'convert': convertLead(); break;
     case 'lost': state.showLost = !state.showLost; renderPipeline(); break;
-    case 'task': { const id = t.dataset.id; state.done.has(id) ? state.done.delete(id) : state.done.add(id); renderOverview(); break; }
-    case 'del': {
-      if (!t.dataset.armed) { t.dataset.armed = '1'; t.innerHTML = ic('trash', 15) + 'Kliknij ponownie, aby usunąć'; return; }
-      const { obj, id } = openRec, r = find(obj, id);
-      db[obj] = db[obj].filter(x => x.id !== id);
-      for (const o of OBJS) for (const f of SCHEMA[o].fields) if (f.type === 'relation' && f.to === obj) db[o].forEach(x => { if (x[f.key] === id) x[f.key] = ''; });
-      openRec = null; renderDrawer(); render(); toast(`Usunięto: ${r.name}`); break;
+    case 'nextstep': openNextStep(t.dataset.id); break;
+    case 'qdate': { const i = $('#ns-date'); if (i) i.value = t.dataset.d; break; }
+    case 'done': {
+      const k = t.dataset.kind, id = t.dataset.id;
+      if (k === 'step') completeStep(id);
+      else if (k === 'nostep') openNextStep(id, 'Ustal następny krok');
+      else if (k === 'lead') {
+        const l = find('lead', id); if (!l) break;
+        l.status = 'W kontakcie'; logAct('lead', id, 'task', 'Pierwszy kontakt wykonany');
+        render(); refreshDrawer(); toast(`${l.name} → W kontakcie`);
+      }
+      break;
     }
+    case 'atype': {
+      state.atype = t.dataset.t;
+      document.querySelectorAll('[data-act="atype"]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === state.atype)));
+      const ta = $('#act-text'); if (ta) { ta.placeholder = ACT_PH[state.atype]; ta.focus(); }
+      break;
+    }
+    case 'log': logEntry(); break;
+    case 'allacts': state.allActs = true; renderDrawer(); break;
+    case 'toast-act': { const fn = toastFn; toastFn = null; $('#toast').classList.remove('show'); if (fn) fn(); break; }
+    case 'del': deleteRecord(); break;
     case 'stab': state.settingsObj = t.dataset.obj; renderSettings(); break;
     case 'del-field': {
       if (!t.dataset.armed) { t.dataset.armed = '1'; t.textContent = 'Na pewno?'; return; }
       const S = SCHEMA[state.settingsObj], f = field(state.settingsObj, t.dataset.key);
       S.fields = S.fields.filter(x => x.key !== t.dataset.key);
-      renderSettings(); toast(`Usunięto pole: ${f.label}`); break;
+      renderSettings(); save(); toast(`Usunięto pole: ${f.label}`); break;
     }
     case 'aowner': state.aOwner = t.dataset.v; renderAnalytics(); break;
     case 'tmpl': downloadTemplate(); break;
+    case 'backup': download(`hermes-kopia-${today}.json`, JSON.stringify(snapshot(), null, 2), 'application/json'); toast('Pobrano kopię zapasową'); break;
+    case 'demo': {
+      if (!t.dataset.armed) { t.dataset.armed = '1'; t.textContent = 'Nadpisać obecne dane?'; return; }
+      const prev = JSON.parse(JSON.stringify(snapshot()));
+      const fresh = demoData(); for (const o of [...OBJS, 'activity']) db[o] = fresh[o];
+      render(); toast('Przywrócono dane demo', { label: 'Cofnij', fn: () => { applyState(prev); render(); toast('Przywrócono poprzednie dane'); } });
+      break;
+    }
+    case 'wipe': {
+      if (!t.dataset.armed) { t.dataset.armed = '1'; t.innerHTML = ic('trash', 16) + 'Na pewno? Kliknij ponownie'; return; }
+      const prev = JSON.parse(JSON.stringify(snapshot()));
+      for (const o of [...OBJS, 'activity']) db[o] = [];
+      render(); toast('Wyczyszczono wszystkie dane', { label: 'Cofnij', fn: () => { applyState(prev); render(); toast('Przywrócono dane'); } });
+      break;
+    }
     case 'imp-paste': {
       const v = $('#csvpaste').value;
       if (!v.trim()) { toast('Wybierz plik albo wklej dane'); return; }
@@ -1207,29 +1557,53 @@ document.addEventListener('submit', e => {
   if (form.id === 'addForm') {
     const obj = form.dataset.obj, S = SCHEMA[obj];
     const rec = { id: uid(obj[0]), created: today };
-    if (obj === 'deal') { rec.stage = 'Nowe'; rec.owner = 'Kamil K.'; }
+    if (obj === 'deal') { rec.stage = 'Nowe'; rec.owner = 'Kamil K.'; rec.stageAt = today; rec.nextStep = ''; rec.nextDate = ''; }
     if (obj === 'lead') rec.status = 'Nowy';
     for (const f of S.fields) { const v = fd.get(f.key); if (v !== null && String(v).trim() !== '') rec[f.key] = parseVal(f, v); }
+    const err = $('#addErr');
     if (!rec.name) {
       const i = $('#n-name'); i.classList.add('err'); i.setAttribute('aria-invalid', 'true'); i.focus();
-      const err = $('#addErr'); err.className = 'warn'; err.textContent = `Podaj: ${field(obj, 'name').label.toLowerCase()}.`;
+      err.className = 'warn'; err.textContent = `Podaj: ${field(obj, 'name').label.toLowerCase()}.`;
       return;
     }
+    if (isDup(obj, rec) && !form.dataset.force) {
+      form.dataset.force = '1';
+      err.className = 'warn'; err.textContent = `Taki rekord już istnieje (${rec.email ? "ten sam e-mail lub ta sama nazwa" : "ta sama nazwa"}). Kliknij „Utwórz” ponownie, aby dodać mimo to.`;
+      return;
+    }
+    if (obj === 'deal' && rec.nextStep && !rec.nextDate) rec.nextDate = addDays(3);
+    if (obj === 'deal' && CLOSED.includes(rec.stage)) rec.closedAt = today;
     db[obj].unshift(rec);
-    closeModal(); render(); if (openRec) renderDrawer();
-    toast(`Dodano: ${rec.name}`);
+    if (obj === 'deal') logAct('deal', rec.id, 'system', `Utworzono szansę w etapie: ${rec.stage}`);
+    closeModal(); render(); refreshDrawer();
+    toast(`Dodano: ${rec.name}`, { label: 'Otwórz', fn: () => { openRec = { obj, id: rec.id }; state.allActs = false; renderDrawer(); } });
+  }
+  if (form.id === 'nextForm') {
+    const d = find('deal', form.dataset.id), text = String(fd.get('text') || '').trim();
+    if (!text) { $('#ns-text').classList.add('err'); $('#ns-text').focus(); const er = $('#nsErr'); er.className = 'warn'; er.textContent = 'Opisz krok w kilku słowach.'; return; }
+    d.nextStep = text; d.nextDate = fd.get('date') || addDays(3);
+    closeModal(); render(); refreshDrawer();
+    toast(`Następny krok: ${rel(d.nextDate)}`);
+  }
+  if (form.id === 'lostForm') {
+    const d = find('deal', form.dataset.id), reason = fd.get('reason'), note = String(fd.get('note') || '').trim();
+    if (!reason) { const er = $('#lostErr'); er.className = 'warn'; er.textContent = 'Wybierz powód — to ważna wiedza na przyszłość.'; return; }
+    d.lostReason = reason;
+    if (note) logAct('deal', d.id, 'note', note);
+    closeModal(); render(); refreshDrawer();
+    toast(`Zapisano powód: ${reason}`);
   }
   if (form.id === 'fieldForm') {
     const label = String(fd.get('label') || '').trim(), type = fd.get('type');
     if (!label) { $('#nf-label').classList.add('err'); $('#nf-label').focus(); return; }
-    const f = { key: 'cf' + (++_id), label, type };
+    const f = { key: 'cf' + Date.now().toString(36), label, type };
     if (type === 'select') {
       const opts = String(fd.get('options') || '').split(',').map(s => s.trim()).filter(Boolean);
       if (!opts.length) { $('#nf-opt').classList.add('err'); $('#nf-opt').focus(); toast('Podaj opcje listy, oddzielone przecinkami'); return; }
       f.options = opts.map((o, i) => [o, CYCLE[i % CYCLE.length]]);
     }
     SCHEMA[state.settingsObj].fields.push(f);
-    renderSettings(); toast(`Dodano pole: ${label}`);
+    renderSettings(); save(); toast(`Dodano pole: ${label}`);
   }
 });
 
@@ -1239,6 +1613,7 @@ document.addEventListener('change', e => {
     const r = find(openRec.obj, openRec.id), f = field(openRec.obj, t.dataset.edit);
     const v = parseVal(f, t.value);
     if (f.key === 'name' && !v) { t.value = r.name; return; }
+    if (openRec.obj === 'deal' && f.key === 'stage') { setStage(r, v); return; }
     r[f.key] = v;
     const sub = $('#hero-sub'); if (sub) sub.textContent = subtitle(openRec.obj, r) || ' ';
     renderSide(); renderMain();
@@ -1247,10 +1622,27 @@ document.addEventListener('change', e => {
   if (t.dataset.map !== undefined && imp) { imp.map[+t.dataset.map] = t.value; renderImport(); return; }
   if (t.dataset.fl) {
     const f = field(state.settingsObj, t.dataset.fl);
-    if (t.value.trim()) { f.label = t.value.trim(); toast('Zapisano nazwę pola'); } else t.value = f.label;
+    if (t.value.trim()) { f.label = t.value.trim(); save(); toast('Zapisano nazwę pola'); } else t.value = f.label;
     return;
   }
+  if (t.dataset.setting === 'target') {
+    const v = Number(String(t.value).replace(/[^\d]/g, ''));
+    if (v > 0) { settings.target = v; t.value = grp(v); renderSide(); save(); toast(`Cel miesiąca: ${money(v)}`); } else t.value = grp(settings.target);
+    return;
+  }
+  if (t.name === 'reason') { document.querySelectorAll('.chip-btn.radio').forEach(l => l.classList.toggle('on', l.querySelector('input').checked)); return; }
   if (t.id === 'csvfile' && t.files[0]) readFile(t.files[0]);
+  if (t.id === 'backupfile' && t.files[0]) {
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const s = JSON.parse(String(rd.result));
+        if (s.app !== 'hermes-crm' || !applyState(s)) throw new Error('bad');
+        openRec = null; renderDrawer(); render(); toast('Wczytano kopię zapasową');
+      } catch (err) { toast('To nie jest poprawna kopia Hermesa'); }
+    };
+    rd.readAsText(t.files[0], 'UTF-8');
+  }
 });
 
 document.addEventListener('input', e => {
@@ -1262,11 +1654,12 @@ document.addEventListener('input', e => {
 
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCmd(); return; }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && e.target.id === 'act-text') { e.preventDefault(); logEntry(); return; }
   if (e.key === 'Escape') { if (isModal()) closeModal(); else if (openRec) { openRec = null; renderDrawer(); } return; }
   if (e.key === 'Enter' && e.target.id === 'cmdq') { const b = $('#cmdres .cmdrow'); if (b) b.click(); return; }
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (e.key === 'Enter' && e.target.classList.contains('deal-card')) { e.target.click(); return; }
-  if (e.key === 'n' && !e.metaKey && !e.ctrlKey && !isModal()) { e.preventDefault(); openAdd(addLabel()[1]); }
+  if (e.key === 'n' && !e.metaKey && !e.ctrlKey && !isModal()) { e.preventDefault(); openAdd(addTarget()[0]); }
 });
 
 /* chart tooltips */
@@ -1305,12 +1698,14 @@ document.addEventListener('drop', e => {
   if (drop) { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) readFile(f); return; }
   const col = e.target.closest && e.target.closest('.kcol'); if (!col) return;
   e.preventDefault();
+  col.classList.remove('over');
   const d = find('deal', e.dataTransfer.getData('text/plain'));
-  if (d && d.stage !== col.dataset.stage) { d.stage = col.dataset.stage; render(); toast(`${d.name} → ${d.stage}`); }
-  else col.classList.remove('over');
+  if (d) setStage(d, col.dataset.stage);
 });
 
+load();
 render();
+
 </script>
 </body>
 </html>
