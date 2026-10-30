@@ -35,7 +35,7 @@ a{color:inherit;text-decoration:none}
 .brand:hover svg{transform:translateX(3px) skewX(-5deg)}
 .workspace{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #2F3139;border-radius:10px;background:#1E1F24}
 .workspace-avatar{width:34px;height:34px;display:grid;place-items:center;flex-shrink:0;border-radius:8px;background:var(--lime);color:var(--ink);font-size:12px;font-weight:700}
-.workspace span,.profile span{display:flex;flex-direction:column;min-width:0}
+.workspace>span:not(.workspace-avatar),.profile>span:not(.profile-avatar){display:flex;flex-direction:column;min-width:0}
 .workspace b,.profile b{font-size:13px;font-weight:600}
 .workspace small,.profile small{color:#818593;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nav{display:flex;flex-direction:column;gap:3px;margin-top:26px}
@@ -619,6 +619,10 @@ html,body{background:var(--side)}
 .hero-av.person{background:#E3E8F6;color:#36405A}
 .task.done .task-check{border-color:var(--accent);background:var(--accent)}
 .tip{background:#2A2C38}
+/* v6: warm, centered monograms */
+.workspace-avatar,.profile-avatar{display:grid;place-items:center;padding:0;line-height:1;text-align:center;font-weight:600;font-size:12px;letter-spacing:.03em;font-feature-settings:"case" 1}
+.workspace-avatar{width:34px;height:34px;border-radius:9px;background:linear-gradient(160deg,#F8EFE5,#F1E3D3);color:#7A5233;border:1px solid #EADBC9;box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+.profile-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(160deg,#F8EAE3,#F0DBD0);color:#87503B;border:1px solid #EBD5CA;box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
 </style>
 </head>
 <body>
