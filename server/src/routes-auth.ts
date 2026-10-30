@@ -1,6 +1,7 @@
 // Konta: rejestracja firmy, logowanie z 2FA, wylogowanie, reset i zmiana hasła, zaproszenia, profil.
 import type { FastifyInstance } from 'fastify';
 import { COOKIE, HttpError, bad, createSession, need, audit, members, ROLE_LABEL, type Role } from './context.js';
+import { layout } from './mail.js';
 import { hashPassword, verifyPassword, passwordProblem, newId, newToken, now, sha256, inHours, inDays, newTotpSecret, verifyTotp, totpUri, limiter } from './security.js';
 
 const emailOk = (e: unknown) => typeof e === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim()) && e.length <= 200;
@@ -85,9 +86,10 @@ export default async function authRoutes(app: FastifyInstance) {
       const token = newToken();
       await db.run('INSERT INTO password_resets (id, user_id, expires_at) VALUES (?, ?, ?)', [sha256(token), u.id, inHours(2)]);
       link = `${cfg.publicUrl}/?reset=${token}`;
-      app.log.info({ email, link }, 'Link do resetu hasła');
+      app.log.info({ email, link: cfg.dev ? link : undefined }, 'Link do resetu hasła');
+      await app.mail.send({ to: email, subject: 'Ustaw nowe hasło w Hermes CRM', ...layout(['Otrzymaliśmy prośbę o zmianę hasła do Twojego konta w Hermes CRM.', 'Link jest ważny 2 godziny i działa tylko raz. Jeśli to nie Ty, zignoruj tę wiadomość: hasło się nie zmieni.'], { label: 'Ustaw nowe hasło', url: link }) });
     }
-    return cfg.dev ? { ok: true, link } : { ok: true };
+    return { ok: true, mail: app.mail.enabled, ...(cfg.dev ? { link } : {}) };
   });
   app.post('/api/auth/reset/confirm', async req => {
     const b = (req.body || {}) as Record<string, unknown>;
@@ -105,7 +107,7 @@ export default async function authRoutes(app: FastifyInstance) {
     const c = need(req);
     const b = (req.body || {}) as Record<string, unknown>;
     const u = (await db.one('SELECT password_hash FROM users WHERE id = ?', [c.user.id]))!;
-    if (!verifyPassword(String(b.current || ''), u.password_hash)) throw bad('current', 'Obecne hasło jest nieprawidłowe.');
+    if (u.password_hash && !verifyPassword(String(b.current || ''), u.password_hash)) throw bad('current', 'Obecne hasło jest nieprawidłowe.');
     const pp = passwordProblem(String(b.next || '')); if (pp) throw bad('next', pp);
     await db.run('UPDATE users SET password_hash = ? WHERE id = ?', [hashPassword(String(b.next)), c.user.id]);
     await db.run('DELETE FROM sessions WHERE user_id = ? AND id <> ?', [c.user.id, c.sessionId]);

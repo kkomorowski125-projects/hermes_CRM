@@ -1009,6 +1009,9 @@ body.auth-on>*:not(#authLayer):not(.toast){display:none!important}
 .auth-msg{margin:0 0 14px;padding:10px 12px;border-radius:8px;background:var(--accent-soft);color:var(--accent-ink);font-size:13px;line-height:1.5}
 .auth-link{display:flex;gap:8px;align-items:center;margin:0 0 14px}.auth-link .fin{height:38px;font-size:12px}
 .auth-links{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:16px;color:var(--mute);font-size:13px}
+.auth-oauth{display:grid;gap:8px;margin-bottom:14px}.auth-oauth .ghost-button{justify-content:center;gap:10px;height:44px;text-decoration:none}
+.auth-or{display:flex;align-items:center;gap:10px;margin:0 0 14px;color:var(--faint);font-size:12px}.auth-or::before,.auth-or::after{content:'';flex:1;height:1px;background:var(--line2)}
+.set-row .tag svg{margin-right:6px;vertical-align:-3px}
 .auth-foot{max-width:420px;margin:0;color:var(--faint);font-size:12px;line-height:1.5;text-align:center}
 #syncState[data-st=saving]{color:var(--accent)}#syncState[data-st=error]{color:var(--late)}
 .ro-banner{display:flex;align-items:center;gap:8px;margin:0 0 14px;padding:10px 14px;border:1px solid var(--accent-line);border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);font-size:13px}
@@ -4177,7 +4180,15 @@ function srvExpired() {
 }
 
 /* ---- logowanie, rejestracja, zaproszenie, reset hasła ---- */
-const AUTH = { mode: 'login', msg: '', err: '', code: false, invite: null, token: '', link: '' };
+const AUTH = { mode: 'login', msg: '', err: '', code: false, invite: null, token: '', link: '', prov: null, pending: null };
+const OAUTH_ERR = { state: 'Logowanie wygasło albo zostało przerwane. Spróbuj jeszcze raz.', cancelled: 'Logowanie zostało anulowane.', provider: 'Dostawca logowania nie potwierdził konta. Spróbuj jeszcze raz.', link_first: 'Konto z tym adresem już istnieje. Zaloguj się hasłem i połącz konto Google lub Microsoft w Ustawieniach.', invite_email: 'Zaproszenie jest na inny adres email. Użyj konta z tym adresem albo dołącz hasłem.', invite_invalid: 'Zaproszenie wygasło albo zostało już użyte.', signup_closed: 'Rejestracja nowych firm jest wyłączona. Poproś administratora o zaproszenie.', no_email: 'Dostawca nie przekazał adresu email.', no_org: 'To konto nie należy do żadnej firmy.', identity_taken: 'To konto Google lub Microsoft jest już połączone z innym użytkownikiem.', session: 'Zaloguj się, żeby połączyć konto.' };
+const G_ICON = '<svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.2l7.8 6C12.4 13.4 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.8c-.5-1.5-.8-3.1-.8-4.8s.3-3.3.8-4.8l-7.8-6C1 16.5 0 20.1 0 24s1 7.5 2.7 10.8l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-3.9-13.5-9.7l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg>';
+const M_ICON = '<svg width="16" height="16" viewBox="0 0 22 22" aria-hidden="true"><path fill="#F25022" d="M0 0h10.4v10.4H0z"/><path fill="#7FBA00" d="M11.6 0H22v10.4H11.6z"/><path fill="#00A4EF" d="M0 11.6h10.4V22H0z"/><path fill="#FFB900" d="M11.6 11.6H22V22H11.6z"/></svg>';
+function oauthButtons(extra = '') {
+  const p = AUTH.prov || {};
+  if (!p.google && !p.microsoft) return '';
+  return `<div class="auth-oauth">${p.google ? `<a class="ghost-button" href="/api/auth/oauth/google/start${extra}">${G_ICON}Kontynuuj z Google</a>` : ''}${p.microsoft ? `<a class="ghost-button" href="/api/auth/oauth/microsoft/start${extra}">${M_ICON}Kontynuuj z Microsoft</a>` : ''}</div><div class="auth-or"><span>albo email i hasło</span></div>`;
+}
 function authField(name, label, type = 'text', ac = '', extra = '') {
   return `<div class="f"><label for="au-${name}">${label}</label><input class="fin" id="au-${name}" name="${name}" type="${type}"${ac ? ` autocomplete="${ac}"` : ''}${extra}></div>`;
 }
@@ -4191,15 +4202,20 @@ function renderAuth() {
     register: ['Załóż konto firmy', 'Zostaniesz administratorem i zaprosisz zespół w Ustawieniach.'],
     forgot: ['Nie pamiętasz hasła?', 'Podaj email konta, a przygotujemy link do ustawienia nowego hasła.'],
     reset: ['Ustaw nowe hasło', 'Po zmianie zalogujesz się nowym hasłem na wszystkich urządzeniach.'],
-    invite: [inv ? `Dołącz do firmy ${esc(inv.org)}` : 'Zaproszenie', inv ? `Rola: ${esc(inv.roleLabel)}. Konto: ${esc(inv.email)}.` : '']
+    invite: [inv ? `Dołącz do firmy ${esc(inv.org)}` : 'Zaproszenie', inv ? `Rola: ${esc(inv.roleLabel)}. Konto: ${esc(inv.email)}.` : ''],
+    'oauth-signup': ['Załóż konto firmy', AUTH.pending ? `Logujesz się przez ${esc(AUTH.pending.provider)} jako ${esc(AUTH.pending.email)}. Podaj jeszcze nazwę firmy.` : ''],
+    'oauth-totp': ['Weryfikacja dwuetapowa', 'Podaj kod z aplikacji uwierzytelniającej w telefonie.']
   }[m];
   let body = '';
   if (m === 'login') body = authField('email', 'Email', 'email', 'username') + authField('password', 'Hasło', 'password', 'current-password') + (AUTH.code ? authField('code', 'Kod z aplikacji uwierzytelniającej', 'text', 'one-time-code', ' inputmode="numeric" maxlength="6"') : '');
   if (m === 'register') body = authField('name', 'Imię i nazwisko', 'text', 'name') + authField('company', 'Nazwa firmy', 'text', 'organization') + authField('email', 'Email', 'email', 'username') + authField('password', 'Hasło (co najmniej 10 znaków)', 'password', 'new-password');
   if (m === 'forgot') body = authField('email', 'Email', 'email', 'username');
   if (m === 'reset') body = authField('password', 'Nowe hasło (co najmniej 10 znaków)', 'password', 'new-password');
+  if (m === 'oauth-signup' && AUTH.pending) body = authField('name', 'Imię i nazwisko', 'text', 'name', ` value="${esc(AUTH.pending.name)}"`) + authField('company', 'Nazwa firmy', 'text', 'organization');
+  if (m === 'oauth-totp') body = authField('code', 'Kod z aplikacji', 'text', 'one-time-code', ' inputmode="numeric" maxlength="6"');
   if (m === 'invite' && inv) body = inv.existingUser ? authField('password', 'Hasło do Twojego konta', 'password', 'current-password') : authField('name', 'Imię i nazwisko', 'text', 'name') + authField('password', 'Hasło (co najmniej 10 znaków)', 'password', 'new-password');
-  const btn = { login: 'Zaloguj się', register: 'Załóż konto', forgot: 'Przygotuj link', reset: 'Zapisz hasło', invite: 'Dołącz do zespołu' }[m];
+  const btn = { login: 'Zaloguj się', register: 'Załóż konto', forgot: 'Wyślij link', reset: 'Zapisz hasło', invite: 'Dołącz do zespołu', 'oauth-signup': 'Załóż konto', 'oauth-totp': 'Zaloguj się' }[m];
+  const social = m === 'login' || m === 'register' ? oauthButtons() : m === 'invite' && inv && !inv.existingUser ? oauthButtons('?invite=' + encodeURIComponent(AUTH.token)) : '';
   const links = m === 'login' ? `<button type="button" class="linkish" data-act="auth-mode" data-m="forgot">Nie pamiętam hasła</button><span>Nowa firma? <button type="button" class="linkish" data-act="auth-mode" data-m="register">Załóż konto</button></span>`
     : m === 'register' ? `<span>Masz konto? <button type="button" class="linkish" data-act="auth-mode" data-m="login">Zaloguj się</button></span>`
     : `<button type="button" class="linkish" data-act="auth-mode" data-m="login">Wróć do logowania</button>`;
@@ -4209,7 +4225,8 @@ function renderAuth() {
       <h1>${T[0]}</h1><p class="auth-sub">${T[1]}</p>
       ${AUTH.msg ? `<p class="auth-msg" role="status">${esc(AUTH.msg)}</p>` : ''}
       ${AUTH.link ? `<div class="auth-link"><label class="sr" for="au-link">Link</label><input class="fin" id="au-link" readonly value="${esc(AUTH.link)}"><a class="ghost-button sm" href="${esc(AUTH.link)}">Otwórz</a></div>` : ''}
-      ${(m !== 'invite' || inv) ? `<form id="authForm" class="auth-form" novalidate>${body}
+      ${social}
+      ${(m !== 'invite' || inv) && (m !== 'oauth-signup' || AUTH.pending) ? `<form id="authForm" class="auth-form" novalidate>${body}
         <p class="auth-err" id="authErr" role="alert">${esc(AUTH.err)}</p>
         <button class="primary-button" type="submit">${btn}</button></form>` : `<p class="auth-err" role="alert">${esc(AUTH.err)}</p>`}
       <div class="auth-links">${links}</div>
@@ -4218,8 +4235,13 @@ function renderAuth() {
   </div>`;
   setTimeout(() => { const i = L.querySelector('input:not([readonly])'); if (i) i.focus(); }, 0);
 }
-async function showAuth(mode, msg) {
-  AUTH.mode = mode || 'login'; AUTH.msg = msg || ''; AUTH.err = ''; AUTH.link = '';
+async function showAuth(mode, msg, err) {
+  AUTH.mode = mode || 'login'; AUTH.msg = msg || ''; AUTH.err = err || ''; AUTH.link = '';
+  if (!AUTH.prov) AUTH.prov = await api('/api/auth/oauth/providers').catch(() => ({}));
+  if (AUTH.mode === 'oauth-signup') {
+    try { AUTH.pending = await api('/api/auth/oauth/pending/' + encodeURIComponent(AUTH.token)); }
+    catch (e) { AUTH.pending = null; AUTH.err = e.message; }
+  }
   if (AUTH.mode === 'invite') {
     try { AUTH.invite = await api('/api/invites/' + encodeURIComponent(AUTH.token)); }
     catch (e) { AUTH.invite = null; AUTH.err = e.message; }
@@ -4235,9 +4257,11 @@ async function authSubmit(form) {
     if (m === 'login') { await api('/api/auth/login', 'POST', { email: v.email, password: v.password, code: v.code || undefined }); return enterApp(); }
     if (m === 'register') { await api('/api/auth/register', 'POST', v); return enterApp(); }
     if (m === 'invite') { await api(`/api/invites/${encodeURIComponent(AUTH.token)}/accept`, 'POST', v); return enterApp(); }
+    if (m === 'oauth-signup') { await api('/api/auth/oauth/complete', 'POST', { t: AUTH.token, company: v.company, name: v.name }); return enterApp(); }
+    if (m === 'oauth-totp') { await api('/api/auth/oauth/totp', 'POST', { t: AUTH.token, code: v.code }); return enterApp(); }
     if (m === 'forgot') {
       const r = await api('/api/auth/reset/request', 'POST', { email: v.email });
-      AUTH.msg = 'Jeśli konto z tym adresem istnieje, link do zmiany hasła jest gotowy. Jest ważny 2 godziny.';
+      AUTH.msg = r.mail ? 'Jeśli konto z tym adresem istnieje, wysłaliśmy na nie link do zmiany hasła. Jest ważny 2 godziny.' : 'Jeśli konto z tym adresem istnieje, link do zmiany hasła jest gotowy. Jest ważny 2 godziny.';
       AUTH.link = r.link || ''; return renderAuth();
     }
     if (m === 'reset') {
@@ -4263,10 +4287,18 @@ function srvProfileRows() {
         <div class="acts"><label class="field-search" style="width:220px;background:#fff"><span class="sr">Imię i nazwisko</span><input type="text" data-setting="userName" value="${esc(settings.userName)}" placeholder="Imię i nazwisko" autocomplete="name"></label>${orgs}<button class="ghost-button sm" data-act="srv-logout">Wyloguj</button></div></div>
       <div class="set-row"><div><h3>Firma</h3><p>${isAdmin() ? 'Nazwa widoczna w menu i w zaproszeniach. Cel, etapy lejka i pola obiektów są wspólne dla całego zespołu.' : 'Ustawienia firmy, cel, etapy i pola zmienia administrator.'}</p></div>
         <div class="acts"><label class="field-search" style="width:220px;background:#fff"><span class="sr">Nazwa firmy</span><input type="text" data-setting="company" value="${esc(settings.company)}" placeholder="Nazwa firmy" autocomplete="organization"${isAdmin() ? '' : ' disabled'}></label></div></div>
-      <div class="set-row"><div><h3>Hasło</h3><p>Zmiana hasła wyloguje Cię na pozostałych urządzeniach.</p></div>
-        <form id="srvPass" class="srv-inline acts" novalidate><label class="sr" for="srv-p1">Obecne hasło</label><input class="fin" id="srv-p1" name="current" type="password" placeholder="Obecne hasło" autocomplete="current-password"><label class="sr" for="srv-p2">Nowe hasło</label><input class="fin" id="srv-p2" name="next" type="password" placeholder="Nowe hasło" title="Co najmniej 10 znaków" autocomplete="new-password"><button class="ghost-button sm" type="submit">Zmień hasło</button></form></div>
+      <div class="set-row"><div><h3>Hasło</h3><p>${SRV.ids && !SRV.ids.hasPassword ? 'Logujesz się przez Google lub Microsoft. Ustaw hasło, żeby logować się także emailem.' : 'Zmiana hasła wyloguje Cię na pozostałych urządzeniach.'}</p></div>
+        <form id="srvPass" class="srv-inline acts" novalidate>${SRV.ids && !SRV.ids.hasPassword ? '' : `<label class="sr" for="srv-p1">Obecne hasło</label><input class="fin" id="srv-p1" name="current" type="password" placeholder="Obecne hasło" autocomplete="current-password">`}<label class="sr" for="srv-p2">Nowe hasło</label><input class="fin" id="srv-p2" name="next" type="password" placeholder="Nowe hasło" title="Co najmniej 10 znaków" autocomplete="new-password"><button class="ghost-button sm" type="submit">Zmień hasło</button></form></div>
+      ${srvIdentityRow()}
       <div class="set-row"><div><h3>Weryfikacja dwuetapowa</h3><p>Przy logowaniu poza hasłem podajesz kod z aplikacji w telefonie. Zalecamy ją każdemu, kto ma dostęp do danych klientów.</p></div>
         <div class="acts">${twofa}</div></div>`;
+}
+function srvIdentityRow() {
+  const x = SRV.ids; if (!x || (!x.available.google && !x.available.microsoft && !x.identities.length)) return '';
+  const has = p => x.identities.find(i => i.provider === p);
+  const one = (p, label, icon) => has(p) ? `<span class="tag">${icon}${label}: ${esc(has(p).email || 'połączone')}</span><button class="ghost-button sm" data-act="srv-id-del" data-p="${p}">Odłącz</button>` : x.available[p] ? `<a class="ghost-button sm" href="/api/auth/oauth/${p}/start?mode=link">${icon}Połącz ${label}</a>` : '';
+  return `<div class="set-row"><div><h3>Logowanie Google i Microsoft</h3><p>Połączone konto pozwala logować się jednym kliknięciem. Weryfikacja dwuetapowa w Hermesie nadal obowiązuje.</p></div>
+        <div class="acts">${one('google', 'Google', G_ICON)}${one('microsoft', 'Microsoft', M_ICON)}</div></div>`;
 }
 function srvAiRow() {
   const s = SRV.s, u = SRV.aiUse;
@@ -4307,7 +4339,7 @@ function renderSrvTeam(head) {
           <div class="f"><label for="iv-role">Rola</label><select id="iv-role" class="fin" name="role">${ROLE_OPTS.map(([a, b]) => `<option value="${a}"${a === 'sales' ? ' selected' : ''}>${b}</option>`).join('')}</select></div>
           <div class="f" style="align-self:end"><button class="primary-button" type="submit">${ic('plus', 16)}Utwórz zaproszenie</button></div>
         </div>
-        ${SRV.link ? `<div class="srv-linkbox" role="status"><p><b>${esc(SRV.link.title)}</b> ${esc(SRV.link.note)}</p><div class="auth-link"><label class="sr" for="srv-link">Link</label><input class="fin" id="srv-link" readonly value="${esc(SRV.link.url)}"><button class="ghost-button sm" type="button" data-act="srv-copy" data-src="#srv-link">Kopiuj link</button></div></div>` : `<p class="hint" id="ivErr" role="alert">Hermes przygotuje link ważny 7 dni. Wyślij go osobie, którą zapraszasz.</p>`}
+        ${SRV.link ? `<div class="srv-linkbox" role="status"><p><b>${esc(SRV.link.title)}</b> ${esc(SRV.link.note)}</p><div class="auth-link"><label class="sr" for="srv-link">Link</label><input class="fin" id="srv-link" readonly value="${esc(SRV.link.url)}"><button class="ghost-button sm" type="button" data-act="srv-copy" data-src="#srv-link">Kopiuj link</button></div></div>` : `<p class="hint" id="ivErr" role="alert">Hermes wyśle zaproszenie mailem i pokaże link ważny 7 dni.</p>`}
       </form>
       ${SRV.invites.length ? `<div class="srv-invites"><h3>Oczekujące zaproszenia</h3><ul>${SRV.invites.map(i => `<li><span><b>${esc(i.email)}</b> · ${esc((ROLE_OPTS.find(r => r[0] === i.role) || ['', i.role])[1])} · ważne do ${esc(fdate(String(i.expires_at).slice(0, 10)))}</span><button class="text-button danger" data-act="srv-inv-del" data-id="${esc(i.id)}">Anuluj</button></li>`).join('')}</ul></div>` : ''}` : ''}
     </section>
@@ -4316,7 +4348,7 @@ function renderSrvTeam(head) {
       ${SRV.audit ? `<div class="tablewrap settings"><table><thead><tr><th scope="col">Kiedy</th><th scope="col">Kto</th><th scope="col">Co</th></tr></thead><tbody>${SRV.audit.map(a => `<tr><td class="mute" style="white-space:nowrap">${esc((d => fdate(isoD(d)) + ', ' + pad(d.getHours()) + ':' + pad(d.getMinutes()))(new Date(a.at)))}</td><td>${esc(a.user_name || 'System')}</td><td>${esc(auditText(a))}</td></tr>`).join('') || '<tr><td colspan="3" class="mute">Brak wpisów</td></tr>'}</tbody></table></div>` : ''}
     </section>` : ''}`;
 }
-const AUDIT_TXT = { login: 'Logowanie', org_created: 'Założenie konta firmy', record_created: 'Utworzenie', record_updated: 'Zmiana', record_deleted: 'Usunięcie', export: 'Eksport kopii danych', import: 'Import kopii danych', gdpr_export: 'Eksport danych osoby (RODO)', gdpr_erase: 'Usunięcie danych osoby (RODO)', invite_created: 'Zaproszenie', invite_accepted: 'Przyjęcie zaproszenia', member_updated: 'Zmiana uprawnień', member_removed: 'Usunięcie z zespołu', reset_link_created: 'Link do zmiany hasła', '2fa_enabled': 'Włączenie weryfikacji dwuetapowej', '2fa_disabled': 'Wyłączenie weryfikacji dwuetapowej', ai_first_use_today: 'Pierwsze dziś zapytanie do Hermes AI' };
+const AUDIT_TXT = { login: 'Logowanie', org_created: 'Założenie konta firmy', record_created: 'Utworzenie', record_updated: 'Zmiana', record_deleted: 'Usunięcie', export: 'Eksport kopii danych', import: 'Import kopii danych', gdpr_export: 'Eksport danych osoby (RODO)', gdpr_erase: 'Usunięcie danych osoby (RODO)', invite_created: 'Zaproszenie', invite_accepted: 'Przyjęcie zaproszenia', member_updated: 'Zmiana uprawnień', member_removed: 'Usunięcie z zespołu', reset_link_created: 'Link do zmiany hasła', '2fa_enabled': 'Włączenie weryfikacji dwuetapowej', '2fa_disabled': 'Wyłączenie weryfikacji dwuetapowej', ai_first_use_today: 'Pierwsze dziś zapytanie do Hermes AI', identity_linked: 'Połączenie konta logowania', identity_unlinked: 'Odłączenie konta logowania' };
 function auditText(a) {
   let d = a.detail; try { d = typeof d === 'string' ? JSON.parse(d) : d; } catch (e) { d = null; }
   const what = AUDIT_TXT[a.action] || a.action;
@@ -4347,8 +4379,9 @@ async function srvAction(a, t) {
       case 'srv-mreset': {
         const m = SRV.s.members.find(x => x.id === t.dataset.id);
         const r = await api(`/api/org/members/${encodeURIComponent(t.dataset.id)}/reset`, 'POST', {});
-        SRV.link = { title: `Link do nowego hasła dla: ${m ? m.name : 'osoby'}.`, note: 'Jest ważny 24 godziny i działa raz.', url: r.link }; renderSettings(); return;
+        SRV.link = { title: `Link do nowego hasła dla: ${m ? m.name : 'osoby'}${r.sent ? ' wysłany mailem' : ''}.`, note: 'Jest ważny 24 godziny i działa raz.', url: r.link }; renderSettings(); return;
       }
+      case 'srv-id-del': await api('/api/me/identities/' + t.dataset.p, 'DELETE'); SRV.ids = await api('/api/me/identities'); renderSettings(); toast('Odłączono konto logowania'); return;
       case 'srv-inv-del': await api('/api/org/invites/' + encodeURIComponent(t.dataset.id), 'DELETE'); toast('Anulowano zaproszenie'); await srvRefreshTeam(); return;
       case 'srv-audit': SRV.audit = (await api('/api/audit?limit=50')).entries || []; renderSettings(); return;
       case 'srv-gdpr-export': {
@@ -4382,13 +4415,13 @@ document.addEventListener('submit', async e => {
       e.preventDefault();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v.email || '').trim())) { const i = $('#iv-email'); i.classList.add('err'); i.focus(); toast('Podaj poprawny adres email'); return; }
       const r = await api('/api/org/invites', 'POST', { email: v.email.trim(), role: v.role });
-      SRV.link = { title: `Zaproszenie dla ${v.email.trim()} jest gotowe.`, note: 'Skopiuj link i wyślij go tej osobie. Jest ważny 7 dni.', url: r.link };
+      SRV.link = r.sent ? { title: `Wysłaliśmy zaproszenie na ${v.email.trim()}.`, note: 'Link jest ważny 7 dni. Możesz go też skopiować i przesłać inną drogą.', url: r.link } : { title: `Zaproszenie dla ${v.email.trim()} jest gotowe.`, note: 'Skopiuj link i wyślij go tej osobie. Jest ważny 7 dni.', url: r.link };
       await srvRefreshTeam(); return;
     }
     if (f.id === 'srvPass') {
       e.preventDefault();
       await api('/api/auth/password', 'POST', { current: v.current, next: v.next });
-      f.reset(); toast('Zmieniono hasło'); return;
+      f.reset(); toast('Zapisano hasło'); if (SRV.ids && !SRV.ids.hasPassword) { SRV.ids.hasPassword = true; renderSettings(); } return;
     }
     if (f.id === 'srvTotp') {
       e.preventDefault();
@@ -4420,6 +4453,11 @@ document.addEventListener('change', async e => {
   }
 });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) srvPoll(); });
+let srvErrs = 0;
+window.addEventListener('error', e => {
+  if (!SRV.on || srvErrs++ >= 5) return;
+  api('/api/client-errors', 'POST', { message: e.message, source: e.filename, line: e.lineno, stack: e.error && e.error.stack }).catch(() => {});
+});
 window.addEventListener('beforeunload', e => {
   if (!SRV.on || !SRV.s || readOnly()) return;
   if (SRV.busy || SRV.pending || SRV.status === 'error') { e.preventDefault(); e.returnValue = ''; }
@@ -4434,12 +4472,20 @@ async function srvBoot() {
   SRV.on = true;
   if (P.get('invite')) { AUTH.token = P.get('invite'); await showAuth('invite'); return true; }
   if (P.get('reset')) { AUTH.token = P.get('reset'); await showAuth('reset'); return true; }
+  if (P.get('oauth_signup')) { AUTH.token = P.get('oauth_signup'); history.replaceState(null, '', location.pathname); await showAuth('oauth-signup'); return true; }
+  if (P.get('oauth_totp')) { AUTH.token = P.get('oauth_totp'); history.replaceState(null, '', location.pathname); await showAuth('oauth-totp'); return true; }
+  const oerr = P.get('oauth_error'), oinfo = P.get('oauth');
+  if (oerr || oinfo) history.replaceState(null, '', location.pathname);
+  if (oerr && r.status === 401) { await showAuth('login', '', OAUTH_ERR[oerr] || 'Logowanie nie powiodło się.'); return true; }
   if (r.status === 401) { await showAuth('login'); return true; }
   try { await srvLoad(); } catch (e) { await showAuth('login', e.message); return true; }
   document.body.classList.remove('auth-on');
   state.recent = []; openRec = null;
   srvRender(true);
   api('/api/ai/status').then(u => { SRV.aiUse = u; }).catch(() => {});
+  api('/api/me/identities').then(x => { SRV.ids = x; if (state.page === 'settings') renderSettings(); }).catch(() => {});
+  if (oinfo === 'linked') { state.page = 'settings'; state.settingsObj = 'general'; render(); toast('Połączono konto logowania'); }
+  else if (oerr) toast(OAUTH_ERR[oerr] || 'Logowanie nie powiodło się.');
   SRV.poll = setInterval(srvPoll, 20000);
   return true;
 }

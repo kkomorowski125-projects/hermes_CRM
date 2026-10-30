@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { Db, Row } from './db.js';
 import { newId, now, sha256 } from './security.js';
 import type { Config } from './config.js';
+import type { Mailer } from './mail.js';
 
 export type Role = 'admin' | 'sales' | 'viewer';
 export const ROLES: Role[] = ['admin', 'sales', 'viewer'];
@@ -18,7 +19,7 @@ export interface Ctx {
 }
 declare module 'fastify' {
   interface FastifyRequest { ctx?: Ctx }
-  interface FastifyInstance { db: Db; cfg: Config }
+  interface FastifyInstance { db: Db; cfg: Config; mail: Mailer; alert: (title: string, detail: Record<string, unknown>) => Promise<boolean> }
 }
 
 export class HttpError extends Error {

@@ -26,6 +26,23 @@ export const config = {
   aiDailyLimit: num(process.env.AI_DAILY_LIMIT, 200),
   /** W trybie deweloperskim linki resetu i zaproszeń wracają w odpowiedzi API */
   dev: process.env.NODE_ENV !== 'production',
-  logLevel: process.env.LOG_LEVEL || 'info'
+  logLevel: process.env.LOG_LEVEL || 'info',
+  /** Wysyłka maili: smtp://użytkownik:hasło@host:587 albo smtps://…:465; puste = maile tylko w logu */
+  smtpUrl: process.env.SMTP_URL || '',
+  mailFrom: process.env.MAIL_FROM || 'Hermes CRM <no-reply@localhost>',
+  /** Logowanie Google i Microsoft (OpenID Connect); puste = przycisk ukryty */
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+  microsoftClientId: process.env.MICROSOFT_CLIENT_ID || '',
+  microsoftClientSecret: process.env.MICROSOFT_CLIENT_SECRET || '',
+  microsoftTenant: process.env.MICROSOFT_TENANT || 'common',
+  /** Adres webhooka (Slack, Teams, Discord) dla alertów o błędach serwera */
+  alertWebhook: process.env.ALERT_WEBHOOK_URL || '',
+  /** Poranny plan dnia mailem: godzina wysyłki w strefie Europe/Warsaw, puste = wyłączony */
+  digestHour: process.env.DIGEST_HOUR === '' ? -1 : num(process.env.DIGEST_HOUR, 7),
+  /** Wyszukiwanie firm po NIP w Białej liście MF */
+  nipApi: process.env.NIP_API_URL || 'https://wl-api.mf.gov.pl',
+  /** Tylko testy: podmiana adresów dostawców logowania */
+  oauthOverride: {} as Record<string, { auth?: string; token?: string }>
 };
 export type Config = typeof config;

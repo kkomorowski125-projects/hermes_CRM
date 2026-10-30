@@ -1,6 +1,7 @@
 // Zespół i firma: członkowie, role, widoczność, cele, zaproszenia, ustawienia firmy, dziennik zmian.
 import type { FastifyInstance } from 'fastify';
-import { HttpError, bad, need, audit, members, ROLES, parseJson, type Role } from './context.js';
+import { layout } from './mail.js';
+import { HttpError, bad, need, audit, members, ROLES, ROLE_LABEL, parseJson, type Role } from './context.js';
 import { newToken, sha256, now, inDays, inHours } from './security.js';
 
 const str = (v: unknown, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -53,14 +54,17 @@ export default async function orgRoutes(app: FastifyInstance) {
   app.post('/api/org/members/:id/reset', async req => {
     const c = need(req, 'admin');
     const id = (req.params as any).id as string;
-    if (!(await db.one('SELECT 1 AS x FROM memberships WHERE org_id = ? AND user_id = ?', [c.org.id, id]))) throw new HttpError(404, 'not_found', 'Nie ma takiej osoby w zespole.');
+    const u = await db.one('SELECT u.email FROM memberships m JOIN users u ON u.id = m.user_id WHERE m.org_id = ? AND m.user_id = ?', [c.org.id, id]);
+    if (!u) throw new HttpError(404, 'not_found', 'Nie ma takiej osoby w zespole.');
     const token = newToken();
     await db.run('INSERT INTO password_resets (id, user_id, expires_at) VALUES (?, ?, ?)', [sha256(token), id, inHours(24)]);
     await audit(db, { orgId: c.org.id, userId: c.user.id }, 'reset_link_created', 'user', id);
-    return { link: `${cfg.publicUrl}/?reset=${token}` };
+    const link = `${cfg.publicUrl}/?reset=${token}`;
+    const sent = await app.mail.send({ to: u.email, subject: 'Ustaw nowe hasło w Hermes CRM', ...layout([`Administrator firmy ${c.org.name} przygotował dla Ciebie link do ustawienia nowego hasła.`, 'Link jest ważny 24 godziny i działa tylko raz.'], { label: 'Ustaw nowe hasło', url: link }) });
+    return { link, sent };
   });
 
-  /* zaproszenia: link ważny 7 dni, do skopiowania i wysłania (wysyłka maili w kolejnej fazie) */
+  /* zaproszenia: link ważny 7 dni, wysyłany mailem i do skopiowania */
   app.get('/api/org/invites', async req => {
     const c = need(req, 'admin');
     return { invites: await db.all('SELECT id, email, role, expires_at, created_at FROM invites WHERE org_id = ? AND accepted_at IS NULL AND expires_at > ? ORDER BY created_at DESC', [c.org.id, now()]) };
@@ -76,8 +80,10 @@ export default async function orgRoutes(app: FastifyInstance) {
     await db.run('INSERT INTO invites (id, org_id, email, role, invited_by, expires_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)', [sha256(token), c.org.id, email, role, c.user.id, inDays(7), now()]);
     await audit(db, { orgId: c.org.id, userId: c.user.id }, 'invite_created', null, null, { email, role });
     const link = `${cfg.publicUrl}/?invite=${token}`;
-    app.log.info({ email, link }, 'Zaproszenie do zespołu');
-    return { link };
+    app.log.info({ email, link: cfg.dev ? link : undefined }, 'Zaproszenie do zespołu');
+    const m = layout([`${c.user.name} zaprasza Cię do zespołu firmy ${c.org.name} w Hermes CRM.`, `Rola: ${ROLE_LABEL[role as Role]}. Zaproszenie jest ważne 7 dni.`], { label: 'Dołącz do zespołu', url: link });
+    const sent = await app.mail.send({ to: email, subject: `Zaproszenie do ${c.org.name} w Hermes CRM`, ...m });
+    return { link, sent };
   });
   app.delete('/api/org/invites/:id', async req => {
     const c = need(req, 'admin');

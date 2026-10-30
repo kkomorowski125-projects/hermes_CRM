@@ -1,5 +1,6 @@
-# Uruchomienie jednym poleceniem: docker compose up -d
+# Uruchomienie jednym poleceniem: docker compose up -d --build
 # Aplikacja: http://localhost:3000 (pierwsze konto zakłada firmę i zostaje administratorem).
+# Produkcja z HTTPS: ustaw DOMAIN w .env i uruchom: docker compose --profile https up -d --build
 services:
   db:
     image: postgres:16-alpine
@@ -28,7 +29,38 @@ services:
       DATABASE_URL: postgres://hermes:${POSTGRES_PASSWORD:-hermes}@db:5432/hermes
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
     ports:
-      - "3000:3000"
+      - "${APP_PORT:-3000}:3000"
+
+  # Szyfrowane kopie bazy co noc do ./backups (wymaga BACKUP_PASSPHRASE w .env)
+  backup:
+    build: ops/backup
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://hermes:${POSTGRES_PASSWORD:-hermes}@db:5432/hermes
+      BACKUP_PASSPHRASE: ${BACKUP_PASSPHRASE:-}
+      BACKUP_HOUR: ${BACKUP_HOUR:-1}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes:
+      - ./backups:/backups
+
+  # HTTPS z certyfikatem Let's Encrypt
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["https"]
+    restart: unless-stopped
+    depends_on: [app]
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ops/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
 
 volumes:
   pgdata:
+  caddy_data:

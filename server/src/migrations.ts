@@ -84,5 +84,37 @@ export const MIGRATIONS: { id: number; name: string; up: string[] }[] = [
         PRIMARY KEY (org_id, day)
       )`
     ]
+  },
+  {
+    id: 2,
+    name: 'logowanie Google i Microsoft, formularz leada, poranny plan',
+    up: [
+      `CREATE TABLE identities (
+        provider TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        email TEXT,
+        created_at TEXT NOT NULL,
+        PRIMARY KEY (provider, subject)
+      )`,
+      'CREATE INDEX identities_user ON identities (user_id)',
+      `CREATE TABLE oauth_states (
+        id TEXT PRIMARY KEY,
+        data TEXT NOT NULL,
+        expires_at TEXT NOT NULL
+      )`,
+      `CREATE TABLE lead_forms (
+        id TEXT PRIMARY KEY,
+        org_id TEXT NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
+        created_by TEXT,
+        created_at TEXT NOT NULL
+      )`,
+      `CREATE TABLE digests (
+        user_id TEXT NOT NULL,
+        org_id TEXT NOT NULL,
+        day TEXT NOT NULL,
+        PRIMARY KEY (user_id, org_id, day)
+      )`
+    ]
   }
 ];

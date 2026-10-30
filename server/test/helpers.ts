@@ -3,14 +3,14 @@ import pg from 'pg';
 import { buildApp } from '../src/app.js';
 import { openDb } from '../src/db.js';
 
-export async function freshApp(cfg: Record<string, unknown> = {}) {
+export async function freshApp(cfg: Record<string, unknown> = {}, opts: { mailer?: import('../src/mail.js').Mailer } = {}) {
   const url = process.env.TEST_DATABASE_URL || '';
   if (url) {
     const c = new pg.Client({ connectionString: url });
     await c.connect(); await c.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;'); await c.end();
   }
   const db = await openDb({ databaseUrl: url, sqlitePath: ':memory:' });
-  const app = await buildApp({ publicUrl: 'http://test', dev: true, ...cfg }, { db, logger: false });
+  const app = await buildApp({ publicUrl: 'http://test', dev: true, ...cfg }, { db, logger: false, ...opts });
   return { app, db, close: async () => { await app.close(); await db.close(); } };
 }
 

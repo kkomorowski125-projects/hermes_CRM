@@ -1,0 +1,6 @@
+# HTTPS z automatycznym certyfikatem Let's Encrypt. Domena z DOMAIN w .env.
+{$DOMAIN} {
+	encode gzip
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	reverse_proxy app:3000
+}
