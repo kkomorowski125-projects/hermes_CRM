@@ -6,7 +6,9 @@ Prosty, minimalistyczny CRM dla małych i średnich firm — zaprojektowany dla 
 
 Otwórz `index.html` w przeglądarce (najlepiej na komputerze, w pełnym oknie).
 
-Dane zapisują się automatycznie w tej przeglądarce. Na start zobaczysz dane przykładowe — w **Ustawieniach → Ogólne** możesz je wyczyścić albo przywrócić. Tam też pobierzesz i wczytasz **kopię zapasową** (plik JSON), żeby przenieść dane na inny komputer.
+Hermes startuje **pusty**. Na Pulpicie czeka lista „Zacznij tutaj”: uzupełnij profil (imię i nazwa firmy), ustaw cel sprzedaży na miesiąc, dodaj lub zaimportuj firmy i kontakty, załóż pierwszą szansę i opcjonalnie podłącz Hermes AI. Chcesz najpierw zobaczyć Hermesa w akcji? Kliknij „Wczytaj dane demo” — usuniesz je w **Ustawieniach → Ogólne** („Wyczyść wszystko”).
+
+Dane zapisują się automatycznie w tej przeglądarce. W Ustawieniach pobierzesz i wczytasz **kopię zapasową** (plik JSON), żeby przenieść dane na inny komputer.
 
 ## Jak pracować z Hermesem
 
@@ -29,7 +31,7 @@ Dane zapisują się automatycznie w tej przeglądarce. Na start zobaczysz dane p
 - **Cofnij** — usunięcie rekordu, przywrócenie demo i wyczyszczenie danych można cofnąć z powiadomienia.
 - **Analityka** — wygrane w tym miesiącu względem celu, prognoza zamknięć, pokrycie celu, zdrowie lejka (z czasem w etapie), zespół, jakość źródeł leadów i powody przegranych.
 - **Hermes AI** — przycisk „Ask Hermes AI” (⌘J) w prawym górnym rogu: plan dnia, zagrożone szanse, stan celu, kolejność leadów, podsumowania rekordów, szkice follow-upów i propozycje następnych kroków. Bez klucza działa lokalnie na danych z CRM-a; z kluczem Claude API (Ustawienia → Ogólne) odpowiada na dowolne pytania.
-- **Ustawienia** — cel sprzedaży na miesiąc, Hermes AI (klucz Claude API i model), kopia zapasowa, eksport CSV, dane demo oraz pola obiektów (zmiana nazw, własne pola).
+- **Ustawienia** — profil (imię i nazwa firmy), cel sprzedaży na miesiąc, Hermes AI (klucz Claude API i model), kopia zapasowa, eksport CSV, dane demo oraz pola obiektów (zmiana nazw, własne pola).
 
 ## Skróty klawiszowe
 

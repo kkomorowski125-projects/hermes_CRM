@@ -623,6 +623,28 @@ html,body{background:var(--side)}
 .workspace-avatar,.profile-avatar{display:grid;place-items:center;padding:0;line-height:1;text-align:center;font-weight:600;font-size:12px;letter-spacing:.03em;font-feature-settings:"case" 1}
 .workspace-avatar{width:34px;height:34px;border-radius:9px;background:linear-gradient(160deg,#F8EFE5,#F1E3D3);color:#7A5233;border:1px solid #EADBC9;box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
 .profile-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(160deg,#F8EAE3,#F0DBD0);color:#87503B;border:1px solid #EBD5CA;box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+/* v7: onboarding */
+.onb{margin-bottom:14px;border-color:var(--accent-line);background:linear-gradient(170deg,#F7F7FD,#fff 45%)}
+.onb .panel-head{border-bottom-color:var(--accent-line)}
+.onb .idx{color:var(--accent)}
+.onb-prog{display:flex;align-items:center;gap:10px;color:var(--accent-ink);font-size:13px;font-weight:600}
+.onb-prog i{width:120px;height:6px;border-radius:3px;background:var(--accent-soft-2);overflow:hidden;display:block}
+.onb-prog b{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s}
+.onb-row{display:flex;align-items:center;gap:16px;padding:16px 22px;border-top:1px solid var(--line2)}
+.onb-row:first-of-type{border-top:0}
+.onb-num{width:30px;height:30px;display:grid;place-items:center;flex-shrink:0;border-radius:50%;border:1.5px solid var(--accent-line);background:#fff;color:var(--accent-ink);font:600 13px var(--display)}
+.onb-row.done .onb-num{border-color:transparent;background:var(--accent-soft-2);color:var(--accent-ink)}
+.onb-row>div:nth-child(2){flex:1;min-width:0}
+.onb-row h4{margin:0;font:600 15px var(--display);letter-spacing:-.01em;color:var(--ink)}
+.onb-row h4 em{margin-left:6px;font:500 11px 'DM Sans',system-ui,sans-serif;font-style:normal;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;vertical-align:1px}
+.onb-row p{margin:3px 0 0;color:var(--mute);font-size:13px}
+.onb-row.done h4{color:var(--mute)}
+.onb-acts{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.onb-ok{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;background:#EAF4EE;color:#2F6B4F;font-size:12px;font-weight:600}
+.onb-demo{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 22px;border-top:1px dashed var(--accent-line);color:var(--text);font-size:13px}
+.onb-demo svg{color:var(--accent)}
+a.profile{color:inherit;border-radius:10px;transition:background .15s}
+a.profile:hover b{color:var(--accent-ink)}
 </style>
 </head>
 <body>
@@ -719,7 +741,8 @@ const P = {
   trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
   note: '<path d="M5 4h14v11l-5 5H5z"/><path d="M9 9h6M9 13h4"/>',
   meet: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
-  flag: '<path d="M5 21V4h11l-2 4 2 4H5"/>'
+  flag: '<path d="M5 21V4h11l-2 4 2 4H5"/>',
+  person: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>'
 };
 const ic = (n, s = 18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
 const LOGO = `<span class="logo-mark"><svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><path fill="#FFFFFF" d="M3 21.5h7.2L24.8 7h-7.2L3 21.5Zm10.2 0h6.3L29 12h-6.3l-9.5 9.5ZM3 14.9h6.1L17 7h-6.1L3 14.9Z"/></svg></span>`;
@@ -856,11 +879,19 @@ function demoData() {
     ].map(([obj, rid, type, text, n, t], i) => ({ id: 'a' + i, obj, rid, type, text, at: at(n, t) }))
   };
 }
-const db = demoData();
-const settings = { target: 100000 };
+const emptyData = () => ({ company: [], contact: [], lead: [], deal: [], activity: [] });
+const db = emptyData();
+const settings = { target: 100000, userName: '', company: '', targetSet: false, onboardingHidden: false };
+const me = () => settings.userName.trim() || 'Ja';
+const firstName = () => settings.userName.trim().split(/\s+/)[0] || '';
+function syncOwners() {
+  const f = field('deal', 'owner'); if (!f) return;
+  const names = [...new Set([me(), ...db.deal.map(d => d.owner).filter(Boolean)])];
+  f.options = names.map((n, i) => [n, ['blue', 'violet', 'teal', 'amber', 'green'][i % 5]]);
+}
 
 /* ================= persistence ================= */
-const KEY = 'hermes-crm-v1';
+const KEY = 'hermes-crm-v2';
 function snapshot() {
   return {
     app: 'hermes-crm', v: 1, savedAt: nowISO(), db, settings,
@@ -987,7 +1018,7 @@ function renderSide() {
   let labelN = 0;
   $('#side').innerHTML = `
     <button class="brand" data-act="go" data-page="overview">${LOGO}<span>Hermes</span></button>
-    <div class="workspace"><span class="workspace-avatar">MF</span><span><b>Moja firma</b><small>${saveOk ? 'Zapis lokalny · włączony' : 'Zapis niedostępny'}</small></span></div>
+    <div class="workspace"><span class="workspace-avatar">${esc(initials(settings.company || 'Moja firma', false))}</span><span><b>${esc(settings.company || 'Moja firma')}</b><small>${saveOk ? 'Zapis lokalny · włączony' : 'Zapis niedostępny'}</small></span></div>
     <nav class="nav" aria-label="Nawigacja">${NAV.map(n => {
       if (n[0] === 'label') return `<span class="nav-label${labelN++ ? ' second' : ''}">${n[1]}</span>`;
       if (n[0].startsWith('list:')) {
@@ -1000,7 +1031,7 @@ function renderSide() {
     <div class="side-bottom">
       <div class="target"><span><b>Cel: ${esc(monthName())}</b><small>${kzl(won)} z ${kzl(settings.target)}</small></span><b>${att}%</b></div>
       <div class="progress"><i style="width:${Math.min(100, att)}%"></i></div>
-      <div class="profile"><span class="profile-avatar">KK</span><span><b>Kamil K.</b><small>Właściciel konta</small></span></div>
+      <a href="#" class="profile" data-act="go" data-page="settings" title="Profil i ustawienia"><span class="profile-avatar">${settings.userName.trim() ? esc(initials(settings.userName, true)) : ic('person', 17)}</span><span><b>${esc(settings.userName.trim() || 'Twoje imię')}</b><small>${settings.userName.trim() ? 'Właściciel konta' : 'Uzupełnij profil'}</small></span></a>
     </div>`;
 }
 function addTarget() {
@@ -1056,8 +1087,31 @@ function todayItems() {
   db.lead.filter(l => l.status === 'Nowy').forEach(l => items.push({ kind: 'lead', obj: 'lead', id: l.id, hot: false, title: `Pierwszy kontakt: ${l.name}`, meta: `Nowy lead · ${l.companyName || l.source || 'bez źródła'}` }));
   return items;
 }
+function onboardingSteps() {
+  const btn = (act, obj, label, ghost) => `<button class="${ghost ? 'ghost-button' : 'primary-button'} sm" data-act="${act}"${obj ? ` data-obj="${obj}"` : ''}${act === 'go' ? ' data-page="settings"' : ''}>${label}</button>`;
+  return [
+    { done: !!(settings.userName.trim() && settings.company.trim()), title: 'Uzupełnij profil', desc: 'Twoje imię i nazwa firmy — Hermes podpisze nimi wiadomości i powita Cię po imieniu.', acts: btn('go', '', 'Uzupełnij', true) },
+    { done: settings.targetSet, title: 'Ustaw cel sprzedaży na miesiąc', desc: 'Na jego podstawie Hermes liczy postęp, prognozę i pokrycie celu.', acts: btn('go', '', 'Ustaw cel', true) },
+    { done: db.company.length > 0, title: 'Dodaj firmy', desc: 'Ręcznie albo z pliku CSV — np. eksport z Excela, Google Sheets lub innego CRM-a.', acts: btn('import', 'company', `${ic('upload', 15)}Import CSV`, true) + btn('add', 'company', `${ic('plus', 15)}Dodaj firmę`) },
+    { done: db.contact.length > 0, title: 'Dodaj kontakty', desc: 'Osoby, z którymi rozmawiasz. Powiąż je z firmami, żeby historia była w jednym miejscu.', acts: btn('import', 'contact', `${ic('upload', 15)}Import CSV`, true) + btn('add', 'contact', `${ic('plus', 15)}Dodaj kontakt`) },
+    { done: db.deal.length > 0, title: 'Załóż pierwszą szansę', desc: 'Z wartością i następnym krokiem — od tego zaczyna się lejek i lista „Na dziś”.', acts: btn('add', 'deal', `${ic('plus', 15)}Dodaj szansę`) },
+    { done: !!aiCfg.key, optional: true, title: 'Podłącz Hermes AI', desc: 'Bez klucza AI działa lokalnie na Twoich danych; z kluczem Claude API odpowie na każde pytanie.', acts: btn('ai-setup', '', 'Podłącz', true) }
+  ];
+}
+function onboardingPanel() {
+  const steps = onboardingSteps(), req = steps.filter(s => !s.optional), doneN = req.filter(s => s.done).length;
+  if (settings.onboardingHidden || (doneN === req.length && steps.every(s => s.done))) return '';
+  const allReq = doneN === req.length;
+  return `<section class="panel onb" aria-label="Pierwsze kroki">
+    <div class="panel-head"><div class="ttl"><span class="idx">${SPARK(14)}</span><h2>${allReq ? 'Hermes jest gotowy do pracy' : 'Zacznij tutaj'}</h2><p>${allReq ? 'Podstawy masz za sobą. Możesz ukryć tę listę.' : 'Kilka minut i Hermes będzie gotowy do codziennej sprzedaży.'}</p></div>
+      <div class="onb-prog"><span>${doneN} z ${req.length}</span><i><b style="width:${doneN / req.length * 100}%"></b></i>${allReq ? '<button class="text-button" data-act="onb-hide">Ukryj</button>' : ''}</div></div>
+    ${steps.map((s, i) => `<div class="onb-row${s.done ? ' done' : ''}"><span class="onb-num">${s.done ? ic('tick', 15) : i + 1}</span><div><h4>${esc(s.title)}${s.optional ? ' <em>opcjonalnie</em>' : ''}</h4><p>${esc(s.desc)}</p></div><div class="onb-acts">${s.done ? '<span class="onb-ok">Gotowe</span>' : s.acts}</div></div>`).join('')}
+    ${!db.deal.length && !db.company.length ? `<div class="onb-demo">${ic('spark', 15)}<span>Wolisz najpierw zobaczyć Hermesa w akcji?</span><button class="linkish" data-act="demo-quick">Wczytaj dane demo</button><span class="mute">— usuniesz je jednym kliknięciem w Ustawieniach.</span></div>` : ''}
+  </section>`;
+}
 function renderOverview() {
   const deals = db.deal, open = deals.filter(isOpen);
+  const empty = !OBJS.some(o => db[o].length);
   const won = deals.filter(d => d.stage === 'Wygrana'), lost = deals.filter(d => d.stage === 'Przegrana');
   const monthWon = sum(wonIn(deals)), att = pct(monthWon, settings.target) || 0;
   const series = wonByMonth(deals);
@@ -1066,7 +1120,7 @@ function renderOverview() {
   const wr = pct(won.length, won.length + lost.length);
   const top = [...open].sort((a, b) => (b.value || 0) - (a.value || 0)).slice(0, 5);
   const h = new Date().getHours();
-  main.innerHTML = heading({ eyebrow: dayLabel(), live: true, title: `${h < 18 ? 'Dzień dobry' : 'Dobry wieczór'}, `, accent: 'Kamil.', sub: items.length ? `Masz ${items.length} ${plural(items.length, 'rzecz', 'rzeczy', 'rzeczy')} do zrobienia dziś${lateN ? `, w tym ${lateN} po terminie` : ''}.` : 'Wszystko na bieżąco — dobra robota.' }) + `
+  main.innerHTML = heading({ eyebrow: dayLabel(), live: true, title: `${h < 18 ? 'Dzień dobry' : 'Dobry wieczór'}${firstName() ? ', ' : ''}`, accent: firstName() ? firstName() + '.' : '.', sub: empty ? 'Witaj w Hermesie. Uzupełnij podstawy, a od jutra rano lista „Na dziś” poprowadzi Cię przez sprzedaż.' : items.length ? `Masz ${items.length} ${plural(items.length, 'rzecz', 'rzeczy', 'rzeczy')} do zrobienia dziś${lateN ? `, w tym ${lateN} po terminie` : ''}.` : 'Wszystko na bieżąco — dobra robota.' }) + onboardingPanel() + (empty ? '' : `
     <section class="metrics" aria-label="Kluczowe wskaźniki">
       <article class="metric featured">
         <div class="metric-label"><span>Wartość lejka</span><span class="trend">${att}% celu</span></div>
@@ -1091,7 +1145,7 @@ function renderOverview() {
         <div class="tasks">${top.length ? top.map(d => `<div class="task"><button class="task-body" data-act="open" data-obj="deal" data-id="${d.id}" style="flex-direction:row;align-items:center;gap:12px">${avatar(dealLabel(d), 'company', 34)}<span style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1"><b>${esc(dealLabel(d))}</b><small>${esc(d.stage)} · ${d.nextStep ? esc(d.nextStep) : 'brak następnego kroku'}</small></span><b style="white-space:nowrap">${kzl(d.value)}</b></button></div>`).join('')
         : '<div class="empty"><h3>Brak otwartych szans</h3></div>'}</div>
       </section>
-    </div>`;
+    </div>`);
 }
 
 /* ================= pipeline ================= */
@@ -1301,6 +1355,8 @@ function renderSettings() {
     const total = OBJS.reduce((a, x) => a + db[x].length, 0);
     main.innerHTML = head + `
     <section class="panel" style="max-width:1040px">
+      <div class="set-row"><div><h3>Profil</h3><p>Twoje imię i nazwa firmy. Hermes wita Cię po imieniu, podpisuje nim szkice wiadomości i ustawia Cię jako opiekuna nowych szans.</p></div>
+        <div class="acts"><label class="field-search" style="width:220px;background:#fff"><span class="sr">Imię i nazwisko</span><input type="text" data-setting="userName" value="${esc(settings.userName)}" placeholder="Imię i nazwisko" autocomplete="name"></label><label class="field-search" style="width:220px;background:#fff"><span class="sr">Nazwa firmy</span><input type="text" data-setting="company" value="${esc(settings.company)}" placeholder="Nazwa firmy" autocomplete="organization"></label></div></div>
       <div class="set-row"><div><h3>Cel sprzedaży na miesiąc</h3><p>Wartość wygranych szans, do której dążysz w każdym miesiącu. Widać ją w menu, na Pulpicie i w Analityce.</p></div>
         <label class="field-search" style="width:200px;background:#fff"><span class="sr">Cel w złotych</span><input type="text" inputmode="numeric" data-setting="target" value="${grp(settings.target)}"><span>zł</span></label></div>
       <div class="set-row"><div><h3>Hermes AI</h3><p>Bez klucza Hermes AI działa w trybie lokalnym i odpowiada na najczęstsze pytania. Z kluczem Claude API zapytasz o wszystko — dane CRM są wtedy wysyłane do API Anthropic. Klucz zostaje tylko w tej przeglądarce i nie trafia do kopii zapasowej.</p></div>
@@ -1309,8 +1365,8 @@ function renderSettings() {
         <div class="acts"><button class="ghost-button" data-act="backup">${ic('download', 16)}Pobierz kopię</button><label class="ghost-button" for="backupfile" style="cursor:pointer">${ic('upload', 16)}Wczytaj kopię<input type="file" id="backupfile" accept=".json,application/json" class="sr"></label></div></div>
       <div class="set-row"><div><h3>Eksport do CSV</h3><p>Każdy obiekt osobno — do Excela, Google Sheets albo innego CRM-a.</p></div>
         <div class="acts">${OBJS.map(x => `<button class="ghost-button sm" data-act="export" data-obj="${x}">${SCHEMA[x].many}</button>`).join('')}</div></div>
-      <div class="set-row"><div><h3>Dane przykładowe</h3><p>Zacznij od zera albo wróć do danych demonstracyjnych.</p></div>
-        <div class="acts"><button class="ghost-button" data-act="demo">Przywróć demo</button><button class="ghost-button danger" data-act="wipe">${ic('trash', 16)}Wyczyść wszystko</button></div></div>
+      <div class="set-row"><div><h3>Dane przykładowe</h3><p>Wczytaj przykładową firmę z lejkiem i historią, żeby obejrzeć Hermesa w akcji, albo wyczyść wszystko i zacznij od zera.</p></div>
+        <div class="acts"><button class="ghost-button" data-act="demo">Wczytaj dane demo</button><button class="ghost-button danger" data-act="wipe">${ic('trash', 16)}Wyczyść wszystko</button></div></div>
     </section>`;
     return;
   }
@@ -1340,6 +1396,7 @@ function renderSettings() {
 }
 
 function renderMain() {
+  syncOwners();
   ({ overview: renderOverview, pipeline: renderPipeline, list: renderList, analytics: renderAnalytics, settings: renderSettings })[state.page]();
   save();
 }
@@ -1561,7 +1618,7 @@ function runImport() {
   const obj = imp.obj; let n = 0, dup = 0;
   for (const row of imp.rows) {
     const rec = { id: uid(obj[0]), created: today };
-    if (obj === 'deal') { rec.stage = 'Nowe'; rec.owner = 'Kamil K.'; rec.stageAt = today; }
+    if (obj === 'deal') { rec.stage = 'Nowe'; rec.owner = me(); rec.stageAt = today; }
     if (obj === 'lead') rec.status = 'Nowy';
     imp.map.forEach((k, i) => {
       if (!k) return;
@@ -1634,7 +1691,7 @@ function renderAI() {
   <aside class="ai-panel" role="dialog" aria-modal="true" aria-label="Hermes AI">
     <header class="ai-head"><span class="ai-orb">${SPARK(16)}</span><div><b>Hermes AI</b><small>${live ? `Połączono z Claude · ${esc(aiCfg.model)}` : 'Tryb lokalny · bez klucza API'}</small></div>
       <div class="ai-head-acts">${ai.msgs.length ? `<button class="sq-btn" data-act="ai-clear" aria-label="Nowa rozmowa" title="Nowa rozmowa">${ic('plus', 16)}</button>` : ''}<button class="sq-btn" data-act="ai-close" aria-label="Zamknij">${ic('close', 17)}</button></div></header>
-    <div class="ai-body" id="ai-body" aria-live="polite">${ai.msgs.length ? ai.msgs.map(aiMsg).join('') : `<div class="ai-hello"><span class="ai-orb lg">${SPARK(26)}</span><h3>W czym pomóc, Kamil?</h3><p>Pytaj o lejek, klientów i następne kroki. Hermes zna dane z Twojego CRM-a i napisze za Ciebie follow-up.</p></div>`}
+    <div class="ai-body" id="ai-body" aria-live="polite">${ai.msgs.length ? ai.msgs.map(aiMsg).join('') : `<div class="ai-hello"><span class="ai-orb lg">${SPARK(26)}</span><h3>W czym pomóc${firstName() ? ', ' + esc(firstName()) : ''}?</h3><p>Pytaj o lejek, klientów i następne kroki. Hermes zna dane z Twojego CRM-a i napisze za Ciebie follow-up.</p></div>`}
       ${ai.busy ? `<div class="ai-msg a"><span class="ai-av">${SPARK(13)}</span><div class="ai-bubble"><span class="ai-typing" aria-label="Hermes pisze"><i></i><i></i><i></i></span></div></div>` : ''}</div>
     <div class="ai-foot">
       ${ai.busy ? '' : `<div class="ai-chips">${suggestions().map(s => `<button class="chip-btn" data-act="ai-ask" data-q="${esc(s)}">${esc(s)}</button>`).join('')}</div>`}
@@ -1694,7 +1751,7 @@ function crmContext() {
 }
 async function callClaude() {
   const c = ctxRec();
-  const system = `Jesteś Hermes — asystentem AI wbudowanym w CRM dla foundera, który sam sprzedaje (B2B, Polska). Odpowiadasz po polsku, krótko i konkretnie, jak doświadczony handlowiec. Opierasz się wyłącznie na danych CRM poniżej; jeśli czegoś w nich nie ma, mówisz to wprost i niczego nie wymyślasz. Kwoty podajesz w zł. Proponując działania, podajesz konkretny następny krok z terminem. Wiadomości e-mail piszesz gotowe do wysłania, w formie „Pan/Pani”, podpisane „Kamil”. Używasz krótkich list i oszczędnych **pogrubień**.${c ? `\nUżytkownik ma teraz otwarty rekord — ${ctxLabel()}. Pytania bez podanej nazwy dotyczą tego rekordu.` : ''}\n\nDane CRM (JSON):\n${JSON.stringify(crmContext())}`;
+  const system = `Jesteś Hermes — asystentem AI wbudowanym w CRM dla foundera, który sam sprzedaje (B2B, Polska). Odpowiadasz po polsku, krótko i konkretnie, jak doświadczony handlowiec. Opierasz się wyłącznie na danych CRM poniżej; jeśli czegoś w nich nie ma, mówisz to wprost i niczego nie wymyślasz. Kwoty podajesz w zł. Proponując działania, podajesz konkretny następny krok z terminem. Wiadomości e-mail piszesz gotowe do wysłania, w formie „Pan/Pani”, podpisane „${firstName() || '[Twoje imię]'}”. Używasz krótkich list i oszczędnych **pogrubień**.${c ? `\nUżytkownik ma teraz otwarty rekord — ${ctxLabel()}. Pytania bez podanej nazwy dotyczą tego rekordu.` : ''}\n\nDane CRM (JSON):\n${JSON.stringify(crmContext())}`;
   const messages = [];
   for (const m of ai.msgs) {
     const role = m.role === 'user' ? 'user' : 'assistant';
@@ -1846,10 +1903,10 @@ function draftAnswer({ obj, r }) {
   let subject, body;
   if (obj === 'lead') {
     subject = `${company || 'Współpraca'} — krótka rozmowa?`;
-    body = `Dzień dobry,\n\ndziękuję za zainteresowanie. Chętnie dowiem się więcej o potrzebach${company ? ` ${company}` : ''} i sprawdzę, czy możemy pomóc.\n\nCzy znajdzie Pan/Pani 15 minut na krótką rozmowę w tym tygodniu? Wystarczy, że odpisze Pan/Pani z dogodnym terminem.\n\nPozdrawiam,\nKamil`;
+    body = `Dzień dobry,\n\ndziękuję za zainteresowanie. Chętnie dowiem się więcej o potrzebach${company ? ` ${company}` : ''} i sprawdzę, czy możemy pomóc.\n\nCzy znajdzie Pan/Pani 15 minut na krótką rozmowę w tym tygodniu? Wystarczy, że odpisze Pan/Pani z dogodnym terminem.\n\nPozdrawiam,\n${firstName() || '[Twoje imię]'}`;
   } else if (!d) {
     subject = `${company} — co słychać?`;
-    body = `Dzień dobry,\n\n${thanks}. Chciałem zapytać, jak wyglądają Państwa plany na najbliższe tygodnie i czy mogę w czymś pomóc.\n\nPozdrawiam,\nKamil`;
+    body = `Dzień dobry,\n\n${thanks}. Chciałem zapytać, jak wyglądają Państwa plany na najbliższe tygodnie i czy mogę w czymś pomóc.\n\nPozdrawiam,\n${firstName() || '[Twoje imię]'}`;
   } else {
     const ask = {
       'Nowe': `Chętnie przygotuję propozycję dopasowaną do ${company || 'Państwa firmy'}. Czy możemy umówić krótką rozmowę, żeby doprecyzować zakres?`,
@@ -1860,7 +1917,7 @@ function draftAnswer({ obj, r }) {
       'Przegrana': `Rozumiem decyzję w sprawie „${d.name}”. Gdyby sytuacja się zmieniła, chętnie wrócę do rozmowy — odezwę się za kilka miesięcy, jeśli Pan/Pani pozwoli.`
     }[d.stage] || '';
     subject = `${d.name}${d.stage === 'Oferta' ? ' — pytanie o ofertę' : d.stage === 'Negocjacje' ? ' — kolejne kroki' : ''}`;
-    body = `Dzień dobry,\n\n${thanks}. ${ask}\n\n${isOpen(d) ? `Czy pasuje Panu/Pani krótka rozmowa ${d.nextDate && d.nextDate >= today ? rel(d.nextDate) : 'w tym tygodniu'}?\n\n` : ''}Pozdrawiam,\nKamil`;
+    body = `Dzień dobry,\n\n${thanks}. ${ask}\n\n${isOpen(d) ? `Czy pasuje Panu/Pani krótka rozmowa ${d.nextDate && d.nextDate >= today ? rel(d.nextDate) : 'w tym tygodniu'}?\n\n` : ''}Pozdrawiam,\n${firstName() || '[Twoje imię]'}`;
   }
   const key = 'k' + Date.now().toString(36);
   const logObj = d ? 'deal' : obj, logId = d ? d.id : r.id;
@@ -1919,7 +1976,7 @@ function convertLead() {
   }
   let ct = l.email ? db.contact.find(c => norm(c.email) === norm(l.email)) : null;
   if (!ct) { ct = { id: uid('p'), name: l.name, email: l.email || '', phone: l.phone || '', company: comp ? comp.id : '', created: today }; db.contact.unshift(ct); }
-  const d = { id: uid('d'), name: (l.companyName || l.name) + ' — nowa szansa', company: comp ? comp.id : '', contact: ct.id, value: 0, stage: 'Nowe', stageAt: today, owner: 'Kamil K.', created: today, nextStep: '', nextDate: '' };
+  const d = { id: uid('d'), name: (l.companyName || l.name) + ' — nowa szansa', company: comp ? comp.id : '', contact: ct.id, value: 0, stage: 'Nowe', stageAt: today, owner: me(), created: today, nextStep: '', nextDate: '' };
   db.deal.unshift(d);
   l.status = 'Zakwalifikowany';
   logAct('lead', l.id, 'system', 'Skonwertowano na szansę');
@@ -2038,17 +2095,25 @@ document.addEventListener('click', e => {
     case 'aowner': state.aOwner = t.dataset.v; renderAnalytics(); break;
     case 'tmpl': downloadTemplate(); break;
     case 'backup': download(`hermes-kopia-${today}.json`, JSON.stringify(snapshot(), null, 2), 'application/json'); toast('Pobrano kopię zapasową'); break;
+    case 'demo-quick': {
+      const prev = JSON.parse(JSON.stringify(snapshot()));
+      const fresh = demoData(); for (const o of [...OBJS, 'activity']) db[o] = fresh[o];
+      render(); toast('Wczytano dane demo', { label: 'Cofnij', fn: () => { applyState(prev); render(); toast('Wrócono do pustej wersji'); } });
+      break;
+    }
+    case 'onb-hide': settings.onboardingHidden = true; renderOverview(); save(); break;
     case 'demo': {
       if (!t.dataset.armed) { t.dataset.armed = '1'; t.textContent = 'Nadpisać obecne dane?'; return; }
       const prev = JSON.parse(JSON.stringify(snapshot()));
       const fresh = demoData(); for (const o of [...OBJS, 'activity']) db[o] = fresh[o];
-      render(); toast('Przywrócono dane demo', { label: 'Cofnij', fn: () => { applyState(prev); render(); toast('Przywrócono poprzednie dane'); } });
+      render(); toast('Wczytano dane demo', { label: 'Cofnij', fn: () => { applyState(prev); render(); toast('Przywrócono poprzednie dane'); } });
       break;
     }
     case 'wipe': {
       if (!t.dataset.armed) { t.dataset.armed = '1'; t.innerHTML = ic('trash', 16) + 'Na pewno? Kliknij ponownie'; return; }
       const prev = JSON.parse(JSON.stringify(snapshot()));
       for (const o of [...OBJS, 'activity']) db[o] = [];
+      settings.onboardingHidden = false;
       render(); toast('Wyczyszczono wszystkie dane', { label: 'Cofnij', fn: () => { applyState(prev); render(); toast('Przywrócono dane'); } });
       break;
     }
@@ -2069,7 +2134,7 @@ document.addEventListener('submit', e => {
   if (form.id === 'addForm') {
     const obj = form.dataset.obj, S = SCHEMA[obj];
     const rec = { id: uid(obj[0]), created: today };
-    if (obj === 'deal') { rec.stage = 'Nowe'; rec.owner = 'Kamil K.'; rec.stageAt = today; rec.nextStep = ''; rec.nextDate = ''; }
+    if (obj === 'deal') { rec.stage = 'Nowe'; rec.owner = me(); rec.stageAt = today; rec.nextStep = ''; rec.nextDate = ''; }
     if (obj === 'lead') rec.status = 'Nowy';
     for (const f of S.fields) { const v = fd.get(f.key); if (v !== null && String(v).trim() !== '') rec[f.key] = parseVal(f, v); }
     const err = $('#addErr');
@@ -2152,9 +2217,14 @@ document.addEventListener('change', e => {
     return;
   }
   if (t.dataset.setting === 'aiModel') { aiCfg.model = t.value.trim() || 'claude-sonnet-5-5'; saveAiCfg(); toast(`Model: ${aiCfg.model}`); return; }
+  if (t.dataset.setting === 'userName' || t.dataset.setting === 'company') {
+    settings[t.dataset.setting] = t.value.trim(); t.value = settings[t.dataset.setting];
+    renderSide(); save(); toast(t.dataset.setting === 'userName' ? 'Zapisano imię' : 'Zapisano nazwę firmy');
+    return;
+  }
   if (t.dataset.setting === 'target') {
     const v = Number(String(t.value).replace(/[^\d]/g, ''));
-    if (v > 0) { settings.target = v; t.value = grp(v); renderSide(); save(); toast(`Cel miesiąca: ${money(v)}`); } else t.value = grp(settings.target);
+    if (v > 0) { settings.target = v; settings.targetSet = true; t.value = grp(v); renderSide(); save(); toast(`Cel miesiąca: ${money(v)}`); } else t.value = grp(settings.target);
     return;
   }
   if (t.name === 'reason') { document.querySelectorAll('.chip-btn.radio').forEach(l => l.classList.toggle('on', l.querySelector('input').checked)); return; }
