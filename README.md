@@ -38,6 +38,14 @@ Kliknięcie leada lub szansy w dowolnym miejscu otwiera pełny ekran rekordu, po
 
 Firmy i kontakty otwierają się w panelu bocznym. Widać w nim powiązane leady i szanse, a jednym kliknięciem założysz nowego leada lub szansę dla tej osoby albo firmy.
 
+## Wprowadzanie głosem
+
+Przycisk **Głosem** w górnym pasku (albo klawisz `V`) otwiera Hermes Voice. Mówisz naturalnie, np. „Nowy lead Kwiaciarnia Róża z Krakowa, kontakt Anna Mazur, właścicielka, telefon 501 300 200, źródło polecenie, wartość 8 tysięcy, następny krok zadzwonić jutro”, a Hermes rozpoznaje firmę, kontakt, leada i szansę, także wszystko naraz. Przed zapisem widzisz karty z polami do poprawienia i informację, które rekordy już istnieją (zostaną powiązane, a nie zdublowane). Zapis od razu wiąże kontakt z firmą, a leada i szansę z firmą i kontaktem; treść nagrania trafia do historii jako notatka.
+
+- Rozpoznawanie działa lokalnie (słowa kluczowe, kwoty, telefony, emaile mówione jako „małpa” i „kropka”, daty typu „jutro”, „w piątek”, „15 listopada”). Z kluczem Claude API Hermes AI dodatkowo dopracowuje pola.
+- „Wypełnij głosem” jest też w każdym formularzu dodawania, a mikrofon w notatkach na kartach rekordów i w Ask Hermes AI (dyktowanie tekstu).
+- Mowę rozpoznaje przeglądarka (Chrome, Edge, Safari). Gdy mikrofon jest niedostępny, możesz wpisać lub wkleić tekst albo użyć dyktowania systemowego.
+
 ## Jak pracować z Hermesem
 
 1. Każdy otwarty lead i każda otwarta szansa ma **następny krok z terminem**.
@@ -77,6 +85,7 @@ Firmy i kontakty otwierają się w panelu bocznym. Widać w nim powiązane leady
 | --- | --- |
 | `⌘K` / `Ctrl+K` / `/` | Wyszukiwarka |
 | `⌘J` / `Ctrl+J` | Ask Hermes AI |
+| `V` | Dodaj głosem |
 | `N` | Nowy rekord (lead na Pulpicie, szansa w Lejku) |
 | `⌘↵` / `Ctrl+Enter` | Zapisz wpis w historii |
 | `Esc` | Zamknij okno lub panel; na karcie rekordu wróć do listy |
