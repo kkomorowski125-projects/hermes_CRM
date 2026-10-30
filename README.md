@@ -27,20 +27,22 @@ Dane zapisują się automatycznie w tej przeglądarce. Na start zobaczysz dane p
 - **Konwersja leada** — tworzy firmę, kontakt i szansę, a potem pyta o pierwszy krok.
 - **Cofnij** — usunięcie rekordu, przywrócenie demo i wyczyszczenie danych można cofnąć z powiadomienia.
 - **Analityka** — wygrane w tym miesiącu względem celu, prognoza zamknięć, pokrycie celu, zdrowie lejka (z czasem w etapie), zespół, jakość źródeł leadów i powody przegranych.
-- **Ustawienia** — cel sprzedaży na miesiąc, kopia zapasowa, eksport CSV, dane demo oraz pola obiektów (zmiana nazw, własne pola).
+- **Hermes AI** — przycisk „Ask Hermes AI” (⌘J) w prawym górnym rogu: plan dnia, zagrożone szanse, stan celu, kolejność leadów, podsumowania rekordów, szkice follow-upów i propozycje następnych kroków. Bez klucza działa lokalnie na danych z CRM-a; z kluczem Claude API (Ustawienia → Ogólne) odpowiada na dowolne pytania.
+- **Ustawienia** — cel sprzedaży na miesiąc, Hermes AI (klucz Claude API i model), kopia zapasowa, eksport CSV, dane demo oraz pola obiektów (zmiana nazw, własne pola).
 
 ## Skróty klawiszowe
 
 | Skrót | Akcja |
 | --- | --- |
 | `⌘K` / `Ctrl+K` | Wyszukiwarka |
+| `⌘J` / `Ctrl+J` | Ask Hermes AI |
 | `N` | Nowy rekord |
 | `⌘↵` / `Ctrl+Enter` | Zapisz wpis w historii |
 | `Esc` | Zamknij okno lub kartę |
 
 ## Technologia
 
-Jeden plik `index.html`: HTML, CSS i czysty JavaScript, bez zależności. Dane w `localStorage` przeglądarki. Fonty: Space Grotesk i DM Sans (Google Fonts).
+Jeden plik `index.html`: HTML, CSS i czysty JavaScript, bez zależności. Dane w `localStorage` przeglądarki. Hermes AI w trybie z kluczem łączy się bezpośrednio z API Anthropic z przeglądarki — to rozwiązanie tylko na prototyp; w wersji produkcyjnej zapytania muszą iść przez serwer, a klucz nie może trafiać do przeglądarki. Fonty: Space Grotesk i DM Sans (Google Fonts).
 
 ## Co dalej
 

@@ -430,6 +430,89 @@ textarea.fin{height:auto;padding:12px 13px;resize:vertical;font:13px ui-monospac
 .toast button:hover{background:#353931}
 .toast.has-act{pointer-events:auto}
 
+/* v3: calm sidebar */
+:root{--faint:#6E746B;--side:#F2F3EF;--side-line:#E2E5DF}
+html,body{background:var(--side)}
+.sidebar{background:var(--side);color:var(--ink);border-right:0}
+.brand{color:var(--ink);font-size:20px;gap:11px;padding-bottom:22px}
+.logo-mark{width:32px;height:32px;display:grid;place-items:center;flex-shrink:0;border-radius:9px;background:#1B1E19;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),0 1px 2px rgba(20,23,18,.18)}
+.brand:hover svg{transform:translateX(1px) skewX(-5deg)}
+.workspace{border:1px solid var(--side-line);background:#fff;box-shadow:0 1px 2px rgba(20,23,18,.04)}
+.workspace-avatar{background:#EEF2E3;color:#3F4A26;border:1px solid #DCE3CB}
+.workspace small,.profile small{color:var(--mute)}
+.nav-label{color:#7A8076}
+.nav a{color:#4A5047;font-weight:500}
+.nav a svg{color:#7A8076;transition:color .16s}
+.nav a:hover{color:var(--ink);background:#E8EAE4}
+.nav a:hover svg{color:var(--ink2)}
+.nav a.on{color:var(--ink);background:#fff;box-shadow:0 1px 2px rgba(20,23,18,.06),inset 0 0 0 1px var(--side-line);font-weight:600}
+.nav a.on svg{color:var(--ink)}
+.nav a.on::before{left:-16px;width:3px;height:20px;border-radius:0 3px 3px 0;background:#1B1E19}
+.nav em{background:#E5E8E1;color:#5A6057;font-weight:600}
+.nav a.on em{background:#EEF4D6;color:#4A5E0E}
+.target small{color:var(--mute)}
+.target>b{color:var(--ink2)}
+.progress{background:#E1E4DD}
+.progress i{background:linear-gradient(90deg,#1B1E19,#3A4130)}
+.profile{border-top-color:var(--side-line)}
+.profile-avatar{background:#E4E8F4;color:#36405A}
+.main{border-color:var(--side-line);box-shadow:0 1px 3px rgba(23,24,20,.05),0 8px 30px rgba(23,24,20,.03)}
+
+/* v3: Hermes AI */
+.ai-button{height:42px;display:inline-flex;align-items:center;gap:8px;padding:0 10px 0 12px;border:1px solid transparent;border-radius:8px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#B9E52A,#8FD3C1 45%,#A893F0) border-box;color:var(--ink);font-size:14px;font-weight:600;white-space:nowrap;box-shadow:0 2px 10px rgba(143,120,230,.14);transition:box-shadow .16s,transform .16s}
+.ai-button:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(143,120,230,.24)}
+.ai-spark{width:24px;height:24px;display:grid;place-items:center;border-radius:6px;background:#1B1E19;color:var(--lime)}
+.ai-button kbd{padding:2px 6px;border:1px solid var(--side-line);border-radius:5px;background:#F7F8F5;color:var(--faint);font:11px 'DM Sans'}
+.actions .ask{border-color:transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#B9E52A,#8FD3C1 45%,#A893F0) border-box;color:var(--ink)}
+.actions .ask svg{color:#7A62D9}
+.ai-scrim{z-index:47;background:rgba(19,21,18,.16)}
+.ai-panel{position:fixed;top:6px;right:6px;bottom:6px;z-index:48;width:min(460px,calc(100% - 12px));display:flex;flex-direction:column;border:1px solid #CDD3CA;border-radius:12px;background:#FCFCFA;box-shadow:-20px 0 56px rgba(15,17,14,.2);animation:din .22s ease-out;overflow:hidden}
+.ai-head{display:flex;align-items:center;gap:12px;padding:14px 16px 14px 18px;border-bottom:1px solid var(--line2);background:#fff}
+.ai-head>div:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column}
+.ai-head b{font:600 16px var(--display);letter-spacing:-.02em}
+.ai-head small{color:var(--mute);font-size:12px}
+.ai-head-acts{display:flex;gap:6px}
+.ai-orb{width:32px;height:32px;display:grid;place-items:center;flex-shrink:0;border-radius:9px;background:#1B1E19;color:var(--lime);box-shadow:0 0 0 3px rgba(185,229,42,.18)}
+.ai-orb.lg{width:56px;height:56px;border-radius:16px;box-shadow:0 0 0 6px rgba(185,229,42,.14),0 10px 30px rgba(143,120,230,.25)}
+.ai-body{flex:1;overflow-y:auto;padding:22px 18px;display:flex;flex-direction:column;gap:16px}
+.ai-hello{margin:auto 0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 10px}
+.ai-hello h3{margin:8px 0 0;font:600 24px var(--display);letter-spacing:-.035em}
+.ai-hello p{margin:0;color:var(--mute);max-width:330px;font-size:14px}
+.ai-msg{display:flex;gap:10px;align-items:flex-start}
+.ai-msg.u{justify-content:flex-end}
+.ai-msg.u .ai-bubble{max-width:85%;padding:10px 14px;border-radius:12px 12px 4px 12px;background:#ECEFE8;color:var(--ink);white-space:pre-wrap;font-size:14px}
+.ai-av{width:26px;height:26px;display:grid;place-items:center;flex-shrink:0;margin-top:1px;border-radius:7px;background:#1B1E19;color:var(--lime)}
+.ai-msg.a .ai-bubble{flex:1;min-width:0;color:var(--ink2);font-size:14px;line-height:1.55}
+.ai-bubble p{margin:0 0 8px}
+.ai-bubble ul,.ai-bubble ol{margin:0 0 10px;padding-left:18px}
+.ai-bubble li{margin:5px 0}
+.ai-link{display:inline-flex;align-items:center;gap:3px;margin-left:4px;padding:1px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink2);font-size:12px;font-weight:600;vertical-align:1px}
+.ai-link:hover{border-color:#1B1E19;color:var(--ink)}
+.ai-draft{margin:6px 0 10px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.ai-draft b{display:block;margin-bottom:8px;font-size:13px}
+.ai-draft pre{margin:0;white-space:pre-wrap;font:14px/1.55 'DM Sans',sans-serif;color:var(--ink2)}
+.ai-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ai-acts .chip-btn{height:32px;gap:6px;font-size:12px;font-weight:600}
+.ai-acts .chip-btn:disabled{opacity:.6;cursor:default}
+.ai-err{color:var(--late)}
+.ai-typing{display:inline-flex;gap:4px;padding:8px 0}
+.ai-typing i{width:6px;height:6px;border-radius:50%;background:#A3A9A0;animation:blink 1s infinite}
+.ai-typing i:nth-child(2){animation-delay:.15s}.ai-typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+.ai-foot{display:flex;flex-direction:column;gap:10px;padding:12px 16px 14px;border-top:1px solid var(--line2);background:#fff}
+.ai-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.ai-chips .chip-btn{flex-shrink:0;height:32px;font-size:12px}
+.ai-ctx{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px 6px 10px;border-radius:8px;background:#F2F6E4;color:#4A5E0E;font-size:12px;font-weight:600}
+.ai-ctx span{display:inline-flex;align-items:center;gap:6px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ai-ctx button{display:grid;place-items:center;padding:3px;border:0;border-radius:5px;background:transparent;color:inherit}
+.ai-ctx button:hover{background:#E4ECC6}
+.ai-input{display:flex;align-items:flex-end;gap:8px;padding:6px 6px 6px 14px;border:1px solid #D9DED6;border-radius:12px;background:#FAFBF8}
+.ai-input:focus-within{border-color:#919286;background:#fff;box-shadow:0 0 0 3px #F0F1E9}
+.ai-input textarea{flex:1;min-height:36px;max-height:140px;padding:8px 0;border:0;outline:0;background:transparent;resize:none;font:14px/1.45 'DM Sans',sans-serif;color:var(--ink)}
+.ai-send{width:36px;height:36px;display:grid;place-items:center;flex-shrink:0;border:0;border-radius:9px;background:#1B1E19;color:var(--lime)}
+.ai-send:disabled{opacity:.4;cursor:default}
+.ai-note{margin:0;color:var(--mute);font-size:12px;text-align:center}
+
 @media (max-width:1180px){
   .metrics,.kpis{grid-template-columns:repeat(2,1fr)}
   .dash-grid,.rgrid,.rgrid2{grid-template-columns:1fr}
@@ -437,7 +520,7 @@ textarea.fin{height:auto;padding:12px 13px;resize:vertical;font:13px ui-monospac
 }
 @media (max-width:820px){
   .sidebar{position:static;width:auto;flex-direction:row;align-items:center;gap:10px;padding:10px 12px;overflow-x:auto}
-  .brand{padding:0 6px}.brand span,.workspace,.nav-label,.side-bottom,.nav em{display:none}
+  .brand{padding:0 6px}.brand>span:last-child,.workspace,.nav-label,.side-bottom,.nav em,.ai-button kbd{display:none}
   .nav{flex-direction:row;margin:0}.nav-label.second{margin:0}
   .main{margin:6px}
   .topbar{padding:0 14px}.search{width:auto;flex:1}.search kbd{display:none}
@@ -456,6 +539,7 @@ textarea.fin{height:auto;padding:12px 13px;resize:vertical;font:13px ui-monospac
   <main class="page" id="main"></main>
 </div>
 <div id="drawerLayer"></div>
+<div id="aiLayer"></div>
 <div id="modalLayer"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="tip" id="tip" aria-hidden="true"></div>
@@ -545,7 +629,7 @@ const P = {
   flag: '<path d="M5 21V4h11l-2 4 2 4H5"/>'
 };
 const ic = (n, s = 18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
-const LOGO = `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><path fill="#D7FF3F" d="M3 21.5h7.2L24.8 7h-7.2L3 21.5Zm10.2 0h6.3L29 12h-6.3l-9.5 9.5ZM3 14.9h6.1L17 7h-6.1L3 14.9Z"/></svg>`;
+const LOGO = `<span class="logo-mark"><svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><path fill="#D7FF3F" d="M3 21.5h7.2L24.8 7h-7.2L3 21.5Zm10.2 0h6.3L29 12h-6.3l-9.5 9.5ZM3 14.9h6.1L17 7h-6.1L3 14.9Z"/></svg></span>`;
 
 const TONE = { gray: '#AEB0A6', teal: '#709486', olive: '#A3B82C', amber: '#D5A445', green: '#89B840', red: '#DD644E', blue: '#7F95E8', violet: '#9A86E0' };
 const TYPES = { text: 'Tekst', number: 'Liczba', money: 'Kwota', date: 'Data', select: 'Lista wyboru', email: 'E-mail', phone: 'Telefon', relation: 'Powiązanie' };
@@ -837,6 +921,7 @@ function renderTop() {
     <div class="top-actions">
       <button class="icon-button" data-act="import" data-obj="${obj}" aria-label="Import CSV" title="Import CSV">${ic('upload')}</button>
       <button class="primary-button" data-act="add" data-obj="${obj}">${ic('plus', 17)}${label}</button>
+      <button class="ai-button" data-act="ai" aria-label="Ask Hermes AI (⌘J)"><span class="ai-spark">${SPARK(16)}</span>Ask Hermes AI<kbd>⌘J</kbd></button>
     </div>`;
 }
 function heading({ eyebrow, live, title, accent, sub, actions = '' }) {
@@ -1125,6 +1210,8 @@ function renderSettings() {
     <section class="panel" style="max-width:1040px">
       <div class="set-row"><div><h3>Cel sprzedaży na miesiąc</h3><p>Wartość wygranych szans, do której dążysz w każdym miesiącu. Widać ją w menu, na Pulpicie i w Analityce.</p></div>
         <label class="field-search" style="width:200px;background:#fff"><span class="sr">Cel w złotych</span><input type="text" inputmode="numeric" data-setting="target" value="${grp(settings.target)}"><span>zł</span></label></div>
+      <div class="set-row"><div><h3>Hermes AI</h3><p>Bez klucza Hermes AI działa w trybie lokalnym i odpowiada na najczęstsze pytania. Z kluczem Claude API zapytasz o wszystko — dane CRM są wtedy wysyłane do API Anthropic. Klucz zostaje tylko w tej przeglądarce i nie trafia do kopii zapasowej.</p></div>
+        <div class="acts"><label class="field-search" style="width:250px;background:#fff"><span class="sr">Klucz Claude API</span><input type="password" data-setting="aiKey" value="${aiCfg.key ? '••••••••••••••••' : ''}" placeholder="Klucz API (sk-ant-…)" autocomplete="off"></label><label class="field-search" style="width:190px;background:#fff"><span class="sr">Model</span><input type="text" data-setting="aiModel" value="${esc(aiCfg.model)}" autocomplete="off"></label>${aiCfg.key ? '<button class="ghost-button sm danger" data-act="ai-forget">Usuń klucz</button>' : ''}</div></div>
       <div class="set-row"><div><h3>Kopia zapasowa</h3><p>Hermes zapisuje dane w tej przeglądarce (${total} ${plural(total, 'rekord', 'rekordy', 'rekordów')}, ${db.activity.length} wpisów w historii). Zrób kopię, żeby przenieść je na inny komputer.</p></div>
         <div class="acts"><button class="ghost-button" data-act="backup">${ic('download', 16)}Pobierz kopię</button><label class="ghost-button" for="backupfile" style="cursor:pointer">${ic('upload', 16)}Wczytaj kopię<input type="file" id="backupfile" accept=".json,application/json" class="sr"></label></div></div>
       <div class="set-row"><div><h3>Eksport do CSV</h3><p>Każdy obiekt osobno — do Excela, Google Sheets albo innego CRM-a.</p></div>
@@ -1176,6 +1263,7 @@ function renderDrawer() {
   if (r.phone) acts.push(`<a href="tel:${esc(String(r.phone).replace(/\s/g, ''))}">${ic('phone', 16)}Zadzwoń</a>`);
   if (obj === 'lead' && r.status !== 'Zakwalifikowany') acts.push(`<button class="lime" data-act="convert">${ic('arrow', 16)}Konwertuj</button>`);
   if (obj === 'company') acts.push(`<button data-act="add" data-obj="deal" data-pk="company" data-pid="${r.id}">${ic('plus', 16)}Szansa</button>`);
+  acts.push(`<button class="ask" data-act="ai-rec">${SPARK(15)}Zapytaj AI</button>`);
   let metrics = '';
   if (obj === 'company') {
     const ds = db.deal.filter(d => d.company === r.id), op = ds.filter(isOpen);
@@ -1397,6 +1485,279 @@ function exportCSV(o) {
   toast(`Wyeksportowano ${db[o].length} ${plural(db[o].length, 'rekord', 'rekordy', 'rekordów')}: ${S.many.toLowerCase()}`);
 }
 
+/* ================= Hermes AI ================= */
+const AI_STORE = 'hermes-ai-config';
+const aiCfg = { key: '', model: 'claude-sonnet-5-5' };
+try { Object.assign(aiCfg, JSON.parse(localStorage.getItem(AI_STORE) || '{}')); } catch (e) {}
+const saveAiCfg = () => { try { localStorage.setItem(AI_STORE, JSON.stringify(aiCfg)); } catch (e) {} };
+const ai = { open: false, msgs: [], busy: false, ctx: null, drafts: {} };
+const SPARK = (s = 16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 2.5l2.1 6.2 6.2 2.1-6.2 2.1L11 19.1l-2.1-6.2-6.2-2.1 6.2-2.1z"/><path fill="currentColor" opacity=".65" d="M19 14.5l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z"/></svg>`;
+const ctxRec = () => ai.ctx && find(ai.ctx.obj, ai.ctx.id) ? { obj: ai.ctx.obj, r: find(ai.ctx.obj, ai.ctx.id) } : null;
+const ctxLabel = () => { const c = ctxRec(); return c ? `${SCHEMA[c.obj].one}: ${c.r.name}` : ''; };
+
+function suggestions() {
+  const c = ctxRec();
+  if (c) {
+    if (c.obj === 'deal') return ['Podsumuj tę szansę', 'Napisz follow-up', 'Zasugeruj następny krok'];
+    if (c.obj === 'lead') return ['Podsumuj tego leada', 'Napisz pierwszą wiadomość', 'Którym leadem zająć się najpierw?'];
+    return [`Podsumuj ${c.r.name}`, `Napisz follow-up do ${c.r.name}`, 'Co mam dziś zrobić?'];
+  }
+  return ['Co mam dziś zrobić?', 'Które szanse są zagrożone?', 'Jak idzie sprzedaż w tym miesiącu?', 'Którym leadem zająć się najpierw?'];
+}
+function openAI(ctx) {
+  ai.open = true;
+  if (ctx !== undefined) ai.ctx = ctx;
+  renderAI();
+  setTimeout(() => { const i = $('#ai-input'); if (i) i.focus(); }, 0);
+}
+function closeAI() { ai.open = false; renderAI(); }
+function renderAI() {
+  const L = $('#aiLayer');
+  if (!ai.open) { L.innerHTML = ''; return; }
+  const live = !!aiCfg.key;
+  const c = ctxRec();
+  L.innerHTML = `<div class="layer ai-scrim" data-act="ai-close"></div>
+  <aside class="ai-panel" role="dialog" aria-modal="true" aria-label="Hermes AI">
+    <header class="ai-head"><span class="ai-orb">${SPARK(16)}</span><div><b>Hermes AI</b><small>${live ? `Połączono z Claude · ${esc(aiCfg.model)}` : 'Tryb lokalny · bez klucza API'}</small></div>
+      <div class="ai-head-acts">${ai.msgs.length ? `<button class="sq-btn" data-act="ai-clear" aria-label="Nowa rozmowa" title="Nowa rozmowa">${ic('plus', 16)}</button>` : ''}<button class="sq-btn" data-act="ai-close" aria-label="Zamknij">${ic('close', 17)}</button></div></header>
+    <div class="ai-body" id="ai-body" aria-live="polite">${ai.msgs.length ? ai.msgs.map(aiMsg).join('') : `<div class="ai-hello"><span class="ai-orb lg">${SPARK(26)}</span><h3>W czym pomóc, Kamil?</h3><p>Pytaj o lejek, klientów i następne kroki. Hermes zna dane z Twojego CRM-a i napisze za Ciebie follow-up.</p></div>`}
+      ${ai.busy ? `<div class="ai-msg a"><span class="ai-av">${SPARK(13)}</span><div class="ai-bubble"><span class="ai-typing" aria-label="Hermes pisze"><i></i><i></i><i></i></span></div></div>` : ''}</div>
+    <div class="ai-foot">
+      ${ai.busy ? '' : `<div class="ai-chips">${suggestions().map(s => `<button class="chip-btn" data-act="ai-ask" data-q="${esc(s)}">${esc(s)}</button>`).join('')}</div>`}
+      ${c ? `<div class="ai-ctx"><span>${ic('flag', 13)}Kontekst: ${esc(ctxLabel())}</span><button data-act="ai-ctx-x" aria-label="Usuń kontekst">${ic('close', 13)}</button></div>` : ''}
+      <form id="aiForm" class="ai-input"><label class="sr" for="ai-input">Zapytaj Hermesa</label><textarea id="ai-input" rows="1" placeholder="Zapytaj o cokolwiek w CRM…"></textarea><button type="submit" class="ai-send" aria-label="Wyślij"${ai.busy ? ' disabled' : ''}>${ic('arrow', 17)}</button></form>
+      <p class="ai-note">${live ? 'Hermes może się mylić — sprawdzaj ważne informacje.' : 'Tryb lokalny rozumie najczęstsze pytania. <button class="linkish" data-act="ai-setup">Podłącz Claude API</button>, by pytać o wszystko.'}</p>
+    </div>
+  </aside>`;
+  const b = $('#ai-body'); b.scrollTop = b.scrollHeight;
+}
+function aiMsg(m) {
+  if (m.role === 'user') return `<div class="ai-msg u"><div class="ai-bubble">${esc(m.text)}</div></div>`;
+  return `<div class="ai-msg a"><span class="ai-av">${SPARK(13)}</span><div class="ai-bubble">${m.html}</div></div>`;
+}
+function md(t) {
+  const lines = esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').split('\n');
+  let out = '', list = false;
+  for (const ln of lines) {
+    const m = ln.match(/^\s*(?:[-•*]|\d+[.)])\s+(.*)/);
+    if (m) { if (!list) { out += '<ul>'; list = true; } out += `<li>${m[1]}</li>`; continue; }
+    if (list) { out += '</ul>'; list = false; }
+    const h = ln.match(/^#{1,4}\s+(.*)/);
+    out += h ? `<p><b>${h[1]}</b></p>` : (ln.trim() ? `<p>${ln}</p>` : '');
+  }
+  return out + (list ? '</ul>' : '');
+}
+async function askAI(q) {
+  q = String(q || '').trim();
+  if (!q || ai.busy) return;
+  ai.msgs.push({ role: 'user', text: q });
+  ai.busy = true; renderAI();
+  if (aiCfg.key) {
+    try {
+      const text = await callClaude();
+      ai.msgs.push({ role: 'assistant', text, html: md(text) });
+    } catch (e) {
+      ai.msgs.push({ role: 'assistant', text: '', html: `<p class="ai-err">Nie udało się połączyć z Claude (${esc(e.message)}). Odpowiadam w trybie lokalnym:</p>${localAnswer(q)}` });
+    }
+  } else {
+    await new Promise(r => setTimeout(r, 380));
+    ai.msgs.push({ role: 'assistant', text: '', html: localAnswer(q) });
+  }
+  ai.busy = false; renderAI();
+  setTimeout(() => { const i = $('#ai-input'); if (i) i.focus(); }, 0);
+}
+
+/* --- Claude API (bring your own key) --- */
+function crmContext() {
+  return {
+    dzis: today, cel_miesiaca_zl: settings.target, wygrane_w_tym_miesiacu_zl: sum(wonIn(db.deal)),
+    szanse: db.deal.map(d => ({ nazwa: d.name, firma: nameOf('company', d.company) || '', kontakt: nameOf('contact', d.contact) || '', wartosc_zl: d.value, etap: d.stage, nastepny_krok: d.nextStep || '', termin_kroku: d.nextDate || '', planowane_zamkniecie: d.close || '', dni_w_etapie: isOpen(d) ? daysIn(d) : null, zamknieto: d.closedAt || '', powod_przegranej: d.lostReason || '', opiekun: d.owner || '', ostatni_kontakt: lastTouch('deal', d).slice(0, 10) })),
+    firmy: db.company.map(c => ({ nazwa: c.name, branza: c.industry || '', miasto: c.city || '', domena: c.domain || '', ostatni_kontakt: lastTouch('company', c).slice(0, 10) })),
+    kontakty: db.contact.map(c => ({ imie_nazwisko: c.name, firma: nameOf('company', c.company) || '', stanowisko: c.role || '', email: c.email || '', telefon: c.phone || '' })),
+    leady: db.lead.map(l => ({ imie_nazwisko: l.name, firma: l.companyName || '', zrodlo: l.source || '', status: l.status || '', email: l.email || '', dodano: l.created || '' })),
+    historia: [...db.activity].sort((a, b) => b.at.localeCompare(a.at)).slice(0, 80).map(a => ({ kiedy: a.at, typ: ACT[a.type] ? ACT[a.type][0] : a.type, dotyczy: `${SCHEMA[a.obj] ? SCHEMA[a.obj].one : a.obj}: ${nameOf(a.obj, a.rid) || '?'}`, tresc: a.text }))
+  };
+}
+async function callClaude() {
+  const c = ctxRec();
+  const system = `Jesteś Hermes — asystentem AI wbudowanym w CRM dla foundera, który sam sprzedaje (B2B, Polska). Odpowiadasz po polsku, krótko i konkretnie, jak doświadczony handlowiec. Opierasz się wyłącznie na danych CRM poniżej; jeśli czegoś w nich nie ma, mówisz to wprost i niczego nie wymyślasz. Kwoty podajesz w zł. Proponując działania, podajesz konkretny następny krok z terminem. Wiadomości e-mail piszesz gotowe do wysłania, w formie „Pan/Pani”, podpisane „Kamil”. Używasz krótkich list i oszczędnych **pogrubień**.${c ? `\nUżytkownik ma teraz otwarty rekord — ${ctxLabel()}. Pytania bez podanej nazwy dotyczą tego rekordu.` : ''}\n\nDane CRM (JSON):\n${JSON.stringify(crmContext())}`;
+  const messages = [];
+  for (const m of ai.msgs) {
+    const role = m.role === 'user' ? 'user' : 'assistant';
+    const content = m.role === 'user' ? m.text : (m.text || m.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+    if (!content) continue;
+    if (messages.length && messages[messages.length - 1].role === role) messages[messages.length - 1].content += '\n\n' + content;
+    else messages.push({ role, content });
+  }
+  while (messages.length && messages[0].role !== 'user') messages.shift();
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-api-key': aiCfg.key, 'anthropic-version': '2026-10-21', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: aiCfg.model || 'claude-sonnet-5-5', max_tokens: 1200, system, messages: messages.slice(-14) })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error((data.error && data.error.message) || `HTTP ${res.status}`);
+  return (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim() || '(pusta odpowiedź)';
+}
+
+/* --- local mode: answers computed from CRM data --- */
+const aiOpen = (obj, id, label = 'Otwórz') => `<button class="ai-link" data-act="open" data-obj="${obj}" data-id="${id}">${esc(label)}${ic('arrow', 12)}</button>`;
+const aiAsk = q => `<button class="chip-btn" data-act="ai-ask" data-q="${esc(q)}">${esc(q)}</button>`;
+function findMentioned(q) {
+  const n = norm(q); let best = null;
+  for (const o of ['deal', 'company', 'contact', 'lead']) for (const r of db[o]) {
+    const k = norm(r.name);
+    if (k.length > 2 && n.includes(k) && (!best || k.length > best.k.length)) best = { obj: o, r, k };
+  }
+  return best ? { obj: best.obj, r: best.r } : null;
+}
+function primaryDeal(obj, r) {
+  if (obj === 'deal') return r;
+  const ds = db.deal.filter(d => obj === 'company' ? d.company === r.id : obj === 'contact' ? d.contact === r.id : false);
+  return ds.filter(isOpen).sort((a, b) => (b.value || 0) - (a.value || 0))[0] || ds[0] || null;
+}
+function riskOf(d) {
+  const why = [];
+  if (d.nextDate && d.nextDate < today) why.push(`krok po terminie (${rel(d.nextDate)})`);
+  if (!d.nextStep) why.push('brak następnego kroku');
+  if (daysIn(d) >= 14) why.push(`${daysIn(d)} dni w etapie ${d.stage}`);
+  const lt = lastTouch('deal', d);
+  if (!lt || dayDiff(lt) < -14) why.push(lt ? `ostatni kontakt ${rel(lt)}` : 'brak kontaktu w historii');
+  if (d.close && d.close < today) why.push('minęła planowana data zamknięcia');
+  return why;
+}
+function localAnswer(q) {
+  const n = norm(q);
+  const has = (...w) => w.some(x => n.includes(x));
+  let ref = findMentioned(q);
+  if (!ref && ctxRec() && !has('dzis', 'zagroz', 'lejek', 'miesiac')) ref = ctxRec();
+  if (has('follow', 'napisz', 'mail', 'wiadomosc', 'odpisz', 'przypomn')) return ref ? draftAnswer(ref) : '<p>Do kogo mam napisać? Podaj nazwę firmy albo osoby, np. „Napisz follow-up do Meble Dębowe”.</p>';
+  if (ref && has('nastepny krok', 'co dalej', 'zasugeruj', 'zaproponuj')) return stepAnswer(ref);
+  if (ref && has('podsumuj', 'strescz', 'status', 'co wiem', 'kim jest', 'opowiedz', 'szczegol')) return summaryAnswer(ref);
+  if (has('lead')) return leadAnswer();
+  if (has('dzis', 'zrobic', 'plan', 'priorytet', 'najpierw', 'zaczac')) return todayAnswer();
+  if (has('zagroz', 'ryzyk', 'utkn', 'stoi', 'zalega', 'zapomn', 'problem', 'uwagi')) return riskAnswer();
+  if (has('lejek', 'prognoz', 'cel', 'miesiac', 'sprzedaz', 'wynik', 'idzie', 'przychod', 'wygran')) return pipelineAnswer();
+  if (ref) return summaryAnswer(ref);
+  return `<p>W trybie lokalnym rozumiem takie pytania:</p><ul><li>Co mam dziś zrobić?</li><li>Które szanse są zagrożone?</li><li>Jak idzie sprzedaż w tym miesiącu?</li><li>Którym leadem zająć się najpierw?</li><li>Podsumuj <i>nazwa firmy</i> · Napisz follow-up do <i>nazwa firmy</i></li></ul><p>Po podłączeniu Claude API w Ustawieniach zapytasz o wszystko, np. „Porównaj moje szanse z Warszawy i Krakowa”.</p>`;
+}
+function todayAnswer() {
+  const items = todayItems();
+  if (!items.length) return '<p>Nic nie zalega — dobra robota. To dobry moment, żeby dodać nowe leady albo odezwać się do firm, z którymi dawno nie rozmawiałeś.</p>';
+  const steps = items.filter(i => i.kind === 'step').map(i => find('deal', i.id)).sort((a, b) => (b.value || 0) - (a.value || 0));
+  const late = items.filter(i => i.hot).length;
+  return `<p>Masz <b>${items.length}</b> ${plural(items.length, 'rzecz', 'rzeczy', 'rzeczy')} na dziś${late ? `, w tym <b>${late}</b> po terminie` : ''}:</p>
+    <ul>${items.slice(0, 7).map(it => `<li><b>${esc(it.title)}</b> — ${esc(it.meta)} ${aiOpen(it.obj, it.id)}</li>`).join('')}</ul>
+    ${steps[0] ? `<p>Jeśli masz czas tylko na jedno: <b>${esc(dealLabel(steps[0]))}</b> — największa stawka (${money(steps[0].value)}).</p>` : ''}
+    <div class="ai-acts">${aiAsk('Które szanse są zagrożone?')}${steps[0] ? aiAsk(`Napisz follow-up do ${dealLabel(steps[0])}`) : ''}</div>`;
+}
+function riskAnswer() {
+  const risky = db.deal.filter(isOpen).map(d => ({ d, why: riskOf(d) })).filter(x => x.why.length).sort((a, b) => (b.why.length - a.why.length) || ((b.d.value || 0) - (a.d.value || 0)));
+  if (!risky.length) return '<p>Żadna otwarta szansa nie wygląda na zagrożoną — każda ma krok, termin i świeży kontakt.</p>';
+  return `<p><b>${risky.length}</b> ${plural(risky.length, 'szansa wymaga', 'szanse wymagają', 'szans wymaga')} uwagi (łącznie ${money(sum(risky.map(x => x.d)))}):</p>
+    <ul>${risky.slice(0, 6).map(({ d, why }) => `<li><b>${esc(dealLabel(d))}</b> · ${kzl(d.value)} — ${esc(why.join(', '))} ${aiOpen('deal', d.id)}</li>`).join('')}</ul>
+    <p>Zacznij od tych z krokiem po terminie — im dłużej klient czeka, tym szybciej szansa stygnie.</p>
+    <div class="ai-acts">${aiAsk(`Napisz follow-up do ${dealLabel(risky[0].d)}`)}</div>`;
+}
+function pipelineAnswer() {
+  const open = db.deal.filter(isOpen), won = sum(wonIn(db.deal)), target = settings.target, gap = Math.max(0, target - won);
+  const closing = open.filter(d => (d.close || '9999').slice(0, 7) <= thisMonth).sort((a, b) => (b.value || 0) - (a.value || 0));
+  const lost = db.deal.filter(d => d.stage === 'Przegrana' && (d.closedAt || '').slice(0, 7) === thisMonth);
+  const byStage = field('deal', 'stage').options.filter(o => !CLOSED.includes(o[0])).map(o => [o[0], open.filter(d => d.stage === o[0])]).sort((a, b) => sum(b[1]) - sum(a[1]));
+  return `<p>W tym miesiącu wygrałeś <b>${money(won)}</b> z celu ${money(target)} (<b>${pct(won, target)}%</b>).${gap ? ` Brakuje <b>${money(gap)}</b>.` : ' Cel osiągnięty!'}</p>
+    <ul><li>Otwarty lejek: <b>${money(sum(open))}</b> w ${open.length} ${plural(open.length, 'szansie', 'szansach', 'szansach')}; najwięcej w etapie <b>${esc(byStage[0] ? byStage[0][0] : '—')}</b> (${kzl(byStage[0] ? sum(byStage[0][1]) : 0)}).</li>
+    <li>Planowane na ten miesiąc: <b>${money(sum(closing))}</b> (${closing.length} ${plural(closing.length, 'szansa', 'szanse', 'szans')}).</li>
+    ${lost.length ? `<li>Przegrane w tym miesiącu: ${lost.length} (${kzl(sum(lost))}).</li>` : ''}</ul>
+    ${gap && closing.length ? `<p>Żeby domknąć cel, skup się na: ${closing.slice(0, 3).map(d => `<b>${esc(dealLabel(d))}</b> (${kzl(d.value)}) ${aiOpen('deal', d.id)}`).join(', ')}.</p>` : gap ? '<p>Na ten miesiąc nie ma zaplanowanych zamknięć — sprawdź, które szanse z negocjacji da się przyspieszyć.</p>' : ''}
+    <div class="ai-acts">${aiAsk('Które szanse są zagrożone?')}</div>`;
+}
+function leadAnswer() {
+  const rank = { 'Polecenie': 0, 'Strona www': 1, 'Targi': 2, 'Cold mailing': 3, 'Inne': 4 };
+  const fresh = db.lead.filter(l => l.status === 'Nowy' || l.status === 'W kontakcie').sort((a, b) => ((rank[a.source] ?? 5) - (rank[b.source] ?? 5)) || String(b.created).localeCompare(String(a.created)));
+  if (!fresh.length) return '<p>Nie masz otwartych leadów. Dodaj nowe ręcznie albo zaimportuj listę z CSV.</p>';
+  const srcRate = s => { const L = db.lead.filter(l => l.source === s); return pct(L.filter(l => l.status === 'Zakwalifikowany').length, L.length) || 0; };
+  const best = Object.keys(rank).filter(s => db.lead.some(l => l.source === s)).sort((a, b) => srcRate(b) - srcRate(a))[0];
+  return `<p>Kolejność, w jakiej warto się odezwać:</p>
+    <ol>${fresh.slice(0, 5).map(l => `<li><b>${esc(l.name)}</b>${l.companyName ? ` (${esc(l.companyName)})` : ''} — ${esc(l.source || 'bez źródła')}, ${esc(l.status.toLowerCase())}, dodany ${esc(rel(l.created))} ${aiOpen('lead', l.id)}</li>`).join('')}</ol>
+    ${best ? `<p>Najlepiej kwalifikują się leady ze źródła <b>${esc(best)}</b> (${srcRate(best)}%) — dlatego są wyżej.</p>` : ''}
+    <div class="ai-acts">${aiAsk(`Napisz pierwszą wiadomość do ${fresh[0].name}`)}</div>`;
+}
+function summaryAnswer({ obj, r }) {
+  const lt = lastTouch(obj, r), acts = actsOf(obj, r).slice(0, 3);
+  const hist = acts.length ? `<p>Ostatnio:</p><ul>${acts.map(a => `<li>${esc(relTime(a.at))} · ${esc(ACT[a.type] ? ACT[a.type][0] : '')}: ${esc(a.text)}</li>`).join('')}</ul>` : '<p>Brak wpisów w historii.</p>';
+  let head = '';
+  if (obj === 'deal') {
+    const why = isOpen(r) ? riskOf(r) : [];
+    head = `<p><b>${esc(r.name)}</b> · ${esc(dealLabel(r))} — ${money(r.value)}, etap <b>${esc(r.stage)}</b>${isOpen(r) ? ` od ${daysIn(r)} dni` : ''}.</p>
+      <ul>${isOpen(r) ? `<li>Następny krok: ${r.nextStep ? `<b>${esc(r.nextStep)}</b> (${esc(rel(r.nextDate))})` : '<b>brak</b>'}</li>` : ''}
+      <li>Kontakt: ${esc(nameOf('contact', r.contact) || '—')} · ostatni kontakt ${esc(rel(lt) || 'brak')}</li>
+      ${r.lostReason ? `<li>Powód przegranej: ${esc(r.lostReason)}</li>` : ''}
+      ${why.length ? `<li>Uwaga: ${esc(why.join(', '))}</li>` : ''}</ul>`;
+  } else if (obj === 'company') {
+    const ds = db.deal.filter(d => d.company === r.id), op = ds.filter(isOpen);
+    head = `<p><b>${esc(r.name)}</b>${r.industry ? ` · ${esc(r.industry)}` : ''}${r.city ? `, ${esc(r.city)}` : ''}.</p>
+      <ul><li>Otwarte szanse: ${op.length} (${money(sum(op))})${op[0] ? ` — największa: ${esc(op.sort((a, b) => b.value - a.value)[0].name)}` : ''}</li>
+      <li>Wygrane łącznie: ${money(sum(ds.filter(d => d.stage === 'Wygrana')))}</li>
+      <li>Kontakty: ${esc(db.contact.filter(c => c.company === r.id).map(c => c.name).join(', ') || 'brak')} · ostatni kontakt ${esc(rel(lt) || 'brak')}</li></ul>`;
+  } else if (obj === 'contact') {
+    const ds = db.deal.filter(d => d.contact === r.id);
+    head = `<p><b>${esc(r.name)}</b>${r.role ? `, ${esc(r.role)}` : ''}${r.company ? ` w ${esc(nameOf('company', r.company))}` : ''}.</p>
+      <ul><li>Szanse: ${ds.length ? esc(ds.map(d => `${d.name} (${d.stage})`).join(', ')) : 'brak'}</li><li>Ostatni kontakt: ${esc(rel(lt) || 'brak')}</li></ul>`;
+  } else {
+    head = `<p><b>${esc(r.name)}</b>${r.companyName ? ` z ${esc(r.companyName)}` : ''} — lead ze źródła ${esc(r.source || '—')}, status <b>${esc(r.status || '—')}</b>, dodany ${esc(rel(r.created))}.</p>
+      <p>${r.status === 'Nowy' ? 'Czeka na pierwszy kontakt — najlepiej odezwać się w ciągu 24 godzin.' : r.status === 'W kontakcie' ? 'Jeśli potwierdził potrzebę i budżet, skonwertuj go na szansę.' : ''}</p>`;
+  }
+  return head + hist + `<div class="ai-acts">${aiOpen(obj, r.id, 'Otwórz kartę')}${obj !== 'contact' ? aiAsk(obj === 'lead' ? `Napisz pierwszą wiadomość do ${r.name}` : `Napisz follow-up do ${obj === 'deal' ? dealLabel(r) : r.name}`) : ''}</div>`;
+}
+const STEP_HINT = { 'Nowe': 'Umówić 20-minutową rozmowę wstępną', 'Kontakt': 'Wysłać ofertę z wyceną', 'Oferta': 'Follow-up: zapytać o decyzję i ewentualne wątpliwości', 'Negocjacje': 'Wysłać umowę do akceptacji' };
+function stepAnswer({ obj, r }) {
+  const d = primaryDeal(obj, r);
+  if (!d || !isOpen(d)) return `<p>${esc(r.name)} nie ma otwartej szansy. Może warto ją założyć?</p>`;
+  const late = d.nextDate && d.nextDate < today;
+  const planned = d.nextStep && !late;
+  const text = late && d.nextStep ? d.nextStep : (STEP_HINT[d.stage] || 'Zadzwonić i ustalić dalsze kroki');
+  const base = planned && d.nextDate ? dayDiff(d.nextDate) : 0;
+  const when = late ? addDays(0) : addDays(base + (d.stage === 'Negocjacje' ? 1 : 2));
+  return `<p>Szansa <b>${esc(dealLabel(d))}</b> jest w etapie <b>${esc(d.stage)}</b> od ${daysIn(d)} dni${d.nextStep ? `, zaplanowany krok: „${esc(d.nextStep)}” (${esc(rel(d.nextDate))})` : ', bez zaplanowanego kroku'}.</p>
+    <p>${planned ? `Zaplanowany krok wygląda dobrze. Kiedy go zrobisz, kolejny proponuję: <b>${esc(text)}</b> — ${esc(rel(when))}.` : `Proponuję: <b>${esc(text)}</b> — ${esc(rel(when))}.${late ? ' Krok jest po terminie, więc najlepiej zrobić go dziś.' : ''}`}</p>
+    <div class="ai-acts"><button class="chip-btn" data-act="ai-setstep" data-id="${d.id}" data-text="${esc(text)}" data-d="${when}">${ic('tick', 14)}${planned ? 'Zastąp obecny krok' : 'Ustaw jako następny krok'}</button>${aiAsk(`Napisz follow-up do ${dealLabel(d)}`)}</div>`;
+}
+function draftAnswer({ obj, r }) {
+  const d = obj === 'lead' ? null : primaryDeal(obj, r);
+  const person = obj === 'lead' ? r : obj === 'contact' ? r : (d && find('contact', d.contact)) || db.contact.find(c => c.company === (obj === 'company' ? r.id : d && d.company));
+  const company = obj === 'lead' ? r.companyName : obj === 'company' ? r.name : nameOf('company', (d || r).company) || '';
+  const email = person && person.email || '';
+  const last = d ? actsOf('deal', d).find(a => ['call', 'meeting', 'email'].includes(a.type)) : actsOf(obj, r).find(a => ['call', 'meeting', 'email'].includes(a.type));
+  const thanks = last ? { call: 'dziękuję za rozmowę', meeting: 'dziękuję za spotkanie', email: 'nawiązuję do mojej ostatniej wiadomości' }[last.type] : 'odzywam się';
+  let subject, body;
+  if (obj === 'lead') {
+    subject = `${company || 'Współpraca'} — krótka rozmowa?`;
+    body = `Dzień dobry,\n\ndziękuję za zainteresowanie. Chętnie dowiem się więcej o potrzebach${company ? ` ${company}` : ''} i sprawdzę, czy możemy pomóc.\n\nCzy znajdzie Pan/Pani 15 minut na krótką rozmowę w tym tygodniu? Wystarczy, że odpisze Pan/Pani z dogodnym terminem.\n\nPozdrawiam,\nKamil`;
+  } else if (!d) {
+    subject = `${company} — co słychać?`;
+    body = `Dzień dobry,\n\n${thanks}. Chciałem zapytać, jak wyglądają Państwa plany na najbliższe tygodnie i czy mogę w czymś pomóc.\n\nPozdrawiam,\nKamil`;
+  } else {
+    const ask = {
+      'Nowe': `Chętnie przygotuję propozycję dopasowaną do ${company || 'Państwa firmy'}. Czy możemy umówić krótką rozmowę, żeby doprecyzować zakres?`,
+      'Kontakt': `Zgodnie z ustaleniami przygotuję ofertę „${d.name}”. Czy są jeszcze informacje, które powinienem uwzględnić?`,
+      'Oferta': `Chciałem zapytać, czy udało się zapoznać z ofertą „${d.name}”. Chętnie odpowiem na pytania albo dopasuję szczegóły.`,
+      'Negocjacje': `Dziękuję za dotychczasowe ustalenia dotyczące „${d.name}”. Czy możemy w tym tygodniu domknąć ostatnie kwestie i przejść do umowy?`,
+      'Wygrana': `Dziękuję za zaufanie przy „${d.name}”. Czy wszystko przebiega zgodnie z oczekiwaniami? Jeśli mogę w czymś pomóc — jestem do dyspozycji.`,
+      'Przegrana': `Rozumiem decyzję w sprawie „${d.name}”. Gdyby sytuacja się zmieniła, chętnie wrócę do rozmowy — odezwę się za kilka miesięcy, jeśli Pan/Pani pozwoli.`
+    }[d.stage] || '';
+    subject = `${d.name}${d.stage === 'Oferta' ? ' — pytanie o ofertę' : d.stage === 'Negocjacje' ? ' — kolejne kroki' : ''}`;
+    body = `Dzień dobry,\n\n${thanks}. ${ask}\n\n${isOpen(d) ? `Czy pasuje Panu/Pani krótka rozmowa ${d.nextDate && d.nextDate >= today ? rel(d.nextDate) : 'w tym tygodniu'}?\n\n` : ''}Pozdrawiam,\nKamil`;
+  }
+  const key = 'k' + Date.now().toString(36);
+  const logObj = d ? 'deal' : obj, logId = d ? d.id : r.id;
+  ai.drafts[key] = { subject, body, obj: logObj, id: logId };
+  const href = email ? `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}` : '';
+  return `<p>Szkic wiadomości do <b>${esc(person ? person.name : company || r.name)}</b>${email ? ` (${esc(email)})` : ''}${last ? ` — na podstawie ostatniego kontaktu: ${esc((ACT[last.type] || ['wpis'])[0].toLowerCase())} ${esc(rel(last.at))}` : ''}:</p>
+    <div class="ai-draft"><b>Temat: ${esc(subject)}</b><pre>${esc(body)}</pre></div>
+    <div class="ai-acts"><button class="chip-btn" data-act="ai-copy" data-k="${key}">Kopiuj</button>${href ? `<a class="chip-btn" href="${esc(href)}">${ic('mail', 14)}Otwórz w poczcie</a>` : ''}<button class="chip-btn" data-act="ai-log" data-k="${key}">${ic('tick', 14)}Zapisz w historii jako wysłany</button></div>`;
+}
+
+
 /* ================= actions ================= */
 function setStage(d, stage) {
   if (!stage || d.stage === stage) return;
@@ -1479,6 +1840,7 @@ document.addEventListener('click', e => {
       openRec = null; renderDrawer(); render(); window.scrollTo(0, 0); break;
     case 'open':
       if (isModal()) closeModal();
+      if (t.closest('#aiLayer')) { ai.open = false; renderAI(); }
       openRec = { obj: t.dataset.obj, id: t.dataset.id }; state.allActs = false; renderDrawer();
       setTimeout(() => { const b = $('.drawer .sq-btn'); if (b) b.focus(); }, 0); break;
     case 'close-drawer': openRec = null; renderDrawer(); break;
@@ -1517,6 +1879,17 @@ document.addEventListener('click', e => {
     case 'allacts': state.allActs = true; renderDrawer(); break;
     case 'toast-act': { const fn = toastFn; toastFn = null; $('#toast').classList.remove('show'); if (fn) fn(); break; }
     case 'del': deleteRecord(); break;
+    case 'ai': ai.open ? closeAI() : openAI(openRec ? { ...openRec } : ai.ctx); break;
+    case 'ai-rec': openAI({ ...openRec }); break;
+    case 'ai-close': closeAI(); break;
+    case 'ai-ask': askAI(t.dataset.q); break;
+    case 'ai-clear': ai.msgs = []; ai.drafts = {}; renderAI(); break;
+    case 'ai-ctx-x': ai.ctx = null; renderAI(); break;
+    case 'ai-setup': ai.open = false; renderAI(); state.page = 'settings'; state.settingsObj = 'general'; openRec = null; renderDrawer(); render(); setTimeout(() => { const i = $('[data-setting="aiKey"]'); if (i) i.focus(); }, 0); break;
+    case 'ai-forget': aiCfg.key = ''; saveAiCfg(); renderSettings(); toast('Usunięto klucz API — Hermes AI działa lokalnie'); break;
+    case 'ai-copy': { const dr = ai.drafts[t.dataset.k]; if (!dr) break; const txt = `Temat: ${dr.subject}\n\n${dr.body}`; (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Skopiowano szkic do schowka')).catch(() => toast('Nie udało się skopiować — zaznacz tekst ręcznie')); break; }
+    case 'ai-log': { const dr = ai.drafts[t.dataset.k]; if (!dr) break; logAct(dr.obj, dr.id, 'email', `Wysłano: ${dr.subject}`); renderSide(); renderMain(); refreshDrawer(); t.disabled = true; t.innerHTML = ic('tick', 14) + 'Zapisano w historii'; toast('Zapisano e-mail w historii'); break; }
+    case 'ai-setstep': { const d = find('deal', t.dataset.id); if (!d) break; d.nextStep = t.dataset.text; d.nextDate = t.dataset.d; render(); refreshDrawer(); t.disabled = true; t.innerHTML = ic('tick', 14) + 'Ustawiono'; toast(`Następny krok: ${rel(d.nextDate)}`); break; }
     case 'stab': state.settingsObj = t.dataset.obj; renderSettings(); break;
     case 'del-field': {
       if (!t.dataset.armed) { t.dataset.armed = '1'; t.textContent = 'Na pewno?'; return; }
@@ -1554,6 +1927,7 @@ document.addEventListener('click', e => {
 document.addEventListener('submit', e => {
   e.preventDefault();
   const form = e.target, fd = new FormData(form);
+  if (form.id === 'aiForm') { const i = $('#ai-input'); const q = i.value; i.value = ''; askAI(q); return; }
   if (form.id === 'addForm') {
     const obj = form.dataset.obj, S = SCHEMA[obj];
     const rec = { id: uid(obj[0]), created: today };
@@ -1625,6 +1999,13 @@ document.addEventListener('change', e => {
     if (t.value.trim()) { f.label = t.value.trim(); save(); toast('Zapisano nazwę pola'); } else t.value = f.label;
     return;
   }
+  if (t.dataset.setting === 'aiKey') {
+    const v = t.value.trim();
+    if (!v || v.includes('•')) return;
+    aiCfg.key = v; saveAiCfg(); renderSettings(); toast('Połączono Hermes AI z Claude API');
+    return;
+  }
+  if (t.dataset.setting === 'aiModel') { aiCfg.model = t.value.trim() || 'claude-sonnet-5-5'; saveAiCfg(); toast(`Model: ${aiCfg.model}`); return; }
   if (t.dataset.setting === 'target') {
     const v = Number(String(t.value).replace(/[^\d]/g, ''));
     if (v > 0) { settings.target = v; t.value = grp(v); renderSide(); save(); toast(`Cel miesiąca: ${money(v)}`); } else t.value = grp(settings.target);
@@ -1649,13 +2030,16 @@ document.addEventListener('input', e => {
   const t = e.target;
   if (t.dataset.role === 'q') { state.q = t.value; renderRows(); }
   else if (t.dataset.role === 'cmdq') renderCmd(t.value);
+  else if (t.id === 'ai-input') { t.style.height = 'auto'; t.style.height = Math.min(140, t.scrollHeight) + 'px'; }
   else if (t.classList.contains('err')) t.classList.remove('err');
 });
 
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCmd(); return; }
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'j') { e.preventDefault(); ai.open ? closeAI() : openAI(openRec ? { ...openRec } : ai.ctx); return; }
+  if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'ai-input') { e.preventDefault(); const f = $('#aiForm'); if (f) f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); return; }
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && e.target.id === 'act-text') { e.preventDefault(); logEntry(); return; }
-  if (e.key === 'Escape') { if (isModal()) closeModal(); else if (openRec) { openRec = null; renderDrawer(); } return; }
+  if (e.key === 'Escape') { if (isModal()) closeModal(); else if (ai.open) closeAI(); else if (openRec) { openRec = null; renderDrawer(); } return; }
   if (e.key === 'Enter' && e.target.id === 'cmdq') { const b = $('#cmdres .cmdrow'); if (b) b.click(); return; }
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (e.key === 'Enter' && e.target.classList.contains('deal-card')) { e.target.click(); return; }
