@@ -33,7 +33,7 @@ Kliknięcie leada lub szansy w dowolnym miejscu otwiera pełny ekran rekordu, po
 - **Klikalny pasek etapów lub statusów.** Pokazuje też liczbę dni w etapie i prawdopodobieństwo.
 - **Kluczowe liczby**: wartość, prognoza ważona, planowane zamknięcie, ostatni kontakt, wiek leada.
 - **Powiązania.** Do rekordu dodajesz firmę i **dowolną liczbę kontaktów**. Wyszukiwarka pozwala też utworzyć nową osobę lub firmę w locie. Hermes podpowiada pozostałe osoby z tej samej firmy. Możesz ustawić kontakt główny i odłączyć kontakt z opcją cofnięcia. Po powiązaniu kontaktu Hermes sam uzupełnia firmę.
-- **Aktywności.** Dodajesz notatkę, telefon (z wynikiem rozmowy, np. „Nie odebrał(a)”), e-mail lub spotkanie i wskazujesz, z kim rozmawiałeś.
+- **Aktywności.** Dodajesz notatkę, telefon (z wynikiem rozmowy, np. „Nie odebrał(a)”), email lub spotkanie i wskazujesz, z kim rozmawiałeś.
 - **Oś czasu** jest pogrupowana według dni i ma filtry. Na górze widać zaplanowany krok, a pod nim wpisy z rekordu, z jego kontaktów i ze źródłowego leada.
 
 Firmy i kontakty otwierają się w panelu bocznym. Widać w nim powiązane leady i szanse, a jednym kliknięciem założysz nowego leada lub szansę dla tej osoby albo firmy.
@@ -49,30 +49,33 @@ Firmy i kontakty otwierają się w panelu bocznym. Widać w nim powiązane leady
 ## Co jest w środku
 
 - **Pulpit**: wartość lejka, prognoza ważona, otwarte leady, lista „Na dziś” i największe szanse.
-- **Lejek**: kanban z przeciąganiem, prawdopodobieństwem etapu i oznaczeniem szans stojących 14+ dni.
+- **Lejek szans**: kanban z przeciąganiem, prawdopodobieństwem etapu, oznaczeniem szans stojących 14+ dni i filtrem opiekuna. Etapy edytujesz w **Ustawieniach → Lejek**: zmiana nazwy (szanse przechodzą razem z nią), prawdopodobieństwo, podpowiedź kroku, dodawanie, usuwanie (szanse trafiają do sąsiedniego etapu) i zmiana kolejności. Etapy „Wygrana” i „Przegrana” są stałe.
+- **Lejek leadów**: prosty kanban kwalifikacji (Nowy, W kontakcie, Kwalifikacja, Szansa sprzedaży). Przeciągnięcie do kolumny „Szansa sprzedaży” otwiera konwersję.
 - **Listy**:
   - filtry: otwarte, skonwertowane, odrzucone, wygrane, przegrane, cisza 30+ dni;
   - sortowanie po kliknięciu w nagłówek kolumny;
   - kolumny „Kontakty” i „Następny krok”;
   - flaga czasu reakcji na nowe leady.
 - **Dodawanie ręczne**: lead lub szansa razem z firmą i osobą w jednym formularzu. Istniejące rekordy podpowiadają się z listy, a duplikaty są wykrywane.
-- **Import i eksport CSV**: automatyczne dopasowanie kolumn, także osoby kontaktowej (imię, e-mail, telefon) przy leadach i szansach. Firmy i osoby są tworzone albo dopasowywane do istniejących.
+- **Import i eksport CSV**: automatyczne dopasowanie kolumn, także osoby kontaktowej (imię, email, telefon) przy leadach i szansach. Firmy i osoby są tworzone albo dopasowywane do istniejących.
 - **Cofnij**: usunięcie rekordu, odłączenie kontaktu, odrzucenie leada, dane demo i czyszczenie danych.
 - **Analityka** z wyborem okresu: **dzień, tydzień, miesiąc, kwartał, rok**. Strzałkami przechodzisz do poprzednich okresów, każdy wynik porównany jest z poprzednim okresem. W raporcie:
   - wygrane względem celu okresu (cel miesięczny ×3 dla kwartału, ×12 dla roku, proporcjonalnie dla dnia i tygodnia) oraz tempo względem upływu okresu;
   - nowe szanse, skuteczność i konwersja leadów w okresie;
-  - aktywność: telefony, e-maile, spotkania, zamknięte zadania, nowe leady;
+  - aktywność: telefony, emaile, spotkania, zamknięte zadania, nowe leady;
   - wykres „Wygrane i prognoza” (wygrane w kolejnych okresach plus planowane zamknięcia) i pokrycie celu;
-  - zdrowie lejka, wyniki zespołu, jakość źródeł leadów i powody przegranych.
+  - zdrowie lejka, wyniki zespołu, jakość źródeł leadów i powody przegranych;
+  - **własny układ**: w trybie „Dostosuj układ” przeciągasz moduły, zmieniasz ich szerokość (⅓, ½, ⅔, całość), usuwasz je i dodajesz nowe (Lejek konwersji, Najbliższe zamknięcia, Leady według statusu). Siatka dopasowuje się do szerokości ekranu.
 - **Hermes AI** (⌘J): plan dnia, zagrożone szanse (także te z jedną osobą po stronie klienta), kolejność leadów (najpierw ICP, potem źródło), podsumowania rekordów, rada „konwertować czy nie”, szkice wiadomości i propozycje kroków. Bez klucza działa lokalnie. Z kluczem Claude API odpowiada na dowolne pytania.
-- **⌘K**: wyszukiwarka z ostatnio otwieranymi rekordami i zadaniami na dziś.
-- **Ustawienia**: profil, cel, Hermes AI, kopia zapasowa, eksport CSV, dane demo i pola obiektów (zmiana nazw, własne pola).
+- **Wyszukiwarka** (⌘K albo `/`): szuka w nazwach, firmach, osobach, emailach, telefonach, domenach i historii. Wyniki są pogrupowane, z najlepszym dopasowaniem na górze, podświetleniem trafienia, zakresami (Tab) i nawigacją strzałkami. Bez wyników zaproponuje utworzenie leada, firmy albo kontaktu.
+- **Zespół**: profile handlowców (imię, email, rola, cel indywidualny). Handlowcy są opiekunami leadów i szans, mają filtry w lejku i na listach oraz wiersz w Analityce.
+- **Ustawienia**: profil, cel, zespół, etapy lejka, Hermes AI, kopia zapasowa, eksport CSV, dane demo i pola obiektów (zmiana nazw, własne pola).
 
 ## Skróty klawiszowe
 
 | Skrót | Akcja |
 | --- | --- |
-| `⌘K` / `Ctrl+K` | Wyszukiwarka |
+| `⌘K` / `Ctrl+K` / `/` | Wyszukiwarka |
 | `⌘J` / `Ctrl+J` | Ask Hermes AI |
 | `N` | Nowy rekord (lead na Pulpicie, szansa w Lejku) |
 | `⌘↵` / `Ctrl+Enter` | Zapisz wpis w historii |
@@ -91,7 +94,11 @@ Planowane:
 - zadania i przypomnienia niezależne od kroków,
 - edytowalne etapy lejka,
 - zapisane widoki,
-- poranny e-mail z planem dnia,
+- poranny email z planem dnia,
 - integracja z Gmailem i kalendarzem (automatyczne logowanie maili i spotkań),
 - formularz leadów na stronę,
 - aplikacja z bazą danych i kontami użytkowników.
+
+## Teksty
+
+Interfejs nie używa myślników ani półpauz. Krótkie spójniki i przyimki (np. „w”, „z”, „i”, „do”) są automatycznie sklejane twardą spacją z następnym słowem, liczby z jednostkami, a akapity łamią się bez wdów i sierot (`text-wrap: pretty`).
