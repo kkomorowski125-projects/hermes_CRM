@@ -2,6 +2,22 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.15.0] · 31 października 2026
+
+Design system 2.0 po audycie designu: lżej, spokojniej, wygodniej do czytania.
+
+### Zmienione
+- Typografia: Inter do czytania (wysoka wysokość x, pełne polskie znaki, warianty odróżniające „l” i „I”), Source Serif 4 w tytułach stron, rekordów i okien.
+- Etykiety, menu i nagłówki kolumn pisane zdaniem zamiast rozstrzelonych wersalików.
+- Kolorystyka: chłodne szarości dostrojone do akcentu iris zamiast oliwkowych, trzy poziomy powierzchni, cieńsze linie, obszar roboczy bez wzoru w tle.
+- Układ: krótszy dystans od nagłówka do treści, nagłówki paneli bez numerów, gęstsze tabele (56 px), mniejsze kafelki wskaźników, przyciski list po prawej stronie.
+- Szybkie akcje na liście „Na dziś” bez ramek do chwili najechania, na telefonie zostają telefon i „Zrobione”.
+- Przyciski 38 px bez podskakiwania, panele i okna z promieniem 16 px, wyłączanie animacji przy `prefers-reduced-motion`.
+
+### Naprawione
+- Nazwy w tabelach łamały się na kilka linii, bo skrót `text-wrap` resetował `white-space: nowrap`.
+- Przycisk Hermes AI na telefonie znowu pokazuje samą ikonę, menu na wąskim ekranie zajmuje mniej miejsca.
+
 ## [0.14.0] · 31 października 2026
 
 Wdrożenie audytu użyteczności dla foundera, handlowca i managera sprzedaży.

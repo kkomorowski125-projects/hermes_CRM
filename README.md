@@ -6,7 +6,7 @@ Prosty, AI-native CRM dla małych i średnich firm, zaprojektowany dla foundera,
 
 ![Pulpit Hermesa z listą „Na dziś”](docs/img/pulpit.png)
 
-> **Status:** wersja 0.14 (wdrożony audyt użyteczności): faza 1 [roadmapy](docs/roadmapa.md) gotowa technicznie, sześć z dziewięciu inicjatyw fazy 2 i pięć z ośmiu inicjatyw fazy 3 działa. Blokery, które wymagają decyzji, są wypisane w roadmapie. `index.html` działa samodzielnie jako prototyp z danymi w przeglądarce, a z serwerem z folderu `server/` jako aplikacja dla zespołu: konta, 2FA, role, synchronizacja, RODO i Hermes AI przez serwer.
+> **Status:** wersja 0.15 (design system 2.0 i wdrożony audyt użyteczności): faza 1 [roadmapy](docs/roadmapa.md) gotowa technicznie, sześć z dziewięciu inicjatyw fazy 2 i pięć z ośmiu inicjatyw fazy 3 działa. Blokery, które wymagają decyzji, są wypisane w roadmapie. `index.html` działa samodzielnie jako prototyp z danymi w przeglądarce, a z serwerem z folderu `server/` jako aplikacja dla zespołu: konta, 2FA, role, synchronizacja, RODO i Hermes AI przez serwer.
 
 ## Szybki start
 
@@ -85,7 +85,7 @@ tools/              sprawdzenie składni i skrypt zrzutów ekranu
 
 ## Technologia
 
-Jeden plik HTML z czystym JavaScriptem, bez frameworka i bez zależności w przeglądarce. Dane w `localStorage`, fonty Space Grotesk i DM Sans z Google Fonts. Rozpoznawanie mowy przez Web Speech API przeglądarki. Serwer: Node.js 22, Fastify 5, TypeScript, PostgreSQL 16 albo wbudowany SQLite. Testy w Node.js z jsdom i `node:test`, uruchamiane w GitHub Actions przy każdym pushu na obu bazach.
+Jeden plik HTML z czystym JavaScriptem, bez frameworka i bez zależności w przeglądarce. Dane w `localStorage`, fonty Inter i Source Serif 4 z Google Fonts. Rozpoznawanie mowy przez Web Speech API przeglądarki. Serwer: Node.js 22, Fastify 5, TypeScript, PostgreSQL 16 albo wbudowany SQLite. Testy w Node.js z jsdom i `node:test`, uruchamiane w GitHub Actions przy każdym pushu na obu bazach.
 
 ## Ograniczenia
 
