@@ -1362,6 +1362,43 @@ tr.row:hover td:first-child{box-shadow:inset 2px 0 var(--accent)}
 .bk-meta{margin:0 0 4px;font-size:13.5px;color:var(--mute)}
 @media (max-width:1180px){.cal-grid{grid-template-columns:1fr}}
 @media (max-width:600px){.sch-row,.sch-row.three{grid-template-columns:1fr}.ag-row{flex-wrap:wrap}.ag-acts{width:100%;padding-left:72px}.ag-tag{display:none}.agenda{padding:4px 16px 12px}}
+
+/* -- v14.1: przycisk Dodaj z menu, spójne przyciski dzielone, porządek paska listy -- */
+.split-add{border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 1px 2px rgba(45,50,130,.22)}
+.split-add>.primary-button{border:0;border-radius:0;box-shadow:none}
+.split-add>.primary-button:first-child{border-radius:10px 0 0 10px}
+.split-add>.primary-button:last-child{border-radius:0 10px 10px 0}
+.split-add>.primary-button.sm:first-child{border-radius:9px 0 0 9px}.split-add>.primary-button.sm:last-child{border-radius:0 9px 9px 0}
+.split-add .split-mic{position:relative;padding:0 11px;border:0}
+.split-add .split-mic::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,.3)}
+.split-add .split-mic.sm{padding:0 9px}
+.split-add .split-mic.sm::before{top:7px;bottom:7px}
+.add-wrap{position:relative}
+.add-main{gap:7px;padding:0 12px 0 14px}
+.add-caret{display:inline-grid;margin-left:2px;opacity:.85;transition:transform .15s}
+.add-caret svg{transform:rotate(90deg)}
+.add-main[aria-expanded="true"] .add-caret{transform:rotate(180deg)}
+.add-menu{position:absolute;top:calc(100% + 8px);right:0;z-index:40;width:340px;padding:6px;border-radius:14px;background:#fff;box-shadow:var(--sh-pop);animation:amIn .14s var(--ease)}
+.add-menu[hidden]{display:none}
+@keyframes amIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.am-item{width:100%;display:flex;align-items:center;gap:12px;padding:8px 10px;border:0;border-radius:10px;background:transparent;text-align:left;cursor:pointer}
+.am-item:hover,.am-item:focus-visible{background:var(--soft);outline:0}
+.am-item.cur{background:var(--accent-soft)}
+.am-ic{width:32px;height:32px;display:grid;place-items:center;flex-shrink:0;border-radius:9px;background:var(--soft);color:var(--ink2)}
+.am-item.cur .am-ic{background:#fff;color:var(--accent-ink);box-shadow:inset 0 0 0 1px var(--accent-line)}
+.am-ic.voice{background:var(--accent-soft-2);color:var(--accent-ink)}
+.am-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.am-t b{font-size:14px;font-weight:600;color:var(--ink)}.am-t small{font-size:12.5px;color:var(--mute)}
+.am-item kbd{min-width:22px;height:22px;display:grid;place-items:center;border:1px solid var(--line);border-radius:6px;background:var(--soft);color:var(--faint);font:500 11.5px var(--ui)}
+.am-sep{height:1px;margin:6px 8px;background:var(--line2)}
+/* pasek listy: tytuł i akcje w pierwszym rzędzie, filtry i wyszukiwanie w drugim */
+.toolbar{row-gap:12px}
+.toolbar>.ttl{order:0;margin-right:auto}
+.toolbar>.ghost-button,.toolbar>.split-add{order:1}
+.toolbar>[data-act="view-save"]{margin-left:0}
+.toolbar::after{content:'';order:2;flex-basis:100%;height:0}
+.toolbar>.seg,.toolbar>.owner-sel{order:3}
+.toolbar>.field-search{order:4;margin-left:auto}
 </style>
 </head>
 <body>
@@ -1907,12 +1944,40 @@ function addTarget() {
   if (state.page === 'pipeline') return state.pView === 'lead' ? ['lead', ADD_LABEL.lead] : ['deal', ADD_LABEL.deal];
   return ['lead', ADD_LABEL.lead];
 }
+const ADD_ITEMS = [['lead', 'Lead', 'spark', 'Klient do sprawdzenia', 'L'], ['deal', 'Szansa', 'deal', 'Klient w procesie sprzedaży', 'S'], ['company', 'Firma', 'building', 'Konto klienta', 'F'], ['contact', 'Kontakt', 'person', 'Osoba w firmie', 'K']];
+function addMenu(cur) {
+  return `<div class="add-menu" id="addMenu" role="menu" aria-label="Dodaj" hidden>
+    ${ADD_ITEMS.map(([o, l, i, d, k]) => `<button role="menuitem" class="am-item${o === cur ? ' cur' : ''}" data-act="add" data-obj="${o}"><span class="am-ic">${ic(i, 16)}</span><span class="am-t"><b>${l}</b><small>${d}</small></span><kbd>${k}</kbd></button>`).join('')}
+    <div class="am-sep" role="separator"></div>
+    <button role="menuitem" class="am-item" data-act="appt-new"><span class="am-ic">${ic('meet', 16)}</span><span class="am-t"><b>Spotkanie</b><small>Umów termin z klientem</small></span><kbd>M</kbd></button>
+    <button role="menuitem" class="am-item" data-act="voice"><span class="am-ic voice">${ic('mic', 16)}</span><span class="am-t"><b>Powiedz</b><small>Hermes rozpozna, co dodać</small></span><kbd>V</kbd></button>
+  </div>`;
+}
+function addMenuToggle(open) {
+  const m = $('#addMenu'), b = $('[data-act="add-menu"]'); if (!m || !b) return;
+  const on = open === undefined ? m.hidden : open;
+  m.hidden = !on; b.setAttribute('aria-expanded', String(on));
+  if (on) { const f = m.querySelector('.am-item.cur') || m.querySelector('.am-item'); if (f) f.focus(); }
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act="add-menu"]');
+  if (t) { e.preventDefault(); addMenuToggle(); return; }
+  const m = $('#addMenu'); if (m && !m.hidden) addMenuToggle(false);
+}, true);
+document.addEventListener('keydown', e => {
+  const m = $('#addMenu'); if (!m || m.hidden) return;
+  if (e.key === 'Escape') { e.preventDefault(); addMenuToggle(false); const b = $('[data-act="add-menu"]'); if (b) b.focus(); return; }
+  const items = [...m.querySelectorAll('.am-item')], i = items.indexOf(document.activeElement);
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const n = items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length]; if (n) n.focus(); return; }
+  const k = e.key.toUpperCase(), hit = items.find(x => (x.querySelector('kbd') || {}).textContent === k);
+  if (hit && !e.metaKey && !e.ctrlKey) { e.preventDefault(); e.stopPropagation(); hit.click(); }
+}, true);
 function renderTop() {
   const [obj, label] = addTarget();
   $('#topbar').innerHTML = `
     <button class="search" data-act="cmdk" aria-label="Szukaj (⌘K lub /)">${ic('search', 18)}<span>Szukaj leadów, szans, firm, kontaktów…</span><kbd>⌘K</kbd></button>
     <div class="top-actions">
-      <div class="split-add"><button class="primary-button" data-act="add" data-obj="${obj}">${ic('plus', 17)}${label}</button><button class="primary-button split-mic" data-act="voice" aria-label="Dodaj głosem (V)" title="Dodaj głosem: firmę, kontakt, leada albo szansę, także wszystko naraz (V)">${ic('mic', 17)}</button></div>
+      <div class="add-wrap"><div class="split-add"><button class="primary-button add-main" data-act="add-menu" aria-haspopup="menu" aria-expanded="false" aria-controls="addMenu" title="Dodaj (N dodaje: ${esc(label.toLowerCase())})">${ic('plus', 17)}Dodaj<span class="add-caret">${ic('chevron', 14)}</span></button><button class="primary-button split-mic" data-act="voice" aria-label="Dodaj głosem (V)" title="Dodaj głosem: firmę, kontakt, leada albo szansę, także wszystko naraz (V)">${ic('mic', 17)}</button></div>${addMenu(obj)}</div>
       <button class="ai-button" data-act="ai" aria-label="Ask Hermes AI (⌘J)"><span class="ai-spark">${SPARK(16)}</span>Ask Hermes AI<kbd>⌘J</kbd></button>
     </div>`;
 }

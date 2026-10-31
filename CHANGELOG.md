@@ -2,6 +2,15 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.16.1] · 31 października 2026
+
+### Zmienione
+- Górny przycisk „Dodaj” jest uniwersalny: menu z leadem, szansą, firmą, kontaktem, spotkaniem i głosem, z klawiszami i wyróżnieniem obiektu z bieżącej strony. Szerokość paska nie zmienia się już między stronami.
+- Pasek nad listami w dwóch stałych rzędach: tytuł i akcje u góry, filtry i wyszukiwanie pod spodem.
+
+### Naprawione
+- Przyciski dodawania z mikrofonem jako jedna bryła, bez szpary między częściami.
+
 ## [0.16.0] · 31 października 2026
 
 ### Dodane

@@ -135,7 +135,7 @@ Firmy i kontakty otwierają się w panelu bocznym. Panel zawiera dane do edycji,
 
 ![Hermes Voice](img/glos-nasluch.png)
 
-Przycisk dodawania w górnym pasku zmienia się zależnie od widoku: na Pulpicie dodaje leada, w Lejku szans szansę, na liście dany obiekt. Formularz leada i szansy od razu tworzy firmę i osobę kontaktową.
+Przycisk **„Dodaj”** w górnym pasku otwiera menu: lead, szansa, firma, kontakt, spotkanie albo głos. Każda pozycja ma klawisz (`L`, `S`, `F`, `K`, `M`, `V`), a obiekt z bieżącej strony jest wyróżniony. Klawisz `N` od razu dodaje to, co pasuje do widoku: na liście dany obiekt, w Lejku szansę, w pozostałych miejscach leada. Formularz leada i szansy od razu tworzy firmę i osobę kontaktową.
 
 Ikona **mikrofonu** przy przycisku dodawania (albo klawisz `V`) otwiera Hermes Voice. Mówisz naturalnie, a Hermes rozpoznaje firmę, kontakt, leada i szansę, także wszystko naraz.
 

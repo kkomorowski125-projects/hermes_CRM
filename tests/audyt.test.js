@@ -74,4 +74,13 @@ click('[data-act="tpl-add"]');
 ok(E('settings.templates.length') === 6, 'nowy szablon');
 chg(`[data-tpl="name"][data-id="${E('settings.templates[4].id')}"]`, 'Oferta wstępna');
 ok(E('settings.templates[4].name') === 'Oferta wstępna', 'edycja nazwy szablonu');
+/* uniwersalny przycisk Dodaj z menu */
+E('closeModal(); state.page = "list"; state.obj = "deal"; render()');
+ok(/Dodaj/.test(txt('#topbar [data-act="add-menu"]')) && !/Nowa szansa|Nowy lead/.test(txt('#topbar')), 'górny przycisk jest uniwersalny');
+click('#topbar [data-act="add-menu"]');
+ok(!d.querySelector('#addMenu').hidden && d.querySelectorAll('#addMenu .am-item').length === 6, 'menu: lead, szansa, firma, kontakt, spotkanie, głos');
+ok(!!d.querySelector('#addMenu .am-item.cur[data-obj="deal"]'), 'menu wyróżnia obiekt z bieżącej strony');
+click('#addMenu [data-obj="company"]');
+ok(/Dodaj firmę/.test(txt('.modal')) && d.querySelector('#addMenu').hidden, 'wybór z menu otwiera formularz i zamyka menu');
+E('closeModal()');
 done(errs);
