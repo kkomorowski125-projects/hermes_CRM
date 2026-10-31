@@ -12,7 +12,9 @@ export const EVENTS: Record<string, string> = {
   'deal.stage_changed': 'Zmiana etapu szansy',
   'deal.won': 'Szansa wygrana',
   'deal.lost': 'Szansa przegrana',
-  'offer.accepted': 'Oferta zaakceptowana'
+  'offer.accepted': 'Oferta zaakceptowana',
+  'meeting.booked': 'Umówione spotkanie',
+  'meeting.cancelled': 'Odwołane spotkanie'
 };
 export type HookEvent = { event: string; data: Record<string, unknown>; previous?: Record<string, unknown> };
 

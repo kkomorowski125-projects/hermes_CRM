@@ -9,7 +9,7 @@ export const TYPES = ['company', 'contact', 'lead', 'deal', 'activity', 'task'] 
 type RType = typeof TYPES[number];
 /** Ustawienia całej firmy, które zmienia administrator; reszta to preferencje osoby */
 const ORG_KEYS = ['target', 'targetSet', 'company', 'stages', 'labels', 'custom', 'meTargets', 'rules', 'products', 'offer', 'templates', 'activityTarget'];
-const PREF_KEYS = ['aLayout', 'onboardingHidden', 'digest', 'views', 'lastReview'];
+const PREF_KEYS = ['aLayout', 'onboardingHidden', 'digest', 'views', 'lastReview', 'booking'];
 
 type Rec = { type: RType; id: string; data: Record<string, any>; deleted: boolean; updated_at: string };
 
@@ -181,6 +181,7 @@ export default async function dataRoutes(app: FastifyInstance) {
           await tx.run('UPDATE records SET data = ?, updated_at = ? WHERE org_id = ? AND type = ? AND id = ?', [JSON.stringify(d), t, c.org.id, r.type, r.id]); links++;
         }
       }
+      await tx.run("UPDATE bookings SET name = 'usunięty kontakt', email = '', phone = '', company = '', topic = '' WHERE org_id = ? AND contact_id = ?", [c.org.id, id]);
       await audit(tx, { orgId: c.org.id, userId: c.user.id }, 'gdpr_erase', 'contact', id, { activities: acts, links });
     });
     return { ok: true, activities: acts, links };

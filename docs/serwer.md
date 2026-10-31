@@ -125,6 +125,10 @@ Wszystkie zapytania zmieniające dane muszą mieć nagłówek `x-hermes: 1` (och
 | `GET`, `POST`, `DELETE /api/org/webhooks`, `POST …/:id/test` | admin | Webhooki wychodzące |
 | `POST /api/offers`, `GET /api/offers?deal=`, `POST /api/offers/:id/withdraw` | zalogowany (bez podglądu) | Oferty do szansy |
 | `GET /oferta/:id`, `POST /api/public/offers/:id/accept` | klient z linkiem | Strona oferty i akceptacja |
+| `GET`, `PUT /api/booking` | zalogowany (zapis bez podglądu) | Moja strona umawiania: ustawienia dostępności i link |
+| `POST /api/bookings/:id/cancel` | zalogowany (bez podglądu) | Odwołanie umówionego spotkania z maila do klienta |
+| `GET /umow/:id`, `GET /api/public/booking/:id/slots`, `POST /api/public/booking/:id` | klient z linkiem | Strona umawiania, wolne terminy, rezerwacja |
+| `GET /umow/anuluj/:token`, `POST /api/public/booking/cancel/:token`, `GET /api/public/booking/ics/:token` | klient z maila | Odwołanie i zaproszenie .ics |
 | `GET /health` | każdy | Stan serwera i bazy |
 
 ## Logowanie Google i Microsoft
@@ -166,11 +170,25 @@ Obsługiwane formaty: Postmark Inbound (JSON), prosty JSON (`from`, `to`, `cc`, 
 
 ## Webhooki (Zapier, Make)
 
-Administrator dodaje w Ustawieniach adres `https://` i wybiera zdarzenia: `lead.created`, `lead.status_changed`, `deal.created`, `deal.stage_changed`, `deal.won`, `deal.lost`, `offer.accepted`. Zdarzenia powstają przy synchronizacji (porównanie poprzedniej i nowej wersji rekordu), przy leadach z formularza i przy akceptacji oferty. Treść to JSON z polami `event`, `label`, `at`, `org`, `data` (rekord z `company_name` i `contacts_detail`) oraz `previous` przy zmianach. Nagłówek `x-hermes-signature: sha256=…` to HMAC SHA 256 treści z sekretem pokazanym raz przy tworzeniu. Nieudana dostawa jest ponawiana raz, a wynik ostatniej widać w Ustawieniach. Firma ma najwyżej 10 webhooków.
+Administrator dodaje w Ustawieniach adres `https://` i wybiera zdarzenia: `lead.created`, `lead.status_changed`, `deal.created`, `deal.stage_changed`, `deal.won`, `deal.lost`, `offer.accepted`, `meeting.booked`, `meeting.cancelled`. Zdarzenia powstają przy synchronizacji (porównanie poprzedniej i nowej wersji rekordu), przy leadach z formularza i przy akceptacji oferty. Treść to JSON z polami `event`, `label`, `at`, `org`, `data` (rekord z `company_name` i `contacts_detail`) oraz `previous` przy zmianach. Nagłówek `x-hermes-signature: sha256=…` to HMAC SHA 256 treści z sekretem pokazanym raz przy tworzeniu. Nieudana dostawa jest ponawiana raz, a wynik ostatniej widać w Ustawieniach. Firma ma najwyżej 10 webhooków.
 
 ## Oferty
 
 Oferta zapisuje kopię pozycji z szansy (nazwa, ilość, jednostka, cena netto, rabat, VAT), dane sprzedawcy z Ustawień (`offer` w ustawieniach firmy), nabywcę i termin ważności. Numer ma postać `PREFIKS/RRRR/MM/NNN` z licznikiem w miesiącu. Link `/oferta/<id>` ma 24 losowe znaki i nie jest indeksowany. Pierwsze otwarcie przez klienta (bez sesji Hermesa) i akceptacja zapisują się w historii szansy; akceptacja wysyła też mail do autora i zdarzenie `offer.accepted`. Po terminie ważności albo po wycofaniu oferty nie da się zaakceptować.
+
+## Umawianie spotkań
+
+Każda osoba z rolą administratora lub handlowca ma własną stronę `/umow/<id>` (16 losowych znaków, bez indeksowania). Ustawienia (`booking_pages`): nazwa spotkania, czas (15 do 90 minut), dni tygodnia, godziny pracy, przerwa po spotkaniu, minimalne wyprzedzenie, liczba dni naprzód, miejsce lub link i opis. Godziny liczone są w czasie polskim, także w dniach zmiany czasu.
+
+**Wolne terminy** to godziny pracy co 30 minut (co 15 przy spotkaniach 15 minutowych) z pominięciem potwierdzonych rezerwacji i spotkań zaplanowanych w CRM (wpisy `appt` tej osoby), z przerwą przed i po. Rezerwacja sprawdza termin ponownie, a unikalny indeks na `(user_id, start_at)` chroni przed podwójnym zapisem przy jednoczesnych kliknięciach.
+
+**Rezerwacja w CRM:**
+1. Kontakt po adresie email (bez względu na wielkość liter) albo nowy kontakt; firma po nazwie, po domenie adresu (z pominięciem darmowych skrzynek) albo nowa.
+2. Spotkanie trafia do otwartej szansy tej osoby lub jej firmy, a gdy jej nie ma, do otwartego leada. Bez obu Hermes zakłada leada ze źródłem „Kalendarz” i opiekunem właścicielem strony.
+3. W historii powstaje wpis `appt` (umówione spotkanie z godziną końca, miejscem i `bookingId`) oraz notatka systemowa, a następny krok zmienia się na spotkanie, jeśli był pusty albo późniejszy.
+4. Klient i handlowiec dostają potwierdzenie z zaproszeniem `.ics` (METHOD:REQUEST), a webhooki zdarzenie `meeting.booked`.
+
+**Odwołanie** z linku w mailu albo przez handlowca w Kalendarzu oznacza spotkanie jako odwołane, ustawia krok „Ustalić nowy termin spotkania”, wysyła drugiej stronie odwołanie `.ics` (METHOD:CANCEL) i zdarzenie `meeting.cancelled`. Limity: 10 rezerwacji na godzinę z jednego adresu IP na stronę, ukryte pole `website` przeciw botom. Usunięcie osoby na żądanie RODO czyści też jej dane w rezerwacjach.
 
 ## Raport tygodniowy
 

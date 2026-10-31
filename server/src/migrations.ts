@@ -167,5 +167,42 @@ export const MIGRATIONS: { id: number; name: string; up: string[] }[] = [
         PRIMARY KEY (org_id, week)
       )`
     ]
+  },
+  {
+    id: 5,
+    name: 'umawianie spotkań',
+    up: [
+      `CREATE TABLE booking_pages (
+        id TEXT PRIMARY KEY,
+        org_id TEXT NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        settings TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )`,
+      'CREATE UNIQUE INDEX booking_pages_user ON booking_pages (org_id, user_id)',
+      `CREATE TABLE bookings (
+        id TEXT PRIMARY KEY,
+        org_id TEXT NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
+        page_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        start_at TEXT NOT NULL,
+        end_at TEXT NOT NULL,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        company TEXT,
+        phone TEXT,
+        topic TEXT,
+        status TEXT NOT NULL DEFAULT 'confirmed',
+        cancel_token TEXT NOT NULL UNIQUE,
+        contact_id TEXT,
+        record_obj TEXT,
+        record_id TEXT,
+        activity_id TEXT,
+        created_at TEXT NOT NULL
+      )`,
+      "CREATE UNIQUE INDEX bookings_slot ON bookings (user_id, start_at) WHERE status = 'confirmed'",
+      'CREATE INDEX bookings_org ON bookings (org_id, start_at)'
+    ]
   }
 ];

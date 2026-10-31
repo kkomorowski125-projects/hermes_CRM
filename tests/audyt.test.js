@@ -71,7 +71,7 @@ click('[data-act="stab"][data-obj="adv"]');
 ok(E('state.settingsObj') === 'auto' && !!d.querySelector('.subtabs'), 'Zaawansowane z podzakładkami');
 click('[data-act="stab"][data-obj="templates"]');
 click('[data-act="tpl-add"]');
-ok(E('settings.templates.length') === 5, 'nowy szablon');
+ok(E('settings.templates.length') === 6, 'nowy szablon');
 chg(`[data-tpl="name"][data-id="${E('settings.templates[4].id')}"]`, 'Oferta wstępna');
 ok(E('settings.templates[4].name') === 'Oferta wstępna', 'edycja nazwy szablonu');
 done(errs);

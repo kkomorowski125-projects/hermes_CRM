@@ -15,13 +15,14 @@ Hermes prowadzi Cię przez sprzedaż od pierwszego kontaktu do wygranej. Ten prz
 9. [Dodawanie rekordów i głos](#dodawanie-rekordów-i-głos)
 10. [Wyszukiwarka](#wyszukiwarka)
 11. [Analityka](#analityka)
-12. [Zespół i przegląd lejka](#zespół-i-przegląd-lejka)
-13. [Hermes AI](#hermes-ai)
-14. [Ustawienia](#ustawienia)
-15. [Produkty i oferty](#produkty-i-oferty)
-16. [Automatyzacje](#automatyzacje)
-17. [Masowe akcje, widoki i duplikaty](#masowe-akcje-widoki-i-duplikaty)
-18. [Cofanie i bezpieczeństwo danych](#cofanie-i-bezpieczeństwo-danych)
+12. [Kalendarz i umawianie spotkań](#kalendarz-i-umawianie-spotkań)
+13. [Zespół i przegląd lejka](#zespół-i-przegląd-lejka)
+14. [Hermes AI](#hermes-ai)
+15. [Ustawienia](#ustawienia)
+16. [Produkty i oferty](#produkty-i-oferty)
+17. [Automatyzacje](#automatyzacje)
+18. [Masowe akcje, widoki i duplikaty](#masowe-akcje-widoki-i-duplikaty)
+19. [Cofanie i bezpieczeństwo danych](#cofanie-i-bezpieczeństwo-danych)
 
 ## Pierwsze uruchomienie
 
@@ -168,6 +169,27 @@ Otwierasz ją polem w górnym pasku, skrótem `⌘K` albo klawiszem `/`.
 ![Tryb układu](img/analityka-uklad.png)
 
 **„Dostosuj układ”** włącza tryb edycji: przeciągasz moduły, zmieniasz szerokość (⅓, ½, ⅔, całość), usuwasz je i dodajesz. Siatka sama wypełnia luki i dopasowuje się do szerokości ekranu. „Przywróć domyślny” wraca do startowego układu.
+
+## Kalendarz i umawianie spotkań
+
+![Kalendarz](img/kalendarz.png)
+
+Strona **Kalendarz** zbiera spotkania z klientami: nadchodzące według dni i te, które minęły, a czekają na podsumowanie. Spotkania na dziś widać też nad listą „Na dziś” na Pulpicie.
+
+**Link do umawiania.** Klient otwiera Twój link, wybiera wolny dzień i godzinę, podaje imię, email i firmę, a Hermes sam:
+
+- znajduje kontakt po adresie email albo go zakłada, razem z firmą;
+- zapisuje spotkanie przy otwartej szansie tej osoby, a gdy jej nie ma, przy leadzie; bez obu zakłada nowego leada ze źródłem „Kalendarz”;
+- ustawia następny krok na dzień spotkania;
+- wysyła Tobie i klientowi potwierdzenie z zaproszeniem do kalendarza (Google, Outlook, Apple).
+
+Klient może odwołać spotkanie z maila. Wtedy następnym krokiem staje się „Ustalić nowy termin spotkania”. Link wyślesz szablonem „Wybór terminu” albo przyciskiem „Wyślij klientowi”. Bez serwera link nie działa, ale „Podgląd strony dla klienta” pozwala przetestować rezerwację.
+
+**Dostępność** ustawiasz przyciskiem „Dostępność”: nazwę i czas spotkania, dni, godziny, przerwę po spotkaniu, minimalne wyprzedzenie, ile dni naprzód i miejsce lub link do rozmowy. Hermes pokazuje tylko terminy, w których nie masz innego spotkania w CRM.
+
+**Umów spotkanie sam.** Przycisk „Umów” na karcie szansy, leada, firmy lub kontaktu otwiera okno z wolnymi terminami. Wybierasz osobę, temat, czas i godzinę (albo wpisujesz dowolną), a potem wysyłasz zaproszenie mailem z plikiem `.ics`.
+
+**Po spotkaniu** kliknij „Odbyło się”: wpis zamienia się w spotkanie w historii, liczy się jako kontakt w analityce, a Hermes od razu pyta o kolejny krok. „Odwołaj” i krzyżyk „Nie odbyło się” zostawiają ślad w historii.
 
 ## Zespół i przegląd lejka
 

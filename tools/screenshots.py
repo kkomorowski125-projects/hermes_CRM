@@ -37,5 +37,11 @@ with sync_playwright() as p:
     pg.evaluate("openRecord('lead','l2')"); pg.click('.rec-next [data-act="done"]'); pg.wait_for_timeout(250); pg.screenshot(path=OUT / 'nastepny-krok.png'); pg.click('[data-act="step-skip"]')
     pg.click('[data-act="go"][data-page="settings"]'); pg.click('[data-act="stab"][data-obj="stages"]'); quiet(pg); pg.screenshot(path=OUT / 'ustawienia-etapy.png')
     pg.click('[data-act="stab"][data-obj="team"]'); quiet(pg); pg.screenshot(path=OUT / 'ustawienia-zespol.png')
+    pg.evaluate("""(() => { const open = db.deal.filter(isOpen), sl = bkSlots();
+      addAppt('deal', open[0].id, { title: 'Rozmowa wstępna', topic: 'Cennik dla 20 osób', at: sl[0].times[2], duration: 30, who: (contactsOf(open[0])[0] || {}).id, location: 'Google Meet', via: 'booking' });
+      addAppt('deal', open[1].id, { title: 'Demo produktu', at: sl[1].times[4], duration: 45, who: (contactsOf(open[1])[0] || {}).id, location: 'Biuro klienta' });
+      addAppt('lead', db.lead[0].id, { title: 'Rozmowa wstępna', topic: 'Wdrożenie', at: sl[2].times[1], duration: 30, who: (contactsOf(db.lead[0])[0] || {}).id, location: 'Google Meet', via: 'booking' });
+      state.page = 'calendar'; render(); })()""")
+    quiet(pg); pg.screenshot(path=OUT / 'kalendarz.png', full_page=True)
     b.close()
     print('Zapisano zrzuty w', OUT, '| błędy:', errs or 'brak')

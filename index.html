@@ -1305,6 +1305,63 @@ tr.row:hover td:first-child{box-shadow:inset 2px 0 var(--accent)}
 .side-help{border-radius:var(--r-sm)}
 .target small{font-size:12px}
 .profile{border-top-color:var(--side-line)}
+
+/* -- v14: kalendarz i umawianie spotkań -- */
+.cal-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px;align-items:start}
+.cal-main,.cal-side{display:grid;gap:12px;min-width:0}
+.agenda{padding:4px 20px 14px}
+.ag-day{margin:16px 0 6px;font-size:12.5px;font-weight:600;color:var(--mute)}
+.ag-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--line2)}
+.ag-row:last-child{border-bottom:0}
+.ag-time{width:58px;flex-shrink:0;display:flex;flex-direction:column;font-variant-numeric:tabular-nums}
+.ag-time b{font-size:15px;font-weight:600;color:var(--ink)}.ag-time small{font-size:12px;color:var(--faint)}
+.ag-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding:0 0 0 14px;border:0;border-left:3px solid var(--accent-line);background:transparent;text-align:left;cursor:pointer}
+.ag-row.via .ag-body{border-left-color:var(--accent)}
+.ag-body b{font-weight:600;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-body span{font-size:13px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-body small{font-size:12px;color:var(--faint)}
+.ag-body:hover b{color:var(--accent-ink)}
+.ag-tag{background:var(--accent-soft-2);color:var(--accent-ink)}
+.ag-acts{display:flex;gap:6px;flex-shrink:0}
+.ag-acts .qa-b{border-color:var(--line)}
+.ag-acts .qa-done{min-width:0}
+.cal-box{padding:16px 20px 18px;display:grid;gap:14px}
+.cal-sum{display:flex;flex-direction:column;gap:3px}.cal-sum b{font-size:15px;color:var(--ink)}.cal-sum span{font-size:13.5px;color:var(--text)}.cal-sum small{font-size:12px;color:var(--faint);margin-top:4px}
+.cal-link{display:flex;gap:8px}.cal-link .fin{flex:1;min-width:0;height:34px;font-size:13px;background:var(--soft)}
+.cal-link-acts{display:flex;gap:16px;flex-wrap:wrap}
+.cal-box.free{gap:10px}
+.free-day{display:flex;flex-direction:column;gap:6px}.free-day>span{font-size:12.5px;font-weight:600;color:var(--mute)}
+.free-day>div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.free-day em{font-style:normal;font-size:12px;color:var(--faint)}
+.today-appts{display:flex;gap:8px;padding:12px 16px 4px;overflow-x:auto}
+.ta{flex:0 0 auto;max-width:260px;display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--accent-line);border-radius:12px;background:var(--accent-soft);text-align:left;cursor:pointer}
+.ta:hover{border-color:var(--accent-2)}
+.ta-time{grid-row:1/3;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;font-weight:600;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.ta b{font-size:13.5px;font-weight:600;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ta small{font-size:12px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ta.past{opacity:.6}
+.appt-when{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:6px;background:var(--accent-soft-2);color:var(--accent-ink);font-size:12px;font-weight:500}
+.appt-when.off{background:#F0F0F4;color:var(--mute);text-decoration:line-through}
+.appt-acts{display:flex;gap:14px;margin-top:6px}.appt-acts .text-button{font-size:12.5px}
+.t-appt .t-ic{background:var(--accent-soft-2);color:var(--accent-ink)}
+.sch-row{display:grid;grid-template-columns:1fr 160px;gap:12px}.sch-row.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.sch-row .f{margin:0}
+.flabel{display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:var(--ink2)}
+.sch-days{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}
+.day-chip{flex:0 0 auto;min-width:68px;padding:7px 8px;border:1px solid var(--line-strong);border-radius:10px;background:#fff;text-align:center;cursor:pointer}
+.day-chip small{display:block;font-size:11.5px;color:var(--mute)}.day-chip b{font-size:13.5px;font-weight:600;color:var(--ink)}
+.day-chip[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.sch-times{display:flex;flex-wrap:wrap;gap:6px}
+.bk-days{display:flex;flex-wrap:wrap;gap:6px}
+.day-tog{position:relative}.day-tog input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.day-tog span{display:inline-grid;place-items:center;min-width:52px;height:34px;padding:0 10px;border:1px solid var(--line-strong);border-radius:9px;font-size:13px;color:var(--text)}
+.day-tog input:checked+span{border-color:var(--accent);background:var(--accent);color:#fff}
+.day-tog input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.appt-card{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border:1px solid var(--accent-line);border-radius:12px;background:var(--accent-soft);margin-bottom:14px}
+.appt-card .t-ic{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:#fff;color:var(--accent-ink);flex-shrink:0}
+.appt-card div{display:flex;flex-direction:column;gap:2px}.appt-card b{color:var(--ink)}.appt-card span{font-size:13.5px;color:var(--text)}.appt-card small{font-size:12.5px;color:var(--mute)}
+.bk-meta{margin:0 0 4px;font-size:13.5px;color:var(--mute)}
+@media (max-width:1180px){.cal-grid{grid-template-columns:1fr}}
+@media (max-width:600px){.sch-row,.sch-row.three{grid-template-columns:1fr}.ag-row{flex-wrap:wrap}.ag-acts{width:100%;padding-left:72px}.ag-tag{display:none}.agenda{padding:4px 16px 12px}}
 </style>
 </head>
 <body>
@@ -1417,7 +1474,7 @@ const LOGO = `<span class="logo-mark"><svg width="20" height="20" viewBox="0 0 3
 const TONE = { gray: '#B2B5C1', teal: '#6E9DAE', olive: '#9A92D2', amber: '#D2A85A', green: '#4E9F78', red: '#D06B5B', blue: '#7C8FD6', violet: '#A08BD8' };
 const TYPES = { text: 'Tekst', number: 'Liczba', money: 'Kwota', date: 'Data', select: 'Lista wyboru', email: 'Email', phone: 'Telefon', relation: 'Powiązanie' };
 const CYCLE = ['teal', 'olive', 'amber', 'blue', 'violet', 'green', 'gray'];
-const ACT = { note: ['Notatka', 'note'], call: ['Telefon', 'phone'], email: ['Email', 'mail'], meeting: ['Spotkanie', 'meet'], task: ['Zrobione', 'tick'], stage: ['Zmiana etapu', 'arrow'], system: ['Hermes', 'spark'] };
+const ACT = { note: ['Notatka', 'note'], call: ['Telefon', 'phone'], email: ['Email', 'mail'], meeting: ['Spotkanie', 'meet'], appt: ['Umówione spotkanie', 'meet'], task: ['Zrobione', 'tick'], stage: ['Zmiana etapu', 'arrow'], system: ['Hermes', 'spark'] };
 const ACT_PH = { note: 'Co warto zapamiętać?', call: 'Jak poszła rozmowa? Co ustaliliście?', email: 'Czego dotyczył mail?', meeting: 'Kto był, co ustaliliście?' };
 const OUTCOMES = ['Rozmowa odbyta', 'Nie odebrał(a)', 'Wiadomość głosowa', 'Prosi o kontakt później'];
 const TL_FILTERS = [['all', 'Wszystko'], ['note', 'Notatki'], ['call', 'Telefony'], ['email', 'Emaile'], ['meeting', 'Spotkania'], ['task', 'Zadania'], ['change', 'Zmiany']];
@@ -1449,7 +1506,7 @@ const SCHEMA = {
     { key: 'company', label: 'Firma', type: 'relation', to: 'company', core: 1, assoc: 1 },
     { key: 'status', label: 'Status', type: 'select', core: 1, options: [['Nowy','gray'],['W kontakcie','teal'],['Kwalifikacja','amber'],['Skonwertowany','green'],['Odrzucony','red']] },
     { key: 'icp', label: 'Dopasowanie do ICP', type: 'select', core: 1, options: [['Pasuje','green'],['Do sprawdzenia','amber'],['Nie pasuje','red']] },
-    { key: 'source', label: 'Źródło', type: 'select', core: 1, options: [['Strona www','blue'],['Polecenie','green'],['Targi','amber'],['Cold mailing','violet'],['LinkedIn','teal'],['Inne','gray']] },
+    { key: 'source', label: 'Źródło', type: 'select', core: 1, options: [['Strona www','blue'],['Polecenie','green'],['Targi','amber'],['Cold mailing','violet'],['LinkedIn','teal'],['Kalendarz','blue'],['Inne','gray']] },
     { key: 'value', label: 'Szacowana wartość', type: 'money', core: 1 },
     { key: 'nextStep', label: 'Następny krok', type: 'text', core: 1, inBox: 1 },
     { key: 'nextDate', label: 'Termin kroku', type: 'date', core: 1, inBox: 1 },
@@ -1717,7 +1774,7 @@ function linkedIds(obj, r) {
   return ids;
 }
 const actsOf = (obj, r) => { const ids = linkedIds(obj, r); return db.activity.filter(a => ids.some(([o, i]) => a.obj === o && a.rid === i)).sort((a, b) => b.at.localeCompare(a.at)); };
-const isTouch = a => a.type !== 'stage' && a.type !== 'system' && a.type !== 'task';
+const isTouch = a => a.type !== 'stage' && a.type !== 'system' && a.type !== 'task' && a.type !== 'appt';
 const lastTouch = (obj, r) => { const a = actsOf(obj, r).find(isTouch); return a ? a.at : ''; };
 /* speed-to-lead: days a new lead has been waiting for a first touch */
 const leadWait = l => l.status === 'Nowy' && !actsOf('lead', l).some(isTouch) ? Math.max(0, -dayDiff(l.created || today)) : null;
@@ -1813,7 +1870,7 @@ const daysIn = d => Math.max(0, -dayDiff(d.stageAt || d.created || today));
 
 /* ================= shell ================= */
 const NAV = [
-  ['label', 'Praca'], ['overview', 'Pulpit', 'grid'], ['pipeline', 'Lejek', 'pipeline'],
+  ['label', 'Praca'], ['overview', 'Pulpit', 'grid'], ['pipeline', 'Lejek', 'pipeline'], ['calendar', 'Kalendarz', 'meet'],
   ['label', 'Obiekty'], ['list:lead'], ['list:deal'], ['list:company'], ['list:contact'],
   ['label', 'Wgląd'], ['team', 'Zespół', 'users'], ['analytics', 'Analityka', 'chart'], ['settings', 'Ustawienia', 'sliders']
 ];
@@ -1892,6 +1949,12 @@ function todayQA(it) {
   const p = contactsOf(r).find(c => c.phone) || null, m = contactsOf(r).find(c => c.email) || null;
   return `<span class="qa">${p ? `<a class="qa-b" href="tel:${esc(String(p.phone).replace(/\s/g, ''))}" data-qa="call" data-obj="${it.obj}" data-id="${it.id}" title="Zadzwoń: ${esc(p.name)}, ${esc(p.phone)}" aria-label="Zadzwoń do ${esc(p.name)}">${ic('phone', 15)}</a>` : ''}${m ? `<button class="qa-b" data-act="msg-open" data-obj="${it.obj}" data-id="${it.id}" title="Napisz do: ${esc(m.name)}" aria-label="Napisz do ${esc(m.name)}">${ic('mail', 15)}</button>` : ''}${it.kind === 'step' ? `<button class="qa-b qa-done" data-act="done" data-kind="step" data-obj="${it.obj}" data-id="${it.id}" title="Zrobione: zapisz wynik i kolejny krok">${ic('tick', 15)}<span>Zrobione</span></button>` : it.kind === 'task' ? `<button class="qa-b qa-done" data-act="done" data-kind="task"${it.taskId ? ` data-task="${it.taskId}"` : ''} data-obj="${it.obj}" data-id="${it.id}" title="Zamknij zadanie">${ic('tick', 15)}<span>Zrobione</span></button>` : `<button class="qa-b qa-done qa-plan" data-act="done" data-kind="nostep" data-obj="${it.obj}" data-id="${it.id}" title="Ustal następny krok">${ic('plus', 15)}<span>Ustal krok</span></button>`}</span>`;
 }
+function todayAppts() {
+  const list = db.activity.filter(x => x.type === 'appt' && !x.cancelled && x.at.slice(0, 10) === today).sort((x, y) => x.at.localeCompare(y.at));
+  if (!list.length) return '';
+  const nowAt = nowISO();
+  return `<div class="today-appts" aria-label="Spotkania dziś">${list.map(x => { const p = find('contact', x.who), r = find(x.obj, x.rid); return `<button class="ta${apptEnd(x) < nowAt ? ' past' : ''}" data-act="open" data-obj="${x.obj}" data-id="${x.rid}"><span class="ta-time">${ic('meet', 14)}${x.at.slice(11, 16)}</span><b>${esc(x.text)}</b><small>${esc([p && p.name, r && recLabel(x.obj, r)].filter(Boolean).join(' · '))}</small></button>`; }).join('')}</div>`;
+}
 function todayItems() {
   const items = [];
   const live = [...db.deal.filter(isOpen).map(r => ['deal', r]), ...db.lead.filter(isOpenLead).map(r => ['lead', r])];
@@ -1947,6 +2010,7 @@ function renderOverview() {
     <div class="dash-grid">
       <section class="panel">
         <div class="panel-head"><div class="ttl"><span class="idx">01</span><h2>Na dziś</h2><p>Kroki, zadania i rekordy bez planu</p></div>${reviewQueue().length && reviewDue() ? `<button class="text-button" data-act="review-start">${ic('check', 15)}Przegląd lejka · ${reviewQueue().length}</button>` : ''}</div>
+        ${todayAppts()}
         <div class="tasks">${items.length ? items.map(it => `<div class="task">
           <button class="task-check${it.hot ? ' hot' : ''}${it.kind === 'nostep' ? ' plan' : ''}" data-act="done" data-kind="${it.kind}"${it.taskId ? ` data-task="${it.taskId}"` : ''} data-obj="${it.obj}" data-id="${it.id}" aria-label="${it.kind === 'nostep' ? 'Ustal następny krok' : 'Oznacz jako zrobione'}" title="${it.kind === 'nostep' ? 'Ustal krok' : 'Zrobione'}">${ic(it.kind === 'nostep' ? 'plus' : 'tick', 13)}</button>
           <button class="task-body" data-act="open" data-obj="${it.obj}" data-id="${it.id}"><b>${esc(it.title)}</b><small${it.hot ? ' style="color:var(--late)"' : ''}>${esc(it.meta)}</small></button>${it.obj === 'lead' ? '<span class="kind-pill">Lead</span>' : ''}${todayQA(it)}</div>`).join('')
@@ -2622,7 +2686,7 @@ ${isAdmin() ? `      <div class="set-row"><div><h3>Dane przykładowe</h3><p>Wczy
 
 function renderMain() {
   syncOwners();
-  (({ overview: renderOverview, pipeline: renderPipeline, list: renderList, record: renderRecord, analytics: renderAnalytics, settings: renderSettings, team: renderTeam })[state.page] || renderOverview)();
+  (({ overview: renderOverview, pipeline: renderPipeline, list: renderList, record: renderRecord, analytics: renderAnalytics, settings: renderSettings, team: renderTeam, calendar: renderCalendar })[state.page] || renderOverview)();
   if (readOnly()) main.insertAdjacentHTML('afterbegin', `<div class="ro-banner" role="note">${ic('flag', 15)}<span>Masz dostęp tylko do podglądu. Zmiany, które tu zrobisz, nie zapiszą się w danych firmy.</span></div>`);
   save();
 }
@@ -2637,10 +2701,10 @@ function actTitle(a) {
   return t;
 }
 const actSrc = (a, obj, r) => (a.obj === obj && a.rid === r.id) ? '' : `${SCHEMA[a.obj] ? SCHEMA[a.obj].one : ''}: ${nameOf(a.obj, a.rid) || 'usunięty rekord'}`;
-const canDel = a => ['note', 'call', 'email', 'meeting'].includes(a.type);
+const canDel = a => ['note', 'call', 'email', 'meeting', 'appt'].includes(a.type);
 function tlItem(a, obj, r, withDate) {
   const src = actSrc(a, obj, r);
-  return `<li class="t-${a.type}"><span class="t-ic">${ic(ACT[a.type] ? ACT[a.type][1] : 'note', 14)}</span><div><b>${esc(actTitle(a))}</b>${src ? `<span class="t-src">${esc(src)}</span>` : ''}<p>${esc(a.text)}</p><small>${esc(withDate ? relTime(a.at) : a.at.slice(11, 16))}</small></div>${canDel(a) ? `<button class="mini t-del" data-act="act-del" data-id="${a.id}" title="Usuń wpis" aria-label="Usuń wpis">${ic('trash', 13)}</button>` : ''}</li>`;
+  return `<li class="t-${a.type}"><span class="t-ic">${ic(ACT[a.type] ? ACT[a.type][1] : 'note', 14)}</span><div><b>${esc(actTitle(a))}</b>${src ? `<span class="t-src">${esc(src)}</span>` : ''}<p>${esc(a.text)}</p>${a.type === 'appt' ? `<span class="appt-when${a.cancelled ? ' off' : ''}">${a.cancelled ? (a.noshow ? 'Nie odbyło się' : 'Odwołane') : 'Zaplanowane'} · ${esc(apptWhen(a))}${a.location ? ' · ' + esc(a.location) : ''}</span>${a.cancelled ? '' : `<span class="appt-acts"><button class="text-button" data-act="appt-done" data-id="${a.id}">${ic('tick', 14)}Odbyło się</button><button class="text-button" data-act="appt-cancel" data-id="${a.id}">Odwołaj</button></span>`}` : `<small>${esc(withDate ? relTime(a.at) : a.at.slice(11, 16))}</small>`}</div>${canDel(a) ? `<button class="mini t-del" data-act="act-del" data-id="${a.id}" title="Usuń wpis" aria-label="Usuń wpis">${ic('trash', 13)}</button>` : ''}</li>`;
 }
 
 /* ================= drawer: company & contact ================= */
@@ -2656,6 +2720,7 @@ function renderDrawer() {
   acts.push(`<button data-act="add" data-obj="lead" ${pre}>${ic('plus', 16)}Lead</button>`);
   acts.push(`<button data-act="add" data-obj="deal" ${pre}>${ic('plus', 16)}Szansa</button>`);
   if (r.email || (obj === 'company' && db.contact.some(c => c.company === r.id && c.email))) acts.push(`<button data-act="msg-open" data-obj="${obj}" data-id="${r.id}">${ic('mail', 16)}Napisz</button>`);
+  acts.push(`<button data-act="appt-new" data-obj="${obj}" data-id="${r.id}">${ic('meet', 16)}Umów</button>`);
   acts.push(`<button class="ask" data-act="ai-rec" data-obj="${obj}" data-id="${r.id}">${SPARK(15)}Zapytaj AI</button>`);
   const inRec = list => list.filter(x => obj === 'company' ? x.company === r.id : (x.contacts || []).includes(r.id));
   const deals = inRec(db.deal), leads = inRec(db.lead);
@@ -2701,7 +2766,7 @@ function refreshDrawer() { if (openRec) renderDrawer(); }
 
 /* ================= record page: lead & deal ================= */
 const recCur = () => state.rec && find(state.rec.obj, state.rec.id);
-const BACK_LABEL = { overview: 'Pulpit', pipeline: 'Lejek', analytics: 'Analityka', settings: 'Ustawienia' };
+const BACK_LABEL = { overview: 'Pulpit', pipeline: 'Lejek', calendar: 'Kalendarz', analytics: 'Analityka', settings: 'Ustawienia' };
 function stageBar(obj, r) {
   if (obj === 'deal') {
     const st = openStages(), cur = st.indexOf(r.stage), won = r.stage === 'Wygrana', lost = r.stage === 'Przegrana';
@@ -2743,6 +2808,7 @@ function recHead(obj, r) {
   if (obj === 'deal' && live) acts.push(`<button class="ghost-button sm" data-act="rec-lost">${ic('close', 15)}Przegrana</button><button class="primary-button sm won-btn" data-act="rec-won">${ic('tick', 15)}Wygrana</button>`);
   if (obj === 'lead' && live) acts.push(`<button class="ghost-button sm" data-act="rec-disq">${ic('close', 15)}Odrzuć</button><button class="primary-button sm" data-act="rec-convert">${ic('arrow', 15)}Konwertuj na szansę</button>`);
   if (contactsOf(r).some(c => c.email)) acts.push(`<button class="ghost-button sm" data-act="msg-open" data-obj="${obj}" data-id="${r.id}">${ic('mail', 15)}Napisz</button>`);
+  if ((obj === 'deal' && isOpen(r)) || (obj === 'lead' && isOpenLead(r))) acts.push(`<button class="ghost-button sm" data-act="appt-new" data-obj="${obj}" data-id="${r.id}">${ic('meet', 15)}Umów</button>`);
   acts.push(`<button class="ghost-button sm ask-btn" data-act="ai-rec" data-obj="${obj}" data-id="${r.id}">${SPARK(15)}Zapytaj AI</button>`);
   acts.push(`<button class="sq-btn" data-act="del" data-obj="${obj}" data-id="${r.id}" title="Usuń ${S.one.toLowerCase()}" aria-label="Usuń">${ic('trash', 16)}</button>`);
   const p = contactsOf(r)[0];
@@ -3119,12 +3185,13 @@ const DEFAULT_TEMPLATES = [
   { id: 'tp1', name: 'Follow up po ofercie', subject: 'Oferta dla {firma}', body: 'Dzień dobry {pan_pani},\n\nwracam do oferty, którą przesłałem. Czy udało się ją przejrzeć? Chętnie odpowiem na pytania i dopasuję szczegóły.\n\nCzy pasuje Panu/Pani krótka rozmowa w tym tygodniu?\n\nPozdrawiam\n{podpis}' },
   { id: 'tp2', name: 'Podsumowanie rozmowy', subject: 'Podsumowanie naszej rozmowy', body: 'Dzień dobry {pan_pani},\n\ndziękuję za rozmowę. Zgodnie z ustaleniami następny krok to: {krok}.\n\nGdyby coś się zmieniło, proszę dać znać.\n\nPozdrawiam\n{podpis}' },
   { id: 'tp3', name: 'Przypomnienie o decyzji', subject: 'Decyzja w sprawie: {szansa}', body: 'Dzień dobry {pan_pani},\n\nczy jest już decyzja w sprawie {szansa}? Jeśli potrzebujecie dodatkowych informacji albo spotkania z zespołem, przygotuję je.\n\nPozdrawiam\n{podpis}' },
-  { id: 'tp4', name: 'Pierwszy kontakt', subject: 'Krótka rozmowa o {firma}?', body: 'Dzień dobry {pan_pani},\n\ndziękuję za zainteresowanie. Proponuję 20 minut rozmowy, żeby zrozumieć Państwa potrzeby i sprawdzić, czy możemy pomóc.\n\nCzy pasuje termin w najbliższych dniach?\n\nPozdrawiam\n{podpis}' }
+  { id: 'tp4', name: 'Pierwszy kontakt', subject: 'Krótka rozmowa o {firma}?', body: 'Dzień dobry {pan_pani},\n\ndziękuję za zainteresowanie. Proponuję 20 minut rozmowy, żeby zrozumieć Państwa potrzeby i sprawdzić, czy możemy pomóc.\n\nCzy pasuje termin w najbliższych dniach?\n\nPozdrawiam\n{podpis}' },
+  { id: 'tp5', name: 'Wybór terminu', subject: 'Termin rozmowy', body: 'Dzień dobry {pan_pani},\n\nżeby było łatwiej, wybierz proszę dogodny termin rozmowy w moim kalendarzu: {link_kalendarza}\n\nPotwierdzenie z zaproszeniem przyjdzie od razu na Twój email.\n\nPozdrawiam\n{podpis}' }
 ];
 const templates = () => (Array.isArray(settings.templates) && settings.templates.length ? settings.templates : DEFAULT_TEMPLATES);
 function fillTpl(text, obj, r, person) {
   const c = find('company', r.company), first = person ? String(person.name || '').split(/\s+/)[0] : '';
-  return String(text || '').replace(/\{(\w+)\}/g, (m, k) => ({ imie: first, osoba: person ? person.name : '', firma: c ? c.name : (obj === 'company' ? r.name : ''), szansa: r.name || '', krok: r.nextStep || '', podpis: me(), pan_pani: first ? first : 'Państwo' })[k] ?? m);
+  return String(text || '').replace(/\{(\w+)\}/g, (m, k) => ({ imie: first, osoba: person ? person.name : '', firma: c ? c.name : (obj === 'company' ? r.name : ''), szansa: r.name || '', krok: r.nextStep || '', podpis: me(), pan_pani: first ? first : 'Państwo', link_kalendarza: bkUrl() || '[link do kalendarza]' })[k] ?? m);
 }
 let msgCtx = null;
 function openMsg(obj, id, tplId) {
@@ -3255,15 +3322,314 @@ function renderMobileNav() {
   const item = (pg, ob, icon, label) => `<a href="#" data-act="go" data-page="${pg}"${ob ? ` data-obj="${ob}"` : ''}${on(pg, ob) ? ' class="on" aria-current="page"' : ''}>${ic(icon, 20)}<span>${label}</span></a>`;
   el.innerHTML = item('overview', '', 'grid', 'Dziś') + item('pipeline', '', 'pipeline', 'Lejek') +
     `<button class="mfab" data-act="add" data-obj="${addTarget()[0]}" aria-label="${esc(addTarget()[1])}">${ic('plus', 24)}</button>` +
-    item('list', 'lead', 'spark', 'Leady') + `<a href="#" data-act="m-more"${['analytics', 'settings', 'team'].includes(state.page) || (state.page === 'list' && ['company', 'contact'].includes(state.obj)) ? ' class="on"' : ''}>${ic('menu', 20)}<span>Więcej</span></a>`;
+    item('list', 'lead', 'spark', 'Leady') + `<a href="#" data-act="m-more"${['analytics', 'settings', 'team', 'calendar'].includes(state.page) || (state.page === 'list' && ['company', 'contact'].includes(state.obj)) ? ' class="on"' : ''}>${ic('menu', 20)}<span>Więcej</span></a>`;
 }
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-act="m-more"]'); if (!t) return;
   e.preventDefault();
   const row = (pg, ob, icon, label) => `<a href="#" class="msheet-row" data-act="go" data-page="${pg}"${ob ? ` data-obj="${ob}"` : ''}>${ic(icon, 18)}<span>${label}</span>${ic('chevron', 16)}</a>`;
-  modal(`${mhead('Hermes', 'Więcej')}<div class="mbody msheet">${row('list', 'deal', 'deal', 'Szanse')}${row('list', 'company', 'building', 'Firmy')}${row('list', 'contact', 'users', 'Kontakty')}${ownerList().length > 1 ? row('team', '', 'users', 'Zespół') : ''}${row('analytics', '', 'chart', 'Analityka')}${row('settings', '', 'sliders', 'Ustawienia')}<a href="#" class="msheet-row" data-act="help">${ic('help', 18)}<span>Pomoc i skróty</span>${ic('chevron', 16)}</a></div>`);
+  modal(`${mhead('Hermes', 'Więcej')}<div class="mbody msheet">${row('calendar', '', 'meet', 'Kalendarz')}${row('list', 'deal', 'deal', 'Szanse')}${row('list', 'company', 'building', 'Firmy')}${row('list', 'contact', 'users', 'Kontakty')}${ownerList().length > 1 ? row('team', '', 'users', 'Zespół') : ''}${row('analytics', '', 'chart', 'Analityka')}${row('settings', '', 'sliders', 'Ustawienia')}<a href="#" class="msheet-row" data-act="help">${ic('help', 18)}<span>Pomoc i skróty</span>${ic('chevron', 16)}</a></div>`);
 });
 
+
+/* ---- kalendarz i umawianie spotkań: link dla klientów, wolne terminy, spotkania zapisane w CRM ---- */
+const BK_DEF = { title: 'Rozmowa', duration: 30, buffer: 10, days: [1, 2, 3, 4, 5], from: '09:00', to: '16:00', notice: 4, horizon: 21, location: 'Google Meet albo telefon', intro: '', active: true };
+const bk = () => ({ ...BK_DEF, ...(settings.booking || {}) });
+const BK_DOW = ['pon.', 'wt.', 'śr.', 'czw.', 'pt.', 'sob.', 'niedz.'];
+const atDate = at => new Date(+at.slice(0, 4), +at.slice(5, 7) - 1, +at.slice(8, 10), +at.slice(11, 13) || 0, +at.slice(14, 16) || 0);
+const toAt = d => `${isoD(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const isAppt = a => a.type === 'appt' && !a.cancelled;
+const apptEnd = a => a.end || toAt(new Date(+atDate(a.at) + 3600e3));
+const dayName = day => { const n = dayDiff(day); return n === 0 ? 'Dziś' : n === 1 ? 'Jutro' : atDate(day + 'T12:00').toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, c => c.toUpperCase()); };
+const apptWhen = a => `${atDate(a.at).toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric', month: 'short' })}, ${a.at.slice(11, 16)} do ${apptEnd(a).slice(11, 16)}`;
+function daysLabel(days) {
+  const d = [...days].sort((a, b) => a - b);
+  const run = d.length > 2 && d.every((x, i) => !i || x === d[i - 1] + 1);
+  return run ? `${BK_DOW[d[0] - 1]} do ${BK_DOW[d[d.length - 1] - 1]}` : d.map(x => BK_DOW[x - 1]).join(', ');
+}
+/** Zajęte przedziały: zaplanowane spotkania moje albo bez opiekuna. */
+const bkBusy = () => db.activity.filter(a => isAppt(a) && (!a.by || a.by === me())).map(a => ({ s: +atDate(a.at), e: +atDate(apptEnd(a)) }));
+/** Wolne terminy z ustawień dostępności, w czasie lokalnym (ta sama zasada co na serwerze). */
+function bkSlots(s = bk(), busy = bkBusy(), now = Date.now()) {
+  const out = [], dur = s.duration * 6e4, buf = s.buffer * 6e4, step = (s.duration <= 15 ? 15 : 30) * 6e4, earliest = now + s.notice * 36e5;
+  for (let i = 0; i < s.horizon; i++) {
+    const d = new Date(now); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + i);
+    if (!s.days.includes(d.getDay() || 7)) continue;
+    const from = new Date(d), to = new Date(d);
+    from.setHours(+s.from.slice(0, 2), +s.from.slice(3, 5), 0, 0); to.setHours(+s.to.slice(0, 2), +s.to.slice(3, 5), 0, 0);
+    const times = [];
+    for (let t = +from; t + dur <= +to; t += step) {
+      if (t < earliest || busy.some(b => t - buf < b.e && t + dur + buf > b.s)) continue;
+      times.push(toAt(new Date(t)));
+    }
+    if (times.length) out.push({ day: isoD(d), times });
+  }
+  return out;
+}
+/** Zaproszenie .ics z czasem lokalnym przeliczonym na UTC. */
+function apptIcs(a, person) {
+  const z = at => atDate(at).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const tx = s => String(s || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/([,;])/g, '\\$1');
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Hermes CRM//PL', 'METHOD:REQUEST', 'BEGIN:VEVENT', `UID:${a.id}@hermes-crm`, `DTSTAMP:${z(nowISO())}`, `DTSTART:${z(a.at)}`, `DTEND:${z(apptEnd(a))}`,
+    `SUMMARY:${tx(a.text)}`, a.location ? `LOCATION:${tx(a.location)}` : '', settings.userEmail ? `ORGANIZER;CN=${tx(me())}:mailto:${settings.userEmail}` : '',
+    person && person.email ? `ATTENDEE;CN=${tx(person.name)};RSVP=TRUE:mailto:${person.email}` : '', 'END:VEVENT', 'END:VCALENDAR'].filter(Boolean).join('\r\n') + '\r\n';
+}
+function downloadText(name, text, type) {
+  try { const u = URL.createObjectURL(new Blob([text], { type })); const l = document.createElement('a'); l.href = u; l.download = name; document.body.appendChild(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); } catch (err) {}
+}
+const bkUrl = () => (SRV.on && SRV.booking && SRV.booking.url) || '';
+function apptStepPrefix(a) { return String(a.text || '').split(':')[0] + ':'; }
+function apptPerson(a) { return find('contact', a.who); }
+function apptRec(a) { return find(a.obj, a.rid); }
+
+/** Nowe spotkanie w CRM: wpis „Umówione spotkanie” i, jeśli trzeba, następny krok w dniu spotkania. */
+function addAppt(obj, id, o) {
+  const r = find(obj, id); if (!r) return null;
+  const a = { id: uid('a'), obj, rid: id, type: 'appt', text: o.title + (o.topic ? ': ' + o.topic : ''), at: o.at, end: toAt(new Date(+atDate(o.at) + o.duration * 6e4)), by: o.by || me(), ...(o.who ? { who: o.who } : {}), ...(o.location ? { location: o.location } : {}), ...(o.via ? { via: o.via } : {}) };
+  db.activity.unshift(a);
+  const day = o.at.slice(0, 10);
+  if (o.step !== false && (obj === 'deal' || obj === 'lead') && (!r.nextStep || !r.nextDate || r.nextDate > day)) { r.nextStep = `${o.title}: ${o.topic ? o.topic.split('\n')[0].slice(0, 80) : (find('contact', o.who) || {}).name || r.name}`; r.nextDate = day; }
+  return a;
+}
+/** Rezerwacja przez stronę klienta w trybie bez serwera (podgląd): ta sama logika co na serwerze. */
+function bookLocal(o) {
+  const low = s => String(s || '').trim().toLowerCase(), email = low(o.email), s = bk();
+  let person = db.contact.find(c => low(c.email) === email);
+  let comp = person && person.company ? find('company', person.company) : null;
+  if (!comp && o.company) comp = db.company.find(c => low(c.name) === low(o.company));
+  if (!comp && o.company) { comp = { id: uid('c'), name: o.company.trim(), domain: email.split('@')[1] || '', created: today }; db.company.push(comp); }
+  if (!person) { person = { id: uid('p'), name: o.name.trim(), email, phone: o.phone || '', company: comp ? comp.id : '', role: '', created: today }; db.contact.push(person); }
+  const linked = r => (r.contacts || []).includes(person.id) || (comp && r.company === comp.id);
+  let obj = 'deal', r = db.deal.find(d => isOpen(d) && linked(d));
+  if (!r) { obj = 'lead'; r = db.lead.find(l => isOpenLead(l) && linked(l)); }
+  if (!r) { r = { id: uid('l'), name: comp ? comp.name : person.name, company: comp ? comp.id : '', contacts: [person.id], source: 'Kalendarz', status: 'Nowy', statusAt: today, icp: '', disqReason: '', dealId: '', value: 0, owner: me(), nextStep: '', nextDate: '', created: today }; db.lead.push(r); }
+  else if (!(r.contacts || []).includes(person.id)) r.contacts = [...(r.contacts || []), person.id];
+  const a = addAppt(obj, r.id, { title: s.title, topic: (o.topic || '').trim(), at: o.at, duration: s.duration, who: person.id, location: s.location, via: 'booking' });
+  logAct(obj, r.id, 'system', `${person.name} umówił(a) spotkanie przez link: ${apptWhen(a)}`);
+  return { obj, r, a };
+}
+/** Odwołanie: wpis zostaje w historii jako odwołany, następny krok wraca do ustalenia terminu. */
+function cancelAppt(a, noshow) {
+  if (a.bookingId && SRV.on && !noshow) { a.cancelled = true; api(`/api/bookings/${encodeURIComponent(a.bookingId)}/cancel`, 'POST').then(() => { if (typeof srvPoll === 'function') srvPoll(); }).catch(() => toast('Nie udało się odwołać spotkania na serwerze')); return; }
+  a.cancelled = true; if (noshow) a.noshow = true;
+  const r = apptRec(a);
+  if (r && String(r.nextStep || '').startsWith(apptStepPrefix(a)) && r.nextDate === a.at.slice(0, 10)) { r.nextStep = 'Ustalić nowy termin spotkania'; r.nextDate = today; }
+  logAct(a.obj, a.rid, 'system', `${noshow ? 'Spotkanie nie odbyło się' : 'Odwołano spotkanie'}: ${apptWhen(a)}`);
+}
+
+function renderCalendar() {
+  if (SRV.on && SRV.booking === undefined) {
+    SRV.booking = null;
+    api('/api/booking').then(j => { SRV.booking = j.page || false; if (j.page) settings.booking = j.page.settings; if (state.page === 'calendar') renderMain(); }).catch(() => { SRV.booking = false; });
+  }
+  const s = bk(), nowAt = nowISO();
+  const appts = db.activity.filter(isAppt);
+  const upcoming = appts.filter(a => apptEnd(a) >= nowAt).sort((a, b) => a.at.localeCompare(b.at));
+  const past = appts.filter(a => apptEnd(a) < nowAt).sort((a, b) => b.at.localeCompare(a.at)).slice(0, 8);
+  const slots = bkSlots(s), week = upcoming.filter(a => dayDiff(a.at.slice(0, 10)) < 7).length;
+  const row = (a, done) => {
+    const p = apptPerson(a), r = apptRec(a);
+    return `<div class="ag-row${a.via === 'booking' ? ' via' : ''}"><div class="ag-time"><b>${a.at.slice(11, 16)}</b><small>do ${apptEnd(a).slice(11, 16)}</small></div>
+      <button class="ag-body" data-act="open" data-obj="${a.obj}" data-id="${a.rid}"><b>${esc(a.text)}</b><span>${esc([p && p.name, r && recLabel(a.obj, r)].filter(Boolean).join(' · ') || 'Bez powiązania')}</span>${a.location ? `<small>${esc(a.location)}</small>` : ''}</button>
+      ${a.via === 'booking' ? '<span class="tag ag-tag">Przez link</span>' : ''}
+      <span class="ag-acts">${done ? `<button class="qa-b qa-done" data-act="appt-done" data-id="${a.id}">${ic('tick', 15)}<span>Odbyło się</span></button><button class="qa-b" data-act="appt-noshow" data-id="${a.id}" title="Nie odbyło się" aria-label="Nie odbyło się">${ic('close', 15)}</button>`
+        : `${p && p.email ? `<button class="qa-b" data-act="appt-ics" data-id="${a.id}" title="Zaproszenie do kalendarza" aria-label="Pobierz zaproszenie">${ic('download', 15)}</button>` : ''}<button class="qa-b" data-act="appt-cancel" data-id="${a.id}">Odwołaj</button>`}</span></div>`;
+  };
+  let agenda = '', day = '';
+  for (const a of upcoming) { const d = a.at.slice(0, 10); if (d !== day) { day = d; agenda += `<h4 class="ag-day">${esc(dayName(d))}</h4>`; } agenda += row(a, false); }
+  const link = bkUrl();
+  const linkBox = SRV.on
+    ? (link ? `<div class="cal-link"><input class="fin" id="cal-url" readonly value="${esc(link)}" aria-label="Twój link do umawiania"><button class="ghost-button sm" data-act="cal-copy">${ic('copy', 15)}Kopiuj</button></div>
+        <div class="cal-link-acts"><a class="text-button" href="${esc(link)}" target="_blank" rel="noopener">Otwórz stronę ${ic('arrow', 14)}</a><button class="text-button" data-act="msg-pick-cal">${ic('mail', 14)}Wyślij klientowi</button></div>`
+      : SRV.booking === null ? '<p class="hint">Wczytuję…</p>' : `<button class="primary-button sm" data-act="cal-create">${ic('plus', 15)}Utwórz link</button>`)
+    : `<p class="hint">Link działa, gdy Hermes jest uruchomiony na serwerze. Tutaj sprawdzisz, jak zobaczy go klient, i przetestujesz rezerwację.</p><button class="ghost-button sm" data-act="cal-preview">${ic('meet', 15)}Podgląd strony dla klienta</button>`;
+  main.innerHTML = heading({ eyebrow: `${week} ${plural(week, 'spotkanie', 'spotkania', 'spotkań')} w najbliższym tygodniu`, title: 'Kalendarz', accent: '.', sub: 'Klienci umawiają się sami przez Twój link, a Hermes zapisuje spotkanie przy szansie albo leadzie i ustawia następny krok.',
+    actions: `<button class="ghost-button" data-act="cal-settings">${ic('sliders', 16)}Dostępność</button><button class="primary-button" data-act="appt-new">${ic('plus', 16)}Umów spotkanie</button>` }) + `
+    <div class="cal-grid">
+      <div class="cal-main">
+        <section class="panel">
+          <div class="panel-head"><div class="ttl"><h2>Nadchodzące spotkania</h2><p>${upcoming.length ? `${upcoming.length} ${plural(upcoming.length, 'spotkanie', 'spotkania', 'spotkań')} w kalendarzu` : 'Na razie pusto'}</p></div></div>
+          <div class="agenda">${agenda || `<div class="empty"><h3>Brak zaplanowanych spotkań</h3><p>Wyślij klientowi link do umawiania albo umów spotkanie sam. Pojawi się tutaj i na karcie klienta.</p></div>`}</div>
+        </section>
+        ${past.length ? `<section class="panel"><div class="panel-head"><div class="ttl"><h2>Do podsumowania</h2><p>Spotkania, które minęły. Zapisz wynik i kolejny krok.</p></div></div><div class="agenda">${past.map(a => `<h4 class="ag-day">${esc(dayName(a.at.slice(0, 10)))}</h4>` + row(a, true)).join('')}</div></section>` : ''}
+      </div>
+      <aside class="cal-side">
+        <section class="panel"><div class="panel-head"><div class="ttl"><h2>Link do umawiania</h2><p>${s.active ? 'Klienci wybierają wolny termin' : 'Wyłączony'}</p></div><button class="text-button" data-act="cal-settings">Zmień</button></div>
+          <div class="cal-box">
+            <div class="cal-sum"><b>${esc(s.title)}</b><span>${s.duration} min · ${esc(daysLabel(s.days))}, ${esc(s.from)} do ${esc(s.to)}</span>${s.location ? `<span>${esc(s.location)}</span>` : ''}<small>Przerwa między spotkaniami ${s.buffer} min · ${s.notice ? `najwcześniej za ${s.notice} h` : 'bez wyprzedzenia'} · do ${s.horizon} dni naprzód</small></div>
+            ${linkBox}
+          </div>
+        </section>
+        <section class="panel"><div class="panel-head"><div class="ttl"><h2>Najbliższe wolne terminy</h2><p>Kliknij godzinę, żeby umówić spotkanie</p></div></div>
+          <div class="cal-box free">${slots.slice(0, 5).map(d => `<div class="free-day"><span>${esc(dayName(d.day))}</span><div>${d.times.slice(0, 4).map(t => `<button class="chip-btn sm" data-act="appt-new" data-at="${t}">${t.slice(11, 16)}</button>`).join('')}${d.times.length > 4 ? `<em>+${d.times.length - 4}</em>` : ''}</div></div>`).join('') || '<p class="hint">Brak wolnych terminów. Zmień dostępność.</p>'}</div>
+        </section>
+      </aside>
+    </div>`;
+}
+
+/* ---- okno „Umów spotkanie” ---- */
+let schCtx = null;
+function openSchedule(obj, id, at) {
+  const s = bk();
+  schCtx = { obj: obj || '', id: id || '', at: at || '', dur: schCtx && schCtx.keep ? schCtx.dur : s.duration };
+  drawSchedule();
+}
+function drawSchedule(vals = {}) {
+  const s = bk(), C = schCtx, r = C.obj ? find(C.obj, C.id) : null;
+  const slots = bkSlots({ ...s, duration: C.dur, notice: 0 });
+  if (!C.at && slots[0]) C.at = slots[0].times[0];
+  const dsel = C.at ? C.at.slice(0, 10) : (slots[0] ? slots[0].day : today);
+  const dayTimes = (slots.find(d => d.day === dsel) || { times: [] }).times;
+  const people = r ? (C.obj === 'contact' ? [r] : C.obj === 'company' ? db.contact.filter(c => c.company === r.id) : contactsOf(r)) : [];
+  const recs = [...db.deal.filter(isOpen).map(d => ['deal', d]), ...db.lead.filter(isOpenLead).map(l => ['lead', l])];
+  modal(`<form id="schForm" novalidate>${mhead(r ? esc(recLabel(C.obj, r)) : 'Kalendarz', 'Umów spotkanie')}
+    <div class="mbody">
+      ${r ? '' : `<div class="f"><label for="sch-rec">Z kim</label><select id="sch-rec" class="fin" name="rec" data-role="sch-rec"><option value="">Wybierz szansę albo leada…</option>${recs.map(([o, x]) => `<option value="${o}:${x.id}">${esc(recLabel(o, x))} · ${o === 'deal' ? 'szansa' : 'lead'}</option>`).join('')}</select></div>`}
+      ${people.length ? `<div class="f"><label for="sch-who">Osoba</label><select id="sch-who" class="fin" name="who">${people.map(c => `<option value="${c.id}"${vals.who === c.id ? ' selected' : ''}>${esc(c.name)}${c.email ? ' · ' + esc(c.email) : ''}</option>`).join('')}</select></div>` : ''}
+      <div class="sch-row"><div class="f"><label for="sch-title">Temat</label><input id="sch-title" class="fin" name="title" value="${esc(vals.title ?? s.title)}" maxlength="80"></div>
+      <div class="f"><label for="sch-dur">Czas</label><select id="sch-dur" class="fin" name="dur" data-role="sch-dur">${[15, 20, 30, 45, 60, 90].map(m => `<option value="${m}"${m === C.dur ? ' selected' : ''}>${m} min</option>`).join('')}</select></div></div>
+      <div class="f"><span class="flabel">Termin z Twojej dostępności</span>
+        <div class="sch-days" role="group" aria-label="Dzień">${slots.slice(0, 10).map(d => `<button type="button" class="day-chip" data-act="sch-day" data-d="${d.day}" aria-pressed="${d.day === dsel}"><small>${esc(atDate(d.day + 'T12:00').toLocaleDateString('pl-PL', { weekday: 'short' }))}</small><b>${esc(atDate(d.day + 'T12:00').toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }))}</b></button>`).join('') || '<p class="hint">Brak wolnych terminów w ustawieniach dostępności.</p>'}</div>
+        <div class="sch-times" role="group" aria-label="Godzina">${dayTimes.map(t => `<button type="button" class="chip-btn sm${t === C.at ? ' on' : ''}" data-act="sch-time" data-t="${t}">${t.slice(11, 16)}</button>`).join('')}</div>
+      </div>
+      <div class="sch-row"><div class="f"><label for="sch-d">Albo inny dzień</label><input id="sch-d" type="date" class="fin" name="d" value="${esc(C.at ? C.at.slice(0, 10) : dsel)}"></div><div class="f"><label for="sch-t">Godzina</label><input id="sch-t" type="time" class="fin" name="t" step="300" value="${esc(C.at ? C.at.slice(11, 16) : s.from)}"></div></div>
+      <div class="f"><label for="sch-loc">Miejsce lub link</label><input id="sch-loc" class="fin" name="loc" value="${esc(vals.loc ?? s.location)}" maxlength="200"></div>
+      ${!r || C.obj === 'deal' || C.obj === 'lead' ? '<label class="close-step"><input type="checkbox" name="step" checked><span>Ustaw jako następny krok w dniu spotkania</span></label>' : ''}
+    </div>
+    <div class="mfoot"><button type="button" class="ghost-button" data-act="msg-pick-cal"${r ? ` data-obj="${C.obj}" data-id="${C.id}"` : ''}>${ic('mail', 16)}Niech klient wybierze sam</button><button type="submit" class="primary-button">${ic('meet', 16)}Zapisz spotkanie</button></div></form>`, 'wide');
+}
+function schVals() { const f = $('#schForm'); if (!f) return {}; const g = n => { const e = f.elements.namedItem(n); return e ? e.value : undefined; }; return { who: g('who'), title: g('title'), loc: g('loc') }; }
+function apptSaved(a) {
+  const p = apptPerson(a), r = apptRec(a);
+  modal(`${mhead(esc(r ? recLabel(a.obj, r) : 'Kalendarz'), 'Spotkanie zapisane')}
+    <div class="mbody"><div class="appt-card"><span class="t-ic">${ic('meet', 18)}</span><div><b>${esc(a.text)}</b><span>${esc(apptWhen(a))}</span>${a.location ? `<small>${esc(a.location)}</small>` : ''}</div></div>
+    <p class="hint">Spotkanie jest w Kalendarzu i w historii klienta${r && r.nextDate === a.at.slice(0, 10) ? ', a następny krok ustawiliśmy na dzień spotkania' : ''}. Wyślij zaproszenie, żeby trafiło też do kalendarza ${p ? esc(p.name.split(' ')[0]) : 'klienta'}.</p></div>
+    <div class="mfoot"><button type="button" class="ghost-button" data-act="close-modal">Gotowe</button>${p && p.email ? `<button type="button" class="primary-button" data-act="appt-invite" data-id="${a.id}">${ic('mail', 16)}Wyślij zaproszenie</button>` : ''}</div>`);
+}
+
+/* ---- ustawienia dostępności ---- */
+function openBookingSettings() {
+  const s = bk(), opt = (list, v, f = x => x) => list.map(x => `<option value="${x}"${x === v ? ' selected' : ''}>${f(x)}</option>`).join('');
+  modal(`<form id="bkSetForm" novalidate>${mhead('Kalendarz', 'Dostępność do umawiania')}
+    <div class="mbody">
+      <div class="sch-row"><div class="f"><label for="bk-title">Nazwa spotkania</label><input id="bk-title" class="fin" name="title" value="${esc(s.title)}" maxlength="80"></div>
+      <div class="f"><label for="bk-dur">Czas</label><select id="bk-dur" class="fin" name="duration">${opt([15, 20, 30, 45, 60, 90], s.duration, x => x + ' min')}</select></div></div>
+      <div class="f"><span class="flabel">Dni</span><div class="bk-days">${BK_DOW.map((d, i) => `<label class="day-tog"><input type="checkbox" name="days" value="${i + 1}"${s.days.includes(i + 1) ? ' checked' : ''}><span>${d}</span></label>`).join('')}</div></div>
+      <div class="sch-row"><div class="f"><label for="bk-from">Od</label><input id="bk-from" type="time" class="fin" name="from" value="${esc(s.from)}" step="900"></div><div class="f"><label for="bk-to">Do</label><input id="bk-to" type="time" class="fin" name="to" value="${esc(s.to)}" step="900"></div></div>
+      <div class="sch-row three"><div class="f"><label for="bk-buf">Przerwa po spotkaniu</label><select id="bk-buf" class="fin" name="buffer">${opt([0, 5, 10, 15, 30], s.buffer, x => x + ' min')}</select></div>
+      <div class="f"><label for="bk-not">Najwcześniej za</label><select id="bk-not" class="fin" name="notice">${opt([0, 1, 2, 4, 12, 24, 48], s.notice, x => x ? x + ' h' : 'od razu')}</select></div>
+      <div class="f"><label for="bk-hor">Ile dni naprzód</label><select id="bk-hor" class="fin" name="horizon">${opt([7, 14, 21, 30, 60], s.horizon, x => x + ' dni')}</select></div></div>
+      <div class="f"><label for="bk-loc">Miejsce lub link do rozmowy</label><input id="bk-loc" class="fin" name="location" value="${esc(s.location)}" maxlength="200"></div>
+      <div class="f"><label for="bk-intro">Opis dla klienta (opcjonalnie)</label><textarea id="bk-intro" class="fin" name="intro" rows="3" maxlength="600" placeholder="Np. 30 minut, żeby poznać Twoje potrzeby i pokazać, jak możemy pomóc.">${esc(s.intro)}</textarea></div>
+      <label class="close-step"><input type="checkbox" name="active"${s.active ? ' checked' : ''}><span>Link do umawiania jest włączony</span></label>
+      <p class="hint">Hermes pokazuje tylko terminy, w których nie masz innego spotkania w CRM, z przerwą przed i po.</p>
+    </div>
+    <div class="mfoot"><button type="button" class="ghost-button" data-act="close-modal">Anuluj</button><button type="submit" class="primary-button">Zapisz dostępność</button></div></form>`, 'wide');
+}
+
+/* ---- podgląd strony dla klienta (bez serwera) ---- */
+let bkPrev = null;
+function openBookPreview() {
+  const s = bk(), slots = bkSlots(s);
+  if (!bkPrev) bkPrev = { day: slots[0] ? slots[0].day : '', at: '' };
+  const cur = slots.find(d => d.day === bkPrev.day) || slots[0];
+  modal(`<form id="bkPrevForm" novalidate>${mhead('Podgląd strony dla klienta', esc(s.title))}
+    <div class="mbody bk-prev">
+      <p class="bk-meta">${esc(me())}${settings.company ? ' · ' + esc(settings.company) : ''} · ${s.duration} min${s.location ? ' · ' + esc(s.location) : ''}</p>${s.intro ? `<p class="hint">${esc(s.intro)}</p>` : ''}
+      ${slots.length ? `<div class="sch-days" role="group" aria-label="Dzień">${slots.slice(0, 10).map(d => `<button type="button" class="day-chip" data-act="bkp-day" data-d="${d.day}" aria-pressed="${cur && d.day === cur.day}"><small>${esc(atDate(d.day + 'T12:00').toLocaleDateString('pl-PL', { weekday: 'short' }))}</small><b>${esc(atDate(d.day + 'T12:00').toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }))}</b></button>`).join('')}</div>
+      <div class="sch-times">${cur.times.map(t => `<button type="button" class="chip-btn sm${t === bkPrev.at ? ' on' : ''}" data-act="bkp-time" data-t="${t}">${t.slice(11, 16)}</button>`).join('')}</div>` : '<p class="hint">Brak wolnych terminów. Zmień dostępność.</p>'}
+      ${bkPrev.at ? `<div class="sch-row"><div class="f"><label for="bkp-name">Imię i nazwisko</label><input id="bkp-name" class="fin" name="name" autocomplete="off"></div><div class="f"><label for="bkp-email">Email</label><input id="bkp-email" class="fin" name="email" type="email" autocomplete="off"></div></div>
+      <div class="sch-row"><div class="f"><label for="bkp-co">Firma</label><input id="bkp-co" class="fin" name="company" autocomplete="off"></div><div class="f"><label for="bkp-ph">Telefon</label><input id="bkp-ph" class="fin" name="phone" autocomplete="off"></div></div>
+      <div class="f"><label for="bkp-topic">O czym chcesz porozmawiać?</label><textarea id="bkp-topic" class="fin" name="topic" rows="2"></textarea></div>` : ''}
+    </div>
+    <div class="mfoot"><span class="hint" style="margin-right:auto">Rezerwacja z podglądu trafi do Twoich danych.</span><button type="submit" class="primary-button"${bkPrev.at ? '' : ' disabled'}>Umów spotkanie</button></div></form>`, 'wide');
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  const a = t.dataset.act, find2 = id => db.activity.find(x => x.id === id);
+  if (a === 'appt-new') { if (t.dataset.at) schCtx = null; openSchedule(t.dataset.obj, t.dataset.id, t.dataset.at); return; }
+  if (a === 'sch-day' && schCtx) { const s = bk(); const d = bkSlots({ ...s, duration: schCtx.dur, notice: 0 }).find(x => x.day === t.dataset.d); schCtx.at = d ? d.times[0] : ''; drawSchedule(schVals()); return; }
+  if (a === 'sch-time' && schCtx) { schCtx.at = t.dataset.t; drawSchedule(schVals()); return; }
+  if (a === 'cal-settings') { openBookingSettings(); return; }
+  if (a === 'cal-preview') { bkPrev = null; openBookPreview(); return; }
+  if (a === 'bkp-day' && bkPrev) { bkPrev.day = t.dataset.d; bkPrev.at = ''; openBookPreview(); return; }
+  if (a === 'bkp-time' && bkPrev) { bkPrev.at = t.dataset.t; openBookPreview(); setTimeout(() => { const n = $('#bkp-name'); if (n) n.focus(); }, 0); return; }
+  if (a === 'cal-copy') { const u = bkUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).catch(() => {}); toast('Skopiowano link do umawiania'); return; }
+  if (a === 'cal-create') { api('/api/booking', 'PUT', { settings: bk() }).then(j => { SRV.booking = j.page; toast('Link do umawiania jest gotowy'); render(); }).catch(err => toast(err.message || 'Nie udało się utworzyć linku')); return; }
+  if (a === 'msg-pick-cal') {
+    const obj = t.dataset.obj || (schCtx && schCtx.obj), id = t.dataset.id || (schCtx && schCtx.id);
+    if (!obj || !id) { toast('Najpierw wybierz, z kim się umawiasz'); return; }
+    msgCtx = null; openMsg(obj, id, (templates().find(x => /\{link_kalendarza\}/.test(x.body)) || {}).id); return;
+  }
+  if (a === 'appt-done') {
+    const x = find2(t.dataset.id); if (!x) return;
+    x.type = 'meeting'; x.held = true; x.by = x.by || me();
+    const r = apptRec(x);
+    save(); render(); refreshDrawer();
+    if (r && ((x.obj === 'deal' && isOpen(r)) || (x.obj === 'lead' && isOpenLead(r)))) openNextStep(x.obj, x.rid, 'Po spotkaniu: co dalej?', r.nextStep ? 'complete' : 'edit', { logged: true });
+    else toast('Spotkanie zapisane w historii');
+    return;
+  }
+  if (a === 'appt-cancel' || a === 'appt-noshow') {
+    const x = find2(t.dataset.id); if (!x) return;
+    cancelAppt(x, a === 'appt-noshow'); save(); render(); refreshDrawer();
+    toast(a === 'appt-noshow' ? 'Zapisano: spotkanie się nie odbyło' : x.bookingId && SRV.on ? 'Odwołano spotkanie, klient dostanie wiadomość' : 'Odwołano spotkanie');
+    return;
+  }
+  if (a === 'appt-ics') { const x = find2(t.dataset.id); if (x) downloadText('spotkanie.ics', apptIcs(x, apptPerson(x)), 'text/calendar'); return; }
+  if (a === 'appt-invite') {
+    const x = find2(t.dataset.id); if (!x) return; const p = apptPerson(x); if (!p || !p.email) return;
+    downloadText('spotkanie.ics', apptIcs(x, p), 'text/calendar');
+    const body = `Dzień dobry ${p.name.split(' ')[0]},\n\npotwierdzam nasze spotkanie: ${apptWhen(x)}.${x.location ? `\nMiejsce: ${x.location}.` : ''}\n\nZaproszenie do kalendarza dołączam w załączniku.\n\nPozdrawiam\n${me()}`;
+    logAct(x.obj, x.rid, 'email', `Wysłano zaproszenie: ${x.text}`, { who: p.id });
+    closeModal(); render(); refreshDrawer();
+    try { const l = document.createElement('a'); l.href = `mailto:${encodeURIComponent(p.email)}?subject=${encodeURIComponent('Zaproszenie: ' + x.text)}&body=${encodeURIComponent(body)}`; document.body.appendChild(l); l.click(); l.remove(); } catch (err) {}
+    toast('Dołącz pobrany plik spotkanie.ics do wiadomości');
+    return;
+  }
+});
+document.addEventListener('change', e => {
+  const r = e.target.dataset && e.target.dataset.role;
+  if (r === 'sch-dur' && schCtx) { schCtx.dur = +e.target.value; schCtx.at = ''; drawSchedule(schVals()); }
+  if (r === 'sch-rec' && schCtx) { const [o, id] = e.target.value.split(':'); schCtx.obj = o || ''; schCtx.id = id || ''; drawSchedule(schVals()); }
+});
+document.addEventListener('submit', e => {
+  const f = e.target;
+  if (f.id === 'schForm' && schCtx) {
+    e.preventDefault();
+    const g = n => { const x = f.elements.namedItem(n); return x ? x.value : ''; };
+    if (!schCtx.obj || !find(schCtx.obj, schCtx.id)) { toast('Wybierz szansę albo leada'); return; }
+    const d = g('d'), tm = g('t');
+    if (!/^\d{4}-\d\d-\d\d$/.test(d) || !/^\d\d:\d\d$/.test(tm)) { toast('Podaj dzień i godzinę'); return; }
+    const stepEl = f.elements.namedItem('step');
+    const x = addAppt(schCtx.obj, schCtx.id, { title: g('title').trim() || bk().title, at: `${d}T${tm}`, duration: schCtx.dur, who: g('who'), location: g('loc').trim(), step: stepEl ? stepEl.checked : false });
+    logAct(schCtx.obj, schCtx.id, 'system', `Umówiono spotkanie: ${apptWhen(x)}`);
+    save(); render(); refreshDrawer(); apptSaved(x);
+    return;
+  }
+  if (f.id === 'bkSetForm') {
+    e.preventDefault();
+    const g = n => f.elements.namedItem(n).value;
+    const days = [...f.querySelectorAll('input[name="days"]:checked')].map(x => +x.value);
+    let from = g('from') || BK_DEF.from, to = g('to') || BK_DEF.to;
+    if (!days.length) { toast('Zaznacz co najmniej jeden dzień'); return; }
+    if (to <= from) { toast('Godzina końca musi być po godzinie początku'); return; }
+    settings.booking = { title: g('title').trim() || BK_DEF.title, duration: +g('duration'), days, from, to, buffer: +g('buffer'), notice: +g('notice'), horizon: +g('horizon'), location: g('location').trim(), intro: g('intro').trim(), active: f.elements.namedItem('active').checked };
+    save(); closeModal(); render(); toast('Zapisano dostępność');
+    if (SRV.on) api('/api/booking', 'PUT', { settings: settings.booking }).then(j => { SRV.booking = j.page; if (state.page === 'calendar') renderMain(); }).catch(() => toast('Nie udało się zapisać dostępności na serwerze'));
+    return;
+  }
+  if (f.id === 'bkPrevForm' && bkPrev) {
+    e.preventDefault();
+    const g = n => { const x = f.elements.namedItem(n); return x ? x.value.trim() : ''; };
+    if (g('name').length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('email'))) { toast('Podaj imię i nazwisko oraz poprawny email'); return; }
+    const res = bookLocal({ at: bkPrev.at, name: g('name'), email: g('email'), company: g('company'), phone: g('phone'), topic: g('topic') });
+    bkPrev = null; save(); closeModal(); render();
+    toast(`Umówione. Spotkanie jest przy: ${recLabel(res.obj, res.r)}`, { label: 'Otwórz', fn: () => openRecord(res.obj, res.r.id) });
+    return;
+  }
+});
 
 /* ---- szablony wiadomości w Ustawieniach ---- */
 function renderTemplateSettings(head) {
@@ -3476,14 +3842,15 @@ function recComposer(obj, r) {
 }
 function recTimeline(obj, r) {
   const all = actsOf(obj, r);
-  const match = a => state.tl === 'all' || (state.tl === 'change' ? (a.type === 'stage' || a.type === 'system') : a.type === state.tl);
+  const tt = a => a.type === 'appt' ? 'meeting' : a.type;
+  const match = a => state.tl === 'all' || (state.tl === 'change' ? (a.type === 'stage' || a.type === 'system') : tt(a) === state.tl);
   const list = all.filter(match);
-  const cnt = k => k === 'all' ? all.length : all.filter(a => k === 'change' ? (a.type === 'stage' || a.type === 'system') : a.type === k).length;
+  const cnt = k => k === 'all' ? all.length : all.filter(a => k === 'change' ? (a.type === 'stage' || a.type === 'system') : tt(a) === k).length;
   const up = ''; /* następny krok jest w ramce obok, bez powtórzenia na osi czasu */
   let html = '', day = '';
   for (const a of list) {
     const d = a.at.slice(0, 10);
-    if (d !== day) { if (day) html += '</ol>'; day = d; const n = dayDiff(d); html += `<h4 class="tl-day">${n === 0 ? 'Dziś' : n === -1 ? 'Wczoraj' : esc(fdate(d))}</h4><ol class="timeline">`; }
+    if (d !== day) { if (day) html += '</ol>'; day = d; const n = dayDiff(d); html += `<h4 class="tl-day">${n === 0 ? 'Dziś' : n === -1 ? 'Wczoraj' : n === 1 ? 'Jutro' : esc(fdate(d))}</h4><ol class="timeline">`; }
     html += tlItem(a, obj, r, false);
   }
   if (day) html += '</ol>';
@@ -5130,7 +5497,7 @@ function srvRecords() {
   return m;
 }
 function orgPart() { const s = snapshot(); return JSON.stringify(ORG_PICK({ ...settings, labels: s.labels, custom: s.custom })); }
-const prefPart = () => JSON.stringify({ aLayout: settings.aLayout, onboardingHidden: settings.onboardingHidden, digest: settings.digest, views: settings.views, lastReview: settings.lastReview });
+const prefPart = () => JSON.stringify({ aLayout: settings.aLayout, onboardingHidden: settings.onboardingHidden, digest: settings.digest, views: settings.views, lastReview: settings.lastReview, booking: settings.booking });
 function srvTeam() {
   const s = SRV.s, mine = s.members.find(m => m.id === s.user.id) || s.user;
   settings.userName = s.user.name; settings.userEmail = s.user.email;

@@ -16,6 +16,7 @@ import growthRoutes from './routes-growth.js';
 import inboundRoutes from './routes-inbound.js';
 import webhookRoutes from './webhooks.js';
 import offerRoutes from './routes-offers.js';
+import bookingRoutes from './routes-booking.js';
 import crypto from 'node:crypto';
 import { createMailer, type Mailer } from './mail.js';
 
@@ -66,6 +67,7 @@ export async function buildApp(overrides: Partial<Config> = {}, opts: { db?: Db;
   await app.register(inboundRoutes);
   await app.register(webhookRoutes);
   await app.register(offerRoutes);
+  await app.register(bookingRoutes);
 
   const started = Date.now();
   app.get('/health', async () => { await db.one('SELECT 1 AS ok'); return { ok: true, db: db.kind, uptime: Math.round((Date.now() - started) / 1000), mail: app.mail.enabled, version: VERSION }; });

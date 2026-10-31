@@ -2,6 +2,16 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.16.0] · 31 października 2026
+
+### Dodane
+- Umawianie spotkań przez link (jak Calendly): strona `/umow/<id>` z wolnymi terminami w czasie polskim, rezerwacja z imieniem, emailem, firmą i tematem.
+- Rezerwacja sama trafia do CRM: kontakt i firma bez duplikatów, spotkanie przy otwartej szansie lub leadzie (albo nowy lead ze źródłem „Kalendarz”), następny krok na dzień spotkania.
+- Potwierdzenia mailem z zaproszeniem `.ics` dla klienta i handlowca, odwołanie z linku w mailu, zdarzenia `meeting.booked` i `meeting.cancelled` dla webhooków.
+- Strona Kalendarz: nadchodzące spotkania, spotkania do podsumowania, link do umawiania, najbliższe wolne terminy, ustawienia dostępności.
+- „Umów” na kartach rekordów: wybór terminu z dostępności i zaproszenie mailem.
+- Spotkania dziś nad listą „Na dziś”, „Odbyło się” z pytaniem o kolejny krok, szablon „Wybór terminu” z polem `{link_kalendarza}`.
+
 ## [0.15.1] · 31 października 2026
 
 ### Zmienione
