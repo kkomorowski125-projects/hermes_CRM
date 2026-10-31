@@ -5,7 +5,7 @@ Hermes CRM można zainstalować na jednym Macu jak zwykłą aplikację: z kontam
 ## Instalacja
 
 1. Pobierz `Hermes-CRM-<wersja>-macOS.zip` i rozpakuj go.
-2. Otwórz Terminal, wpisz `bash` i spację, przeciągnij do okna plik `Zainstaluj Hermes CRM.command` i naciśnij Enter.
+2. Otwórz Terminal, wpisz `bash` i spację (bez naciskania Enter), przeciągnij do okna plik `Zainstaluj Hermes CRM.command` i dopiero wtedy naciśnij Enter.
 3. CRM otworzy się w przeglądarce. Pierwsze konto zakłada firmę i jest kontem administratora.
 
 Wymagania: macOS 11 lub nowszy, Apple Silicon albo Intel, internet przy instalacji (pobranie Node.js, około 50 MB).

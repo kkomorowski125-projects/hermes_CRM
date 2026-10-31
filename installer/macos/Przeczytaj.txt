@@ -6,8 +6,9 @@ JAK ZAINSTALOWAĆ
 
 1. Rozpakuj archiwum (dwuklik na pliku .zip).
 2. Otwórz Terminal (Cmd + spacja, wpisz „Terminal”, Enter).
-3. Wpisz bash i spację, przeciągnij do okna plik „Zainstaluj Hermes CRM.command”
-   i naciśnij Enter.
+3. Wpisz bash i jedną spację. Nie naciskaj jeszcze Enter.
+4. Przeciągnij do okna Terminala plik „Zainstaluj Hermes CRM.command”
+   (pojawi się jego ścieżka) i dopiero teraz naciśnij Enter.
 
 Instalator pobierze środowisko Node.js (około 50 MB), zainstaluje aplikację
 „Hermes CRM” w folderze Programy w Twoim katalogu domowym i otworzy CRM w przeglądarce.
@@ -41,7 +42,8 @@ a przed aktualizacją Hermes zapisuje kopię bazy (hermes-przed-aktualizacja.db)
 
 ODINSTALOWANIE
 
-W Terminalu wpisz bash i spację, przeciągnij „Odinstaluj Hermes CRM.command” i naciśnij Enter.
+W Terminalu wpisz bash i spację (bez Enter), przeciągnij „Odinstaluj Hermes CRM.command”
+i dopiero wtedy naciśnij Enter.
 Dane zostają, chyba że potwierdzisz ich usunięcie słowem TAK.
 
 GDY COŚ NIE DZIAŁA
