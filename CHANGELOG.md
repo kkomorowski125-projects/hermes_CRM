@@ -2,6 +2,14 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.15.1] · 31 października 2026
+
+### Zmienione
+- Lista „Na dziś”: każdy wiersz ma akcję w tym samym miejscu, „Zrobione” albo „Ustal krok” w kolorze uwagi, więc kolumny przycisków się wyrównują.
+- Karty lejka: następny krok w dwóch liniach z terminem pod spodem zamiast uciętego tekstu.
+- Pasek etapów na karcie szansy jako płaskie segmenty zamiast strzałek.
+- Górny pasek przyklejony przy przewijaniu, z rozmyciem tła.
+
 ## [0.15.0] · 31 października 2026
 
 Design system 2.0 po audycie designu: lżej, spokojniej, wygodniej do czytania.

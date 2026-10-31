@@ -1275,6 +1275,36 @@ tr.row:hover td:first-child{box-shadow:inset 2px 0 var(--accent)}
   .task-body b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
   .panel-head{padding:14px 16px}
 }
+
+/* -- v13.1: szlif -- */
+.topbar{position:sticky;top:0;z-index:15;backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px)}
+.qa-done{min-width:112px;justify-content:center}
+@media (max-width:600px){.qa-done{min-width:34px;padding:0 8px}}
+.qa-plan{color:var(--warn);border-color:#EFE3C8!important;background:#FFFBF2}
+.qa-plan:hover{border-color:#E2CFA4!important;background:#FFF6E3;color:#7A520A}
+.task-check.plan{border-style:dashed;border-color:#D9B871;background:#FFFBF2;color:var(--warn)}
+.deal-card>p.next,.next{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start;column-gap:7px;row-gap:3px;padding:8px 10px;white-space:normal}
+.next>svg{margin-top:3px}
+.next span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.35;white-space:normal}
+.next em{grid-column:2;justify-self:start;font-size:12px;font-style:normal;font-weight:500;color:var(--mute)}
+.next.late em{color:var(--late)}.next.today em{color:var(--ok)}
+.deal-card>p.next.none,.next.none{color:#7A520A!important;background:#FFFBF2}
+.stale{font-weight:500}
+.deal-card .top .avatar{border-radius:8px}
+.kcol{gap:8px}
+.ksum{margin-top:-4px}
+.sb{clip-path:none!important;border-radius:0!important;padding:6px 14px!important;justify-content:center}
+.stagebar{gap:3px;border-radius:10px;overflow:hidden}
+.sb:first-child{border-radius:10px 0 0 10px!important}.sb:last-child,.sb.end{border-radius:0 10px 10px 0!important}
+.sb.cur,.sb[aria-current]{box-shadow:none}
+.panel-head .text-button,.row-acts .text-button{font-size:13px}
+.crumb-cur{font-weight:500;color:var(--mute)}
+.heading-meta>span i{width:6px;height:6px;box-shadow:0 0 0 3px rgba(47,125,91,.14)}
+.metric.featured{background:linear-gradient(160deg,#F4F4FD 0%,#FFFFFF 70%)}
+.empty{padding:48px 24px}.empty p{max-width:46ch;margin-left:auto;margin-right:auto}
+.side-help{border-radius:var(--r-sm)}
+.target small{font-size:12px}
+.profile{border-top-color:var(--side-line)}
 </style>
 </head>
 <body>
@@ -1860,7 +1890,7 @@ function wonByMonth(deals, n = 6) {
 function todayQA(it) {
   const r = find(it.obj, it.id); if (!r) return ic('chevron', 16);
   const p = contactsOf(r).find(c => c.phone) || null, m = contactsOf(r).find(c => c.email) || null;
-  return `<span class="qa">${p ? `<a class="qa-b" href="tel:${esc(String(p.phone).replace(/\s/g, ''))}" data-qa="call" data-obj="${it.obj}" data-id="${it.id}" title="Zadzwoń: ${esc(p.name)}, ${esc(p.phone)}" aria-label="Zadzwoń do ${esc(p.name)}">${ic('phone', 15)}</a>` : ''}${m ? `<button class="qa-b" data-act="msg-open" data-obj="${it.obj}" data-id="${it.id}" title="Napisz do: ${esc(m.name)}" aria-label="Napisz do ${esc(m.name)}">${ic('mail', 15)}</button>` : ''}${it.kind === 'step' ? `<button class="qa-b qa-done" data-act="done" data-kind="step" data-obj="${it.obj}" data-id="${it.id}" title="Zrobione: zapisz wynik i kolejny krok">${ic('tick', 15)}<span>Zrobione</span></button>` : ''}</span>`;
+  return `<span class="qa">${p ? `<a class="qa-b" href="tel:${esc(String(p.phone).replace(/\s/g, ''))}" data-qa="call" data-obj="${it.obj}" data-id="${it.id}" title="Zadzwoń: ${esc(p.name)}, ${esc(p.phone)}" aria-label="Zadzwoń do ${esc(p.name)}">${ic('phone', 15)}</a>` : ''}${m ? `<button class="qa-b" data-act="msg-open" data-obj="${it.obj}" data-id="${it.id}" title="Napisz do: ${esc(m.name)}" aria-label="Napisz do ${esc(m.name)}">${ic('mail', 15)}</button>` : ''}${it.kind === 'step' ? `<button class="qa-b qa-done" data-act="done" data-kind="step" data-obj="${it.obj}" data-id="${it.id}" title="Zrobione: zapisz wynik i kolejny krok">${ic('tick', 15)}<span>Zrobione</span></button>` : it.kind === 'task' ? `<button class="qa-b qa-done" data-act="done" data-kind="task"${it.taskId ? ` data-task="${it.taskId}"` : ''} data-obj="${it.obj}" data-id="${it.id}" title="Zamknij zadanie">${ic('tick', 15)}<span>Zrobione</span></button>` : `<button class="qa-b qa-done qa-plan" data-act="done" data-kind="nostep" data-obj="${it.obj}" data-id="${it.id}" title="Ustal następny krok">${ic('plus', 15)}<span>Ustal krok</span></button>`}</span>`;
 }
 function todayItems() {
   const items = [];

@@ -69,7 +69,7 @@ Długie teksty używają `text-wrap-style: pretty`, a nagłówki `balance`. Nie 
 | Tag | `.tag` | Etap, status, źródło, z kolorową kropką |
 | Kafelek wskaźnika | `.metric`, `.kpi` | Wyróżniony ma tło z gradientem akcentu |
 | Karta kanbanu | `.deal-card` | Następny krok `.next` w kolorze pilności |
-| Szybkie akcje | `.qa` + `.qa-b` | Bez ramki, ramka przy najechaniu na wiersz |
+| Szybkie akcje | `.qa` + `.qa-b` | Bez ramki, ramka przy najechaniu na wiersz; ostatnia akcja wiersza zawsze w tym samym miejscu (`.qa-done`, `.qa-plan`) |
 | Okno | `.modal` + `.mhead` + `.mfoot` | Szerokie `.wide`, wyszukiwarka `.cmd`, głos `.voice` |
 | Powiadomienie | `.toast` | Opcjonalny przycisk akcji, np. „Cofnij” |
 
