@@ -6,7 +6,7 @@ Prosty, AI-native CRM dla małych i średnich firm, zaprojektowany dla foundera,
 
 ![Pulpit Hermesa z listą „Na dziś”](docs/img/pulpit.png)
 
-> **Status:** wersja 0.13: faza 1 [roadmapy](docs/roadmapa.md) gotowa technicznie, sześć z dziewięciu inicjatyw fazy 2 i pięć z ośmiu inicjatyw fazy 3 działa. Blokery, które wymagają decyzji, są wypisane w roadmapie. `index.html` działa samodzielnie jako prototyp z danymi w przeglądarce, a z serwerem z folderu `server/` jako aplikacja dla zespołu: konta, 2FA, role, synchronizacja, RODO i Hermes AI przez serwer.
+> **Status:** wersja 0.14 (wdrożony audyt użyteczności): faza 1 [roadmapy](docs/roadmapa.md) gotowa technicznie, sześć z dziewięciu inicjatyw fazy 2 i pięć z ośmiu inicjatyw fazy 3 działa. Blokery, które wymagają decyzji, są wypisane w roadmapie. `index.html` działa samodzielnie jako prototyp z danymi w przeglądarce, a z serwerem z folderu `server/` jako aplikacja dla zespołu: konta, 2FA, role, synchronizacja, RODO i Hermes AI przez serwer.
 
 ## Szybki start
 

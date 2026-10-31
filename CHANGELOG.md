@@ -2,6 +2,24 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.14.0] · 31 października 2026
+
+Wdrożenie audytu użyteczności dla foundera, handlowca i managera sprzedaży.
+
+### Dodane
+- Szybkie akcje na liście „Na dziś”: telefon, wiadomość z szablonu, „Zrobione”.
+- Szablony wiadomości z imieniem, formą „Pan” lub „Pani”, firmą i podpisem; wysyłka przez własną pocztę z wpisem w historii; edycja w Ustawieniach.
+- „Jak poszło?” przy zamykaniu kroku: rodzaj kontaktu, wynik i notatka w jednym oknie; „To zamyka krok” w historii.
+- Przegląd lejka: szanse do decyzji jedna po drugiej, przypomnienie raz w tygodniu.
+- Strona Zespół: prognoza miesiąca z kategoriami Lejek, Możliwe, Pewne, lejek na osobę, aktywność tygodniowa wobec celu.
+- Dolny pasek nawigacji z przyciskiem „+” na telefonie.
+
+### Zmienione
+- Pulpit zaczyna się od listy „Na dziś”, wskaźniki są niżej.
+- Ustawienia mają pięć zakładek; automatyzacje, produkty i pola są w zakładce Zaawansowane.
+- Kwoty w trybie edycji mają separatory tysięcy, zamknięte kolumny lejka są węższe, pusta sekcja produktów na karcie jest zwinięta.
+- Import przeniesiony z górnego paska na listy obiektów.
+
 ## [0.13.0] · 31 października 2026
 
 ### Dodane

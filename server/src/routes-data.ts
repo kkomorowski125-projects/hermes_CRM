@@ -8,8 +8,8 @@ import { dispatch, eventsFor, type HookEvent } from './webhooks.js';
 export const TYPES = ['company', 'contact', 'lead', 'deal', 'activity', 'task'] as const;
 type RType = typeof TYPES[number];
 /** Ustawienia całej firmy, które zmienia administrator; reszta to preferencje osoby */
-const ORG_KEYS = ['target', 'targetSet', 'company', 'stages', 'labels', 'custom', 'meTargets', 'rules', 'products', 'offer'];
-const PREF_KEYS = ['aLayout', 'onboardingHidden', 'digest', 'views'];
+const ORG_KEYS = ['target', 'targetSet', 'company', 'stages', 'labels', 'custom', 'meTargets', 'rules', 'products', 'offer', 'templates', 'activityTarget'];
+const PREF_KEYS = ['aLayout', 'onboardingHidden', 'digest', 'views', 'lastReview'];
 
 type Rec = { type: RType; id: string; data: Record<string, any>; deleted: boolean; updated_at: string };
 

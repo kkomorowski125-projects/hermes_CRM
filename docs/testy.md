@@ -36,6 +36,7 @@ Wynik pokazuje każdy przypadek (✓ albo ✗) i podsumowanie pliku. Polecenie k
 | `tests/zadania.test.js` | Zadania na karcie szansy, lista „Na dziś”, cofanie, zapis, pole NIP w formularzu firmy, pomoc w aplikacji |
 | `tests/importy.test.js` | Eksporty Pipedrive i HubSpot: rozpoznanie, kolumny, mapowanie etapów, statusy, daty, imię i nazwisko z dwóch kolumn, duplikaty |
 | `tests/faza3.test.js` | Automatyzacje (szablony, etap, wygrana, przydział leadów), masowe akcje z cofaniem, zapisane widoki, scalanie duplikatów, katalog produktów, pozycje i wartość szansy, podgląd oferty, raport zespołu |
+| `tests/audyt.test.js` | Zmiany z audytu użyteczności: „Na dziś” na górze pulpitu, szybkie akcje, wynik kontaktu przy „Zrobione”, „To zamyka krok”, szablony wiadomości, przegląd lejka, kategoria prognozy, strona Zespół, cel aktywności, dolny pasek na telefonie, porządek Ustawień |
 | `tests/glos.test.js` | Parser Hermes Voice na przykładowych zdaniach, zapis i powiązania, wykrywanie istniejących rekordów, wejścia głosowe w formularzach i notatkach |
 
 ## Pisanie testu

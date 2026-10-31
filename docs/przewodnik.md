@@ -15,12 +15,13 @@ Hermes prowadzi Cię przez sprzedaż od pierwszego kontaktu do wygranej. Ten prz
 9. [Dodawanie rekordów i głos](#dodawanie-rekordów-i-głos)
 10. [Wyszukiwarka](#wyszukiwarka)
 11. [Analityka](#analityka)
-12. [Hermes AI](#hermes-ai)
-13. [Ustawienia](#ustawienia)
-14. [Produkty i oferty](#produkty-i-oferty)
-15. [Automatyzacje](#automatyzacje)
-16. [Masowe akcje, widoki i duplikaty](#masowe-akcje-widoki-i-duplikaty)
-17. [Cofanie i bezpieczeństwo danych](#cofanie-i-bezpieczeństwo-danych)
+12. [Zespół i przegląd lejka](#zespół-i-przegląd-lejka)
+13. [Hermes AI](#hermes-ai)
+14. [Ustawienia](#ustawienia)
+15. [Produkty i oferty](#produkty-i-oferty)
+16. [Automatyzacje](#automatyzacje)
+17. [Masowe akcje, widoki i duplikaty](#masowe-akcje-widoki-i-duplikaty)
+18. [Cofanie i bezpieczeństwo danych](#cofanie-i-bezpieczeństwo-danych)
 
 ## Pierwsze uruchomienie
 
@@ -49,7 +50,7 @@ Chcesz najpierw zobaczyć aplikację w akcji? Kliknij **„Wczytaj dane demo”*
 
 ## Pulpit i lista „Na dziś”
 
-Pulpit pokazuje wartość lejka z postępem celu, prognozę ważoną, otwarte leady i liczbę zadań na dziś.
+Pulpit zaczyna się od listy **„Na dziś”** i największych szans, a pod nimi są wskaźniki: wartość lejka z postępem celu, prognoza ważona, otwarte leady i liczba zadań na dziś. Nowe konto zamiast tego widzi kartę „Zacznij tutaj”.
 
 Lista **„Na dziś”** zbiera:
 
@@ -57,7 +58,11 @@ Lista **„Na dziś”** zbiera:
 - rekordy bez zaplanowanego kroku (żółte kółko z plusem);
 - nowe leady, które czekają na pierwszy kontakt.
 
-Kliknięcie kółka zamyka zadanie, a kliknięcie tytułu otwiera kartę rekordu.
+Kliknięcie kółka zamyka zadanie, a kliknięcie tytułu otwiera kartę rekordu. Przy każdej pozycji są **szybkie akcje**: telefon (na komputerze otwiera aplikację do dzwonienia, na telefonie od razu dzwoni), **„Napisz”** z szablonem wiadomości i **„Zrobione”**.
+
+**Szablony wiadomości.** „Napisz” na liście, karcie rekordu i w podglądzie otwiera okno z gotowym tekstem: follow up, przypomnienie o ofercie, podziękowanie po spotkaniu, umówienie rozmowy. Hermes sam wstawia imię, formę „Pan” lub „Pani”, firmę i Twój podpis. Wiadomość otwiera się w Twojej poczcie, a w historii zostaje wpis. Własne szablony dodasz w Ustawieniach → Szablony.
+
+Na telefonie aplikacja ma dolny pasek: Dziś, Lejek, przycisk „+” do szybkiego dodawania, Leady i Więcej.
 
 ## Następny krok
 
@@ -66,6 +71,8 @@ Kliknięcie kółka zamyka zadanie, a kliknięcie tytułu otwiera kartę rekordu
 To serce Hermesa. Każdy otwarty lead i każda otwarta szansa ma krok z terminem.
 
 - **„Zrobione”** zamyka bieżący krok i od razu prosi o kolejny. Hermes podpowiada krok pasujący do etapu.
+- W tym samym oknie zapisujesz **„Jak poszło?”**: rodzaj kontaktu (telefon, email, spotkanie, notatka), wynik rozmowy i krótką notatkę. Wpis trafia do historii, więc jeden klik zamyka krok i dokumentuje kontakt.
+- Gdy dodajesz wpis w historii na karcie, zaznacz **„To zamyka krok”**, a Hermes od razu poprosi o kolejny.
 - Zamiast kolejnego kroku możesz zamknąć rekord: szansę jako wygraną lub przegraną, leada przez konwersję lub odrzucenie.
 - Okno nie zamyka się przez kliknięcie obok ani klawisz Esc. Krok możesz **świadomie pominąć krzyżykiem ✕**. Rekord trafia wtedy na listę „bez planu”, a w historii zostaje ślad.
 - Ta sama zasada działa przy zmianie etapu lub statusu. Zmianę można cofnąć przyciskiem „Cofnij zmianę etapu”.
@@ -162,6 +169,17 @@ Otwierasz ją polem w górnym pasku, skrótem `⌘K` albo klawiszem `/`.
 
 **„Dostosuj układ”** włącza tryb edycji: przeciągasz moduły, zmieniasz szerokość (⅓, ½, ⅔, całość), usuwasz je i dodajesz. Siatka sama wypełnia luki i dopasowuje się do szerokości ekranu. „Przywróć domyślny” wraca do startowego układu.
 
+## Zespół i przegląd lejka
+
+Zakładka **Zespół** pojawia się, gdy w firmie są co najmniej dwie osoby. To widok managera na spotkanie zespołu:
+
+- **Prognoza miesiąca:** cel, wygrane, szanse „Pewne” i „Możliwe” z terminem w tym miesiącu oraz luka do celu. Kategorię prognozy (Lejek, Możliwe, Pewne) handlowiec ustawia na karcie szansy.
+- **Lejek na osobę:** otwarte szanse, pewne w miesiącu, wygrane wobec celu, kroki po terminie, rekordy bez kroku, szanse stojące ponad 14 dni i zamknięcia w ciągu 14 dni. Kliknięcie osoby pokazuje szanse, które wymagają uwagi.
+- **Aktywność w tym tygodniu:** telefony, maile i spotkania każdej osoby wobec celu tygodniowego, który ustawisz tutaj.
+- **Raport CSV** do pobrania.
+
+**Przegląd lejka** to cotygodniowy nawyk na 10 minut. Hermes pokazuje po kolei szanse, które wymagają decyzji: bez kroku, po terminie, stojące za długo w etapie albo z minionym terminem zamknięcia. Przy każdej ustalasz krok, zmieniasz etap, zamykasz ją albo pomijasz. Przycisk jest na stronie Lejek, w Zespole, a na liście „Na dziś” przypomina się, gdy od ostatniego przeglądu minął tydzień.
+
 ## Hermes AI
 
 Przycisk **„Ask Hermes AI”** (`⌘J`) otwiera panel rozmowy. Na karcie rekordu AI dostaje jego kontekst.
@@ -175,9 +193,8 @@ Bez klucza Hermes AI działa lokalnie i rozumie pytania o plan dnia, zagrożone 
 | Ogólne | Profil, cel miesięczny, klucz Claude API i model, kopia zapasowa, eksport CSV, dane demo, czyszczenie danych |
 | Zespół | Profile handlowców: imię, email, rola, cel indywidualny, otwarty lejek |
 | Lejek | Etapy szans: nazwa, prawdopodobieństwo, podpowiedź kroku, kolejność, dodawanie i usuwanie |
-| Automatyzacje | Reguły: zadanie po wejściu w etap, wygranej lub przegranej, opiekun i zadanie dla nowego leada |
-| Produkty | Katalog produktów i usług z ceną netto i VAT, dane sprzedawcy i stałe zapisy oferty |
-| Leady, Szanse, Firmy, Kontakty | Zmiana nazw pól i własne pola (tekst, liczba, kwota, data, lista wyboru, email, telefon) |
+| Szablony | Szablony wiadomości z polami {imie}, {pan_pani}, {firma}, {szansa}, {krok}, {podpis}; dodawanie, usuwanie i przywracanie domyślnych |
+| Zaawansowane | Automatyzacje, produkty i oferty oraz pola leadów, szans, firm i kontaktów (zmiana nazw i własne pola) |
 
 ![Edycja etapów](img/ustawienia-etapy.png)
 
