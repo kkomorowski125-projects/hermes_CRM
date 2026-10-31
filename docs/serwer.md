@@ -59,6 +59,8 @@ Zmienne środowiskowe opisuje [`.env.example`](../.env.example), a wdrożenie [w
 | `src/routes-oauth.ts` | Logowanie Google i Microsoft (OpenID Connect z PKCE), połączone konta |
 | `src/routes-growth.ts` | Dane firmy po NIP, formularz leada na stronę, poranny plan dnia mailem |
 | `src/mail.ts` | Wysyłka maili przez SMTP i szablon wiadomości |
+| `src/routes-inbound.ts` | Maile w historii przez adres BCC firmy |
+| `src/onboarding.ts` | Seria powitalna: mail po rejestracji, w dniu 2 i 5 |
 | `src/monitor.ts` | Alerty o błędach na webhook, zgłoszenia błędów z przeglądarki |
 | `src/app.ts` | Złożenie aplikacji, nagłówki bezpieczeństwa, serwowanie `index.html` |
 
@@ -115,6 +117,8 @@ Wszystkie zapytania zmieniające dane muszą mieć nagłówek `x-hermes: 1` (och
 | `GET`, `POST`, `DELETE /api/org/forms` | admin | Formularze leada na stronę |
 | `POST /api/public/forms/:id` | każdy (CORS) | Zgłoszenie z formularza lub webhooka: firma, kontakt, lead, notatka |
 | `POST /api/client-errors` | każdy | Błąd JavaScript z przeglądarki do logu |
+| `GET /api/org/mailbox`, `POST` | zalogowany (tworzy admin) | Adres BCC firmy |
+| `POST /api/public/inbound/:sekret` | dostawca poczty | Wiadomość przychodząca do zapisania w historii |
 | `GET /health` | każdy | Stan serwera i bazy |
 
 ## Logowanie Google i Microsoft
@@ -142,6 +146,21 @@ Zadania (`task`) synchronizują się jak pozostałe rekordy i podlegają tym sam
 ## Formularz leada i webhook
 
 Administrator tworzy formularz w Ustawieniach → Ogólne i dostaje adres oraz gotowy kod HTML. Adres przyjmuje zwykły formularz HTML (z polem `redirect` przekierowuje po wysłaniu na stronę podziękowania) i JSON z Zapiera, Make czy własnego skryptu. Pola: `name`, `email`, `phone`, `company`, `message`, opcjonalnie `value` i `source`. Ukryte pole `website` odsiewa boty, a limit to 20 zgłoszeń na godzinę z jednego adresu IP. Zgłoszenie tworzy albo odnajduje firmę i kontakt (po nazwie i adresie email), zakłada leada ze źródłem „Strona www”, krokiem na dziś i opiekunem administratorem oraz zapisuje wiadomość w historii.
+
+## Maile w historii przez BCC
+
+To droga do automatycznego zapisu maili bez czekania na weryfikację dostępu do Gmaila. Każda firma dostaje adres w postaci `hermes-<losowy ciąg>@INBOUND_DOMAIN`. Handlowiec dodaje go jako ukrytą kopię, gdy pisze do klienta, albo przekazuje na niego mail od klienta.
+
+1. Dostawca poczty przychodzącej przyjmuje wiadomość dla domeny `INBOUND_DOMAIN` i wysyła ją na `POST /api/public/inbound/<INBOUND_SECRET>`.
+2. Hermes rozpoznaje firmę po adresie skrzynki. Gdy nadawcą jest ktoś z zespołu, klientami są odbiorcy; w przeciwnym razie klientem jest nadawca.
+3. Każdy klient dostaje wpis „Email” w historii kontaktu (widoczny też w jego szansach i firmie), z tematem i treścią bez cytowanej odpowiedzi. Ta sama wiadomość nie zapisze się drugi raz.
+4. Nieznany adres tworzy nowy kontakt; firmę Hermes przypisuje po domenie strony, pomijając darmowe skrzynki (gmail.com, wp.pl, onet.pl i podobne).
+
+Obsługiwane formaty: Postmark Inbound (JSON), prosty JSON (`from`, `to`, `cc`, `subject`, `text`, `date`, `messageId`, np. z workera Cloudflare Email Routing) oraz formularz w stylu Mailgun. Nowy adres BCC unieważnia poprzedni.
+
+## Seria powitalna
+
+Po założeniu firmy administrator dostaje mail powitalny z trzema pierwszymi krokami. W dniu 2 przychodzi podpowiedź zależna od stanu konta (import, gdy lejek jest pusty; formularz, BCC i NIP, gdy już są dane), a w dniu 5 zachęta do zaproszenia zespołu albo wskazówki pracy w zespole. Każdy krok wychodzi raz, około 10:00. `ONBOARDING_MAILS=false` wyłącza serię.
 
 ## Dane firmy po NIP
 

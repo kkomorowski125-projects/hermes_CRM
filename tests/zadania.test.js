@@ -1,7 +1,7 @@
 // Zadania na karcie leada i szansy, lista „Na dziś”, pobieranie danych firmy po NIP
 const { boot, kit, ok, done } = require('./helpers');
 const w = boot();
-const { d, errs, click, submit, txt, E } = kit(w);
+const { d, errs, click, submit, txt, E, key, inp } = kit(w);
 click('[data-act="demo-quick"]');
 const id = E('db.deal.find(isOpen).id');
 E(`openRecord('deal', '${id}')`);
@@ -39,4 +39,12 @@ d.querySelector('#n-nip').value = '1234567890';
 click('[data-act="nip-fetch"]');
 ok(d.querySelector('#n-nip').classList.contains('err'), 'błędny NIP oznaczony');
 ok(E('nipOk("5260250995")') && !E('nipOk("5260250996")'), 'suma kontrolna NIP');
+/* pomoc w aplikacji */
+E('closeModal()');
+key(d.body, '?');
+ok(/Jak pracować w Hermesie/.test(txt('.modal')), 'klawisz ? otwiera pomoc');
+inp('#help-q', 'pipedrive');
+ok(d.querySelectorAll('.help-item').length === 1 && /Import z innego CRM/.test(txt('#help-res')), 'wyszukiwanie w pomocy');
+inp('#help-q', 'xyzxyz');
+ok(/Nic nie znaleziono/.test(txt('#help-res')), 'brak wyników');
 done(errs);

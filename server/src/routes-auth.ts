@@ -2,6 +2,7 @@
 import type { FastifyInstance } from 'fastify';
 import { COOKIE, HttpError, bad, createSession, need, audit, members, ROLE_LABEL, type Role } from './context.js';
 import { layout } from './mail.js';
+import { sendWelcome } from './onboarding.js';
 import { hashPassword, verifyPassword, passwordProblem, newId, newToken, now, sha256, inHours, inDays, newTotpSecret, verifyTotp, totpUri, limiter } from './security.js';
 
 const emailOk = (e: unknown) => typeof e === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim()) && e.length <= 200;
@@ -40,6 +41,7 @@ export default async function authRoutes(app: FastifyInstance) {
       await audit(tx, { orgId: oid, userId: uid }, 'org_created');
     });
     await createSession(db, reply, cfg, uid, oid, newToken());
+    void sendWelcome(app, { id: uid, email, name }, company).catch(e => app.log.error(e, 'Mail powitalny nieudany'));
     return { ok: true };
   });
 

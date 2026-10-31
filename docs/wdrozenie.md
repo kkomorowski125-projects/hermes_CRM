@@ -36,6 +36,8 @@ Aplikacja działa na porcie 3000. Pierwsze konto założone na ekranie logowania
 | `ALERT_WEBHOOK_URL` | puste | Alerty o błędach serwera |
 | `BACKUP_PASSPHRASE`, `BACKUP_HOUR`, `BACKUP_KEEP_DAYS` | puste, `1`, `14` | Szyfrowane kopie bazy |
 | `DOMAIN`, `APP_PORT` | puste, `3000` | Domena dla Caddy, port aplikacji na serwerze |
+| `INBOUND_DOMAIN`, `INBOUND_SECRET` | puste | Maile w historii przez BCC |
+| `ONBOARDING_MAILS` | `true` | Seria powitalna dla nowych firm |
 
 ## HTTPS
 
@@ -69,6 +71,15 @@ Ustaw `SMTP_URL` (np. `smtps://użytkownik:hasło@smtp.dostawca.pl:465`) i `MAIL
 
 - **Google:** w Google Cloud Console utwórz klienta OAuth typu „Aplikacja internetowa”, dodaj adres przekierowania `https://twoja-domena/api/auth/oauth/google/callback` i wpisz `GOOGLE_CLIENT_ID` oraz `GOOGLE_CLIENT_SECRET`. Zakresy: `openid`, `email`, `profile`.
 - **Microsoft:** w Microsoft Entra (Rejestracje aplikacji) dodaj aplikację z typem konta „dowolna organizacja i konta osobiste”, przekierowanie internetowe `https://twoja-domena/api/auth/oauth/microsoft/callback`, utwórz klucz tajny i wpisz `MICROSOFT_CLIENT_ID` oraz `MICROSOFT_CLIENT_SECRET`. `MICROSOFT_TENANT` zostaw `common` albo wpisz identyfikator jednej organizacji.
+
+## Maile w historii (BCC)
+
+1. Wybierz poddomenę na pocztę przychodzącą, np. `in.twojafirma.pl`, i wpisz ją jako `INBOUND_DOMAIN`.
+2. Wygeneruj długi losowy `INBOUND_SECRET` (np. `openssl rand -hex 24`).
+3. Skieruj pocztę tej poddomeny do dostawcy, który przekazuje ją webhookiem:
+    - **Postmark Inbound:** rekord MX poddomeny na `inbound.postmarkapp.com`, a w ustawieniach serwera Postmark adres webhooka `https://twoja-domena/api/public/inbound/<INBOUND_SECRET>`.
+    - **Cloudflare Email Routing:** reguła „catch all” dla poddomeny kierująca do workera, który wysyła `from`, `to`, `subject`, `text` jako JSON na ten sam adres.
+4. W Ustawieniach Hermesa administrator klika „Utwórz adres BCC” i przekazuje adres zespołowi.
 
 ## Monitoring
 

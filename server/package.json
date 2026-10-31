@@ -1,6 +1,6 @@
 {
   "name": "hermes-crm-server",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "private": true,
   "type": "module",
   "description": "Serwer Hermes CRM: API, konta, zespoły, synchronizacja danych i proxy AI.",

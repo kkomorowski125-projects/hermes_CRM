@@ -116,5 +116,22 @@ export const MIGRATIONS: { id: number; name: string; up: string[] }[] = [
         PRIMARY KEY (user_id, org_id, day)
       )`
     ]
+  },
+  {
+    id: 3,
+    name: 'skrzynki BCC i seria powitalna',
+    up: [
+      `CREATE TABLE mailboxes (
+        id TEXT PRIMARY KEY,
+        org_id TEXT NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
+        created_at TEXT NOT NULL
+      )`,
+      `CREATE TABLE onboarding_mails (
+        user_id TEXT NOT NULL,
+        step TEXT NOT NULL,
+        sent_at TEXT NOT NULL,
+        PRIMARY KEY (user_id, step)
+      )`
+    ]
   }
 ];

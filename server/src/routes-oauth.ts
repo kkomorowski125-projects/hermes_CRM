@@ -8,6 +8,7 @@ import type { FastifyInstance, FastifyReply } from 'fastify';
 import { HttpError, bad, createSession, need, audit, parseJson } from './context.js';
 import { newId, newToken, now, sha256, verifyTotp } from './security.js';
 import type { Config } from './config.js';
+import { sendWelcome } from './onboarding.js';
 
 type P = 'google' | 'microsoft';
 export const PROVIDER_LABEL: Record<P, string> = { google: 'Google', microsoft: 'Microsoft' };
@@ -181,6 +182,7 @@ export default async function oauthRoutes(app: FastifyInstance) {
       await audit(tx, { orgId: oid, userId: uid }, 'org_created', null, null, { via: d.p });
     });
     await createSession(db, reply, cfg, uid, oid, newToken());
+    void sendWelcome(app, { id: uid, email: d.email, name: name || d.name }, company).catch(e => app.log.error(e, 'Mail powitalny nieudany'));
     return { ok: true };
   });
   app.post('/api/auth/oauth/totp', async (req, reply) => {

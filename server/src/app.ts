@@ -13,6 +13,7 @@ import aiRoutes from './routes-ai.js';
 import oauthRoutes from './routes-oauth.js';
 import monitorRoutes, { alerter } from './monitor.js';
 import growthRoutes from './routes-growth.js';
+import inboundRoutes from './routes-inbound.js';
 import crypto from 'node:crypto';
 import { createMailer, type Mailer } from './mail.js';
 
@@ -60,6 +61,7 @@ export async function buildApp(overrides: Partial<Config> = {}, opts: { db?: Db;
   await app.register(oauthRoutes);
   await app.register(monitorRoutes);
   await app.register(growthRoutes);
+  await app.register(inboundRoutes);
 
   const started = Date.now();
   app.get('/health', async () => { await db.one('SELECT 1 AS ok'); return { ok: true, db: db.kind, uptime: Math.round((Date.now() - started) / 1000), mail: app.mail.enabled, version: VERSION }; });

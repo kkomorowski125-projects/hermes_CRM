@@ -44,6 +44,11 @@ export const config = {
   digestHour: process.env.DIGEST_HOUR === '' ? -1 : num(process.env.DIGEST_HOUR, 7),
   /** Wyszukiwanie firm po NIP w Białej liście MF */
   nipApi: process.env.NIP_API_URL || 'https://wl-api.mf.gov.pl',
+  /** Maile w historii przez BCC: domena skrzynek (MX u dostawcy poczty przychodzącej) i sekret adresu webhooka */
+  inboundDomain: (process.env.INBOUND_DOMAIN || '').toLowerCase(),
+  inboundSecret: process.env.INBOUND_SECRET || '',
+  /** Seria powitalna: mail po rejestracji, w dniu 2 i 5 */
+  onboardingMails: process.env.ONBOARDING_MAILS !== 'false',
   /** Tylko testy: podmiana adresów dostawców logowania */
   oauthOverride: {} as Record<string, { auth?: string; token?: string }>
 };

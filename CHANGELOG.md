@@ -2,6 +2,17 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.12.0] · 31 października 2026
+
+### Dodane
+- Import z Pipedrive, HubSpot i Livespace: rozpoznanie eksportu, automatyczne dopasowanie kolumn, mapowanie etapów, statusy wygranej i przegranej, imię i nazwisko z dwóch kolumn.
+- Maile w historii przez adres BCC firmy: odbiór z Postmark lub z prostego JSON, nowe kontakty i firmy po domenie, bez duplikatów.
+- Seria powitalna: mail po rejestracji, w dniu 2 i w dniu 5, zależna od stanu konta.
+- Pomoc w aplikacji: najczęstsze pytania z wyszukiwaniem, skróty klawiszowe, klawisz „?”.
+
+### Zmienione
+- Po imporcie otwarte leady i szanse dostają następny krok i wpis w historii.
+
 ## [0.11.0] · 31 października 2026
 
 ### Dodane

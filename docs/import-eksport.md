@@ -30,6 +30,20 @@ Własne pola z Ustawień też są dostępne do dopasowania. Przycisk „Pobierz 
 
 **Rozpoznawane aliasy (przykłady):** `email`, `e-mail`, `mail`; `telefon`, `tel`, `phone`; `firma`, `company`, `organizacja`; `wartość`, `kwota`, `amount`; `etap`, `stage`; `źródło`, `source`; `osoba`, `kontakt`, `contact name`.
 
+## Import z Pipedrive, HubSpot i Livespace
+
+Eksport z innego CRM wgrywasz tak samo jak zwykły plik CSV. Hermes rozpoznaje źródło po nagłówkach i pokazuje to w oknie dopasowania.
+
+| Źródło | Co rozpoznajemy |
+| --- | --- |
+| Pipedrive | Kolumny z przedrostkami `Deal -`, `Organization -`, `Person -` (także polskie `Transakcja -`, `Organizacja -`, `Osoba -`), status `open`, `won`, `lost` |
+| HubSpot | `Deal Name`, `Amount`, `Deal Stage` (np. `closedwon`), `Close Date` z godziną, `Associated Company`, `Associated Contact`; dla kontaktów `First Name` i `Last Name` łączone w imię i nazwisko |
+| Livespace | Polskie nazwy kolumn szans, etapów i osób |
+
+**Etapy:** okno importu szans pokazuje każdy etap z pliku z liczbą szans i proponuje etap Twojego lejka: tę samą nazwę, wygraną i przegraną, a potem słowa kluczowe (np. „Proposal Made” to Oferta, „Negotiations Started” to Negocjacje). Każde przypisanie możesz zmienić. Status `won` i `lost` zamyka szansę niezależnie od etapu.
+
+**Po imporcie** otwarte leady i szanse dostają następny krok na dziś (z podpowiedzi etapu), szanse bez daty zamknięcia planowane zamknięcie za 30 dni, a w historii każdego rekordu jest wpis, skąd pochodzi. Daty `RRRR-MM-DD GG:MM` z eksportów są rozumiane.
+
 ## Co dzieje się z powiązaniami
 
 - **Firma** podana tekstem jest dopasowana do istniejącej po nazwie (bez wielkości liter i polskich znaków). Gdy jej nie ma, Hermes ją tworzy.

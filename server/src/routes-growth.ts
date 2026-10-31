@@ -3,6 +3,7 @@ import type { FastifyInstance } from 'fastify';
 import { HttpError, bad, need, audit, parseJson } from './context.js';
 import { newId, now, limiter } from './security.js';
 import { layout } from './mail.js';
+import { runOnboarding } from './onboarding.js';
 
 /** Data i godzina w Polsce, niezależnie od strefy serwera. */
 export function warsaw(d = new Date()) {
@@ -43,7 +44,7 @@ export async function runDigest(app: FastifyInstance, at = new Date()) {
   for (const p of people) {
     if (parseJson<any>(p.prefs, {}).digest === false) continue;
     if (await db.one('SELECT 1 AS x FROM digests WHERE user_id = ? AND org_id = ? AND day = ?', [p.user_id, p.org_id, day])) continue;
-    if (!cache.has(p.org_id)) cache.set(p.org_id, (await db.all('SELECT type, data FROM records WHERE org_id = ? AND deleted = 0', [p.org_id])).map(r => ({ type: r.type, ...parseJson<any>(r.data, {}) })));
+    if (!cache.has(p.org_id)) cache.set(p.org_id, (await db.all("SELECT type, data FROM records WHERE org_id = ? AND deleted = 0 AND type IN ('task', 'lead', 'deal', 'company', 'contact')", [p.org_id])).map(r => ({ type: r.type, ...parseJson<any>(r.data, {}) })));
     const recs = cache.get(p.org_id)!;
     const mine = (owner: unknown) => owner === p.name || (!owner && p.role === 'admin');
     const label = (type: string, id: string) => { const r = recs.find(x => x.type === type && x.id === id); return r ? `${type === 'deal' ? 'Szansa' : type === 'lead' ? 'Lead' : type === 'company' ? 'Firma' : 'Kontakt'}: ${r.name}` : ''; };
@@ -62,8 +63,11 @@ export async function runDigest(app: FastifyInstance, at = new Date()) {
   return sent;
 }
 export function startJobs(app: FastifyInstance) {
-  if (app.cfg.digestHour < 0) return () => {};
-  const tick = () => { if (warsaw().hour === app.cfg.digestHour) runDigest(app).catch(e => app.log.error(e, 'Poranny plan nieudany')); };
+  const tick = () => {
+    const h = warsaw().hour;
+    if (app.cfg.digestHour >= 0 && h === app.cfg.digestHour) runDigest(app).catch(e => app.log.error(e, 'Poranny plan nieudany'));
+    if (h === 10) runOnboarding(app).catch(e => app.log.error(e, 'Seria powitalna nieudana'));
+  };
   const t = setInterval(tick, 10 * 60e3); tick();
   return () => clearInterval(t);
 }

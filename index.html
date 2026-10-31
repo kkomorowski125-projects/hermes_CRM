@@ -1024,6 +1024,13 @@ body.auth-on>*:not(#authLayer):not(.toast){display:none!important}
 .nip-row .fin{flex:1}.nip-row .ghost-button{white-space:nowrap}
 .srv-form{display:grid;gap:8px;width:min(460px,100%)}.srv-form textarea.fin{font-size:12px}.srv-form>div:last-child{display:flex;gap:8px;flex-wrap:wrap}
 .switch{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--text);cursor:pointer}.switch input{width:18px;height:18px;accent-color:var(--accent)}
+.imp-src{display:flex;align-items:center;gap:8px;margin:12px 0 0;padding:10px 12px;border-radius:8px;background:var(--accent-soft);color:var(--accent-ink);font-size:13px}
+.imp-stages{margin-top:16px}.imp-stages h3{margin:0 0 4px;font-size:14px}.imp-stages .hint{margin:0 0 8px}
+.side-help{display:flex;align-items:center;gap:9px;width:100%;margin:0 0 12px;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:var(--mute);font-size:13px;text-align:left}.side-help:hover{background:#fff;color:var(--ink)}.side-help span{flex:1}.side-help kbd{padding:1px 6px;border:1px solid var(--line);border-radius:4px;background:#fff;font:500 11px 'DM Sans',sans-serif}
+.help-search{width:100%;background:#fff;margin-bottom:12px}.help-list{display:grid;gap:6px}
+.help-item{border:1px solid var(--line2);border-radius:8px;background:#fff}.help-item summary{padding:11px 14px;cursor:pointer;font-weight:600;color:var(--ink2);font-size:14px}.help-item p{margin:0;padding:0 14px 12px;color:var(--text);font-size:14px;line-height:1.55}
+.help-h{margin:18px 0 8px;font-size:14px}.help-keys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px}.help-keys div{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text)}.help-keys kbd{min-width:120px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--paper);font:500 12px 'DM Sans',sans-serif;color:var(--ink2)}
+@media (max-width:600px){.help-keys{grid-template-columns:1fr}}
 .auth-foot{max-width:420px;margin:0;color:var(--faint);font-size:12px;line-height:1.5;text-align:center}
 #syncState[data-st=saving]{color:var(--accent)}#syncState[data-st=error]{color:var(--late)}
 .ro-banner{display:flex;align-items:center;gap:8px;margin:0 0 14px;padding:10px 14px;border:1px solid var(--accent-line);border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);font-size:13px}
@@ -1103,6 +1110,8 @@ function relTime(at) {
   return t ? `${base}, ${t}` : base;
 }
 function normDate(v) {
+  v = String(v).trim();
+  const iso = v.match(/^(\d{4}-\d{2}-\d{2})[T ]/); if (iso) return iso[1];
   if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
   const m = v.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})$/);
   return m ? `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}` : '';
@@ -1130,6 +1139,7 @@ const P = {
   chart: '<path d="M3 3v18h18"/><path d="m7 16 4-5 4 3 5-7"/>',
   sliders: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+  help: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.4c-.6.3-1 .8-1 1.5v.5"/><path d="M12 16.8v.2"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
   chevron: '<path d="m9 18 6-6-6-6"/>',
@@ -1570,6 +1580,7 @@ function renderSide() {
       return `<a href="#" data-act="go" data-page="${n[0]}"${on ? ' class="on" aria-current="page"' : ''}>${ic(n[2])}<span>${n[1]}</span>${n[0] === 'pipeline' ? `<em>${openN}</em>` : ''}</a>`;
     }).join('')}</nav>
     <div class="side-bottom">
+      <button class="side-help" data-act="help">${ic('help', 16)}<span>Pomoc i skróty</span><kbd>?</kbd></button>
       <div class="target"><span><b>Cel: ${esc(monthName())}</b><small>${kzl(won)} z ${kzl(settings.target)}</small></span><b>${att}%</b></div>
       <div class="progress"><i style="width:${Math.min(100, att)}%"></i></div>
       <a href="#" class="profile" data-act="go" data-page="settings" title="Profil i ustawienia"><span class="profile-avatar">${settings.userName.trim() ? esc(initials(settings.userName, true)) : ic('person', 17)}</span><span><b>${esc(settings.userName.trim() || 'Twoje imię')}</b><small>${SRV.on && SRV.s ? esc(SRV.s.roleLabel) : settings.userName.trim() ? 'Właściciel konta' : 'Uzupełnij profil'}</small></span></a>
@@ -2288,6 +2299,7 @@ ${isAdmin() ? `      <div class="set-row"><div><h3>Cel sprzedaży na miesiąc</h
         <label class="field-search" style="width:200px;background:#fff"><span class="sr">Cel w złotych</span><input type="text" inputmode="numeric" data-setting="target" value="${grp(settings.target)}"><span>zł</span></label></div>` : ''}
 ${SRV.on ? srvAiRow() : `      <div class="set-row"><div><h3>Hermes AI</h3><p>Bez klucza Hermes AI działa w trybie lokalnym i odpowiada na najczęstsze pytania. Z kluczem Claude API zapytasz o wszystko, a dane CRM są wtedy wysyłane do API Anthropic. Klucz zostaje tylko w tej przeglądarce i nie trafia do kopii zapasowej.</p></div>
         <div class="acts"><label class="field-search" style="width:250px;background:#fff"><span class="sr">Klucz Claude API</span><input type="password" data-setting="aiKey" value="${aiCfg.key ? '••••••••••••••••' : ''}" placeholder="Klucz API (sk-ant-…)" autocomplete="off"></label><label class="field-search" style="width:190px;background:#fff"><span class="sr">Model</span><input type="text" data-setting="aiModel" value="${esc(aiCfg.model)}" autocomplete="off"></label>${aiCfg.key ? '<button class="ghost-button sm danger" data-act="ai-forget">Usuń klucz</button>' : ''}</div></div>`}
+      <div class="set-row"><div><h3>Pomoc</h3><p>Odpowiedzi na najczęstsze pytania i skróty klawiszowe. Na komputerze otworzysz je też klawiszem „?”.</p></div><div class="acts"><button class="ghost-button" data-act="help">${ic('help', 16)}Pomoc i skróty</button></div></div>
       <div class="set-row"><div><h3>Kopia zapasowa</h3><p>${SRV.on ? 'Dane firmy są na serwerze. Kopia to plik z rekordami, które widzisz' : 'Hermes zapisuje dane w tej przeglądarce'} (${total} ${plural(total, 'rekord', 'rekordy', 'rekordów')}, ${db.activity.length} wpisów w historii). ${SRV.on ? 'Wczytanie kopii zastępuje dane firmy, dlatego może to zrobić tylko administrator.' : 'Zrób kopię, żeby przenieść je na inny komputer.'}</p></div>
         <div class="acts"><button class="ghost-button" data-act="backup">${ic('download', 16)}Pobierz kopię</button>${isAdmin() ? `<label class="ghost-button" for="backupfile" style="cursor:pointer">${ic('upload', 16)}Wczytaj kopię<input type="file" id="backupfile" accept=".json,application/json" class="sr"></label>` : ''}</div></div>
       <div class="set-row"><div><h3>Eksport do CSV</h3><p>Każdy obiekt osobno, do Excela, Google Sheets albo innego systemu CRM.</p></div>
@@ -2498,6 +2510,43 @@ document.addEventListener('click', async e => {
     toast('Uzupełniono dane z rejestru');
   } catch (err) { toast(err.message && !/fetch/i.test(err.message) ? err.message : 'Rejestr MF jest niedostępny z tej przeglądarki. Wpisz dane ręcznie.'); }
   finally { b.disabled = false; }
+});
+/* ---- pomoc w aplikacji: najczęstsze pytania i skróty ---- */
+const HELP = [
+  ['Jak zacząć', 'Na Pulpicie przejdź listę „Zacznij tutaj”: profil, cel na miesiąc, firmy i kontakty, pierwszy lead. Chcesz najpierw obejrzeć Hermesa? Wczytaj dane demo i usuń je potem w Ustawieniach.'],
+  ['Lead czy szansa?', 'Lead to każdy potencjalny klient, którego dopiero sprawdzasz. Gdy pasuje do ICP i jest zainteresowany, kliknij „Konwertuj na szansę”. Szansa to klient w procesie sprzedaży, z wartością i etapem w lejku.'],
+  ['Następny krok', 'Każdy otwarty lead i szansa mają jeden następny krok z terminem. Gdy klikniesz „Zrobione”, Hermes poprosi o kolejny albo o zamknięcie. Kroki na dziś i po terminie są na Pulpicie w „Na dziś”.'],
+  ['Zadania', 'Na karcie leada lub szansy, w panelu Zadania, dodasz dowolnie wiele rzeczy do zrobienia z terminem i osobą, np. umowę albo fakturę. Zadania z terminem na dziś pojawiają się w „Na dziś” i w porannym planie.'],
+  ['Dodawanie głosem', 'Kliknij mikrofon przy przycisku dodawania albo wciśnij V i opowiedz o kliencie: firma, osoba, telefon, kwota, następny krok. Hermes pokaże pola do sprawdzenia przed zapisem.'],
+  ['Import z innego CRM', 'Na liście szans, leadów, firm albo kontaktów kliknij ikonę importu i wybierz plik CSV. Eksporty z Pipedrive, HubSpot i Livespace są rozpoznawane automatycznie, a etapy przypiszesz w jednym oknie.'],
+  ['Dane firmy po NIP', 'W formularzu nowej firmy wpisz NIP i kliknij „Pobierz dane z rejestru”. Nazwa, adres i miasto przyjdą z Białej listy Ministerstwa Finansów.'],
+  ['Maile w historii', 'W Ustawieniach znajdziesz adres BCC firmy. Dodawaj go jako ukrytą kopię, gdy piszesz do klienta, albo przekaż na niego mail od klienta. Wiadomość trafi do historii kontaktu i jego szans.'],
+  ['Leady ze strony', 'Administrator tworzy formularz w Ustawieniach i wkleja kod na stronę. Każde zgłoszenie tworzy leada z firmą, kontaktem i krokiem na dziś. Ten sam adres przyjmuje dane z Zapiera i Make.'],
+  ['Zespół i uprawnienia', 'Administrator zaprasza osoby w Ustawieniach, w zakładce Zespół. Handlowiec pracuje na danych, Podgląd tylko czyta, a widoczność „Tylko swoje” ukrywa cudze leady i szanse.'],
+  ['Hermes AI', 'Kliknij „Ask Hermes AI” albo wciśnij ⌘J. Zapytaj, co masz dziś zrobić, które szanse są zagrożone albo poproś o follow up do klienta. Na karcie rekordu pytania dotyczą tego rekordu.'],
+  ['Aplikacja na telefon', 'Otwórz Hermesa w przeglądarce telefonu i wybierz „Dodaj do ekranu początkowego”. Aplikacja otworzy się jak zwykła, z planem dnia i głosem.']
+];
+const KEYS = [['⌘K, Ctrl+K albo /', 'Wyszukiwarka'], ['⌘J albo Ctrl+J', 'Ask Hermes AI'], ['V', 'Dodaj głosem'], ['N', 'Nowy rekord'], ['?', 'Pomoc i skróty'], ['⌘↵ albo Ctrl+Enter', 'Zapisz wpis w historii'], ['Esc', 'Zamknij okno, panel albo wróć do listy']];
+function helpList(q = '') {
+  const n = norm(q), hit = HELP.filter(([t, a]) => !n || norm(t + ' ' + a).includes(n));
+  return hit.length ? hit.map(([t, a]) => `<details class="help-item"${n ? ' open' : ''}><summary>${esc(t)}</summary><p>${esc(a)}</p></details>`).join('') : '<p class="mute" style="margin:8px 0">Nic nie znaleziono. Zapytaj Hermes AI albo napisz do nas.</p>';
+}
+function openHelp() {
+  modal(`${mhead('Pomoc', 'Jak pracować w Hermesie')}
+    <div class="mbody">
+      <label class="field-search help-search"><span class="sr">Szukaj w pomocy</span>${ic('search', 16)}<input type="text" id="help-q" placeholder="Szukaj, np. import, zadania, zespół" autocomplete="off"></label>
+      <div id="help-res" class="help-list">${helpList()}</div>
+      <h3 class="help-h">Skróty klawiszowe</h3>
+      <div class="help-keys">${KEYS.map(([k, d]) => `<div><kbd>${esc(k)}</kbd><span>${esc(d)}</span></div>`).join('')}</div>
+    </div>
+    <div class="mfoot"><button class="ghost-button" data-act="close-modal">Zamknij</button><button class="primary-button" data-act="help-ai">${SPARK(15)}Zapytaj Hermes AI</button></div>`, 'wide');
+  setTimeout(() => { const i = $('#help-q'); if (i) i.focus(); }, 0);
+}
+document.addEventListener('input', e => { if (e.target.id === 'help-q') $('#help-res').innerHTML = helpList(e.target.value); });
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act="help"], [data-act="help-ai"]'); if (!t) return;
+  e.preventDefault();
+  if (t.dataset.act === 'help') openHelp(); else { closeModal(); openAI(curRec() || ai.ctx); }
 });
 function completeTask(id) {
   const t = db.task.find(x => x.id === id); if (!t || t.done) return;
@@ -2757,7 +2806,40 @@ function openDisq(id) {
 }
 
 /* ================= CSV import / export ================= */
-const impFields = obj => (obj === 'lead' || obj === 'deal') ? [...SCHEMA[obj].fields, ...EXTRA] : SCHEMA[obj].fields;
+/* importy z innych CRM: nazwy kolumn z eksportów Pipedrive, HubSpot i Livespace (po polsku i angielsku) */
+const PSEUDO = {
+  _status: { key: '_status', label: 'Status (wygrana, przegrana)' },
+  _first: { key: '_first', label: 'Imię' },
+  _last: { key: '_last', label: 'Nazwisko' }
+};
+const IMPORT_ALIAS = {
+  deal: { name: ['deal name', 'deal title', 'title', 'deal - title', 'transakcja - tytul', 'tytul', 'tytul transakcji', 'nazwa transakcji', 'nazwa szansy sprzedazy', 'temat'], value: ['deal - value', 'amount', 'transakcja - wartosc', 'wartosc transakcji', 'wartosc szansy', 'budzet'], stage: ['deal stage', 'deal - stage', 'pipeline stage', 'transakcja - etap', 'etap lejka', 'etap sprzedazy', 'etap procesu'], close: ['close date', 'expected close date', 'deal - expected close date', 'transakcja - przewidywana data zamkniecia', 'przewidywana data zamkniecia', 'planowana data zamkniecia'], owner: ['deal owner', 'deal - owner', 'transakcja - wlasciciel', 'wlasciciel', 'owner name', 'odpowiedzialny'], company: ['organization', 'organization - name', 'associated company', 'organizacja', 'organizacja - nazwa', 'nazwa firmy', 'company name', 'klient'], lostReason: ['lost reason', 'deal - lost reason', 'powod utraty', 'transakcja - powod utraty', 'closed lost reason'], nextStep: ['next activity', 'deal - next activity subject', 'nastepna aktywnosc'], nextDate: ['next activity date', 'deal - next activity date', 'data nastepnej aktywnosci'], _status: ['status', 'deal - status', 'transakcja - status', 'stan'], _cname: ['contact person', 'person - name', 'associated contact', 'osoba - imie i nazwisko', 'osoba - nazwa', 'osoba kontaktowa'], _cemail: ['person - email', 'osoba - email', 'contact email'], _cphone: ['person - phone', 'osoba - telefon', 'contact phone'] },
+  lead: { name: ['lead title', 'title', 'lead - title', 'tytul leada', 'tytul'], source: ['lead source', 'original source', 'source channel', 'zrodlo leada', 'kanal pozyskania'], status: ['lead status', 'status leada'], value: ['lead - value', 'amount', 'wartosc leada'], owner: ['lead owner', 'owner name', 'wlasciciel', 'odpowiedzialny'], company: ['organization', 'organization - name', 'company name', 'associated company', 'organizacja', 'nazwa firmy', 'klient'], _cname: ['contact person', 'person - name', 'associated contact', 'osoba - imie i nazwisko', 'osoba kontaktowa'], _cemail: ['person - email', 'osoba - email', 'email address'], _cphone: ['person - phone', 'osoba - telefon', 'phone number'] },
+  company: { name: ['company name', 'organization', 'organization - name', 'nazwa firmy', 'nazwa organizacji', 'organizacja', 'organizacja - nazwa', 'pelna nazwa'], domain: ['company domain name', 'website url', 'domain', 'organization - website', 'adres www', 'strona www'], industry: ['organization - industry', 'sektor'], city: ['organization - city', 'address city', 'miejscowosc', 'organizacja - miasto'], employees: ['number of employees', 'organization - employees', 'wielkosc firmy'], nip: ['vat number', 'tax id', 'numer nip', 'organization - nip'] },
+  contact: { name: ['person - name', 'contact name', 'osoba - imie i nazwisko', 'osoba - nazwa'], email: ['person - email', 'email address', 'e-mail address', 'adres email', 'adres e-mail', 'person - email - work'], phone: ['phone number', 'person - phone', 'mobile phone number', 'telefon komorkowy', 'telefon kontaktowy', 'person - phone - work'], company: ['company name', 'organization', 'person - organization', 'associated company', 'organizacja', 'nazwa firmy'], role: ['job title', 'person - job title', 'stanowisko pracy'], _first: ['first name', 'imie', 'person - first name', 'osoba - imie'], _last: ['last name', 'nazwisko', 'person - last name', 'osoba - nazwisko'] }
+};
+/** Rozpoznaje źródło eksportu po nagłówkach, żeby pokazać to w oknie importu. */
+function importSource(headers) {
+  const h = headers.map(norm).join('|');
+  if (/(^|\|)(deal|person|organization|transakcja|osoba|organizacja) - /.test(h)) return 'Pipedrive';
+  if (/deal stage|associated (company|contact)|record id|company domain name|lifecycle stage/.test(h)) return 'HubSpot';
+  if (/livespace|etap procesu|szansa sprzedazy/.test(h)) return 'Livespace';
+  return '';
+}
+const IMP_WON = ['won', 'wygrana', 'wygrane', 'closed won', 'closedwon', 'zamknieta wygrana', 'sukces'];
+const IMP_LOST = ['lost', 'przegrana', 'przegrane', 'utracona', 'closed lost', 'closedlost', 'zamknieta przegrana', 'porazka'];
+/** Etap z innego CRM na etap Hermesa: dokładna nazwa, wygrana i przegrana, potem słowa kluczowe. */
+function guessStage(v) {
+  const n = norm(v), st = openStages();
+  const exact = [...st, ...CLOSED].find(x => norm(x) === n); if (exact) return exact;
+  if (IMP_WON.includes(n)) return 'Wygrana';
+  if (IMP_LOST.includes(n)) return 'Przegrana';
+  const has = name => st.find(x => norm(x) === norm(name));
+  const kw = [[/negoc|negot|contract|umow|decision|decyzj|zakup/, 'Negocjacje'], [/propos|ofert|offer|quote|wycen|present|prezent|demo/, 'Oferta'], [/contact|kontakt|meeting|spotkan|qualif|kwalif|appointment|rozmow/, 'Kontakt'], [/lead|new|now|incoming|przychodz/, 'Nowe']];
+  for (const [re, name] of kw) if (re.test(n) && has(name)) return has(name);
+  return st[0];
+}
+const impFields = obj => (obj === 'lead' || obj === 'deal') ? [...SCHEMA[obj].fields, ...EXTRA, ...(obj === 'deal' ? [PSEUDO._status] : [])] : obj === 'contact' ? [...SCHEMA[obj].fields, PSEUDO._first, PSEUDO._last] : SCHEMA[obj].fields;
 function openImport(obj) { imp = { obj, step: 1 }; renderImport(); }
 function renderImport() {
   const S = SCHEMA[imp.obj], F = impFields(imp.obj), rec = imp.obj === 'lead' || imp.obj === 'deal';
@@ -2778,11 +2860,23 @@ function renderImport() {
         <tbody>${imp.headers.map((h, i) => `<tr><td><b style="color:var(--ink2)">${esc(h)}</b></td><td class="mute">${esc((imp.rows[0] || [])[i] || '')}</td>
           <td><select class="fin sm" data-map="${i}" aria-label="Pole dla kolumny ${esc(h)}"><option value="">Pomiń kolumnę</option>${F.map(f => `<option value="${f.key}"${imp.map[i] === f.key ? ' selected' : ''}>${esc(f.label)}</option>`).join('')}</select></td></tr>`).join('')}</tbody>
       </table></div>
+      ${imp.source ? `<p class="imp-src">${ic('tick', 15)}Rozpoznano eksport z ${imp.source}. Kolumny dopasowaliśmy automatycznie, sprawdź je przed importem.</p>` : ''}
+      ${stageMapHtml()}
       ${ok ? `<p class="hint">Powiązania dopasujemy po nazwie, a brakujące firmy${rec ? ' i osoby' : ''} utworzymy automatycznie.</p>` : `<p class="warn">${imp.obj === 'lead' ? 'Przypisz kolumnę do pola „Nazwa leada”, „Firma” albo „Osoba kontaktowa”.' : `Przypisz kolumnę do pola „${esc(S.fields[0].label)}”, bo jest wymagane.`}</p>`}
     </div>
     <div class="mfoot"><button class="ghost-button" data-act="imp-back">Wstecz</button><button class="primary-button" data-act="imp-run"${ok ? '' : ' disabled'}>Importuj ${imp.rows.length} ${ic('arrow', 16)}</button></div>`, 'wide');
   }
 }
+function stageMapHtml() {
+  if (imp.obj !== 'deal') return '';
+  const col = imp.map.indexOf('stage'); if (col < 0) return '';
+  const vals = [...new Set(imp.rows.map(r => String(r[col] || '').trim()).filter(Boolean))];
+  if (!vals.length) return '';
+  const opts = [...openStages(), ...CLOSED];
+  for (const v of vals) if (!imp.stageMap[norm(v)]) imp.stageMap[norm(v)] = guessStage(v);
+  return `<div class="imp-stages"><h3>Etapy</h3><p class="hint">Każdy etap z pliku trafi do wybranego etapu Twojego lejka.</p><div class="tablewrap"><table class="map"><thead><tr><th scope="col">Etap w pliku</th><th scope="col">Szanse</th><th scope="col">Etap w Hermes</th></tr></thead><tbody>${vals.map(v => `<tr><td><b style="color:var(--ink2)">${esc(v)}</b></td><td class="mute">${imp.rows.filter(r => String(r[col] || '').trim() === v).length}</td><td><select class="fin sm" data-smap="${esc(norm(v))}" aria-label="Etap Hermesa dla ${esc(v)}">${opts.map(o => `<option${imp.stageMap[norm(v)] === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table></div></div>`;
+}
+document.addEventListener('change', e => { const t = e.target; if (t.dataset && t.dataset.smap !== undefined && imp) imp.stageMap[t.dataset.smap] = t.value; });
 function parseCSV(text) {
   text = text.replace(/^﻿/, '');
   const first = text.split(/\r?\n/)[0];
@@ -2807,14 +2901,17 @@ function loadCSV(text, name) {
   imp.rows = rows.slice(1).filter(r => r.some(c => String(c).trim()));
   imp.file = name;
   const used = new Set();
-  const cands = rec ? [...EXTRA.map(e => ({ key: e.key, names: [e.label, ...e.alias] })), ...S.fields.map(f => ({ key: f.key, names: [f.label, f.key, ...(ALIAS[f.key] || [])] }))]
-    : S.fields.map(f => ({ key: f.key, names: [f.label, f.key, ...(ALIAS[f.key] || [])] }));
+  const extra = IMPORT_ALIAS[imp.obj] || {};
+  const cands = impFields(imp.obj).map(f => ({ key: f.key, names: [f.label, f.key, ...((EXTRA.find(e => e.key === f.key) || {}).alias || []), ...(f.key[0] === '_' ? [] : ALIAS[f.key] || []), ...(extra[f.key] || [])] }));
+  /* najpierw dokładne nazwy z eksportów innych CRM, potem ogólne aliasy */
+  const pick = n => cands.find(c => !used.has(c.key) && (extra[c.key] || []).some(x => norm(x) === n)) || cands.find(c => !used.has(c.key) && c.names.some(x => norm(x) === n));
   imp.map = imp.headers.map(h => {
-    const n = norm(h);
-    const f = cands.find(c => !used.has(c.key) && c.names.some(x => norm(x) === n));
+    const f = pick(norm(h));
     if (f) { used.add(f.key); return f.key; }
     return '';
   });
+  imp.source = importSource(imp.headers);
+  imp.stageMap = {};
   imp.step = 2; renderImport();
 }
 function readFile(file) { const r = new FileReader(); r.onload = () => loadCSV(String(r.result), file.name); r.readAsText(file, 'UTF-8'); }
@@ -2831,6 +2928,7 @@ function runImport() {
       let v = String(row[i] ?? '').trim();
       if (!v) return;
       if (k[0] === '_') { ex[k] = v; return; }
+      if (k === 'stage' && obj === 'deal') { rec.stage = (imp.stageMap || {})[norm(v)] || guessStage(v); return; }
       const f = field(obj, k); if (!f) return;
       if (f.type === 'relation') v = f.to === 'company' ? resolveCompany(v) : (db[f.to].find(x => norm(x.name) === norm(v)) || {}).id || '';
       else if (f.type === 'select') { const o = f.options.find(o => norm(o[0]) === norm(v)); if (!o) return; v = o[0]; }
@@ -2838,13 +2936,18 @@ function runImport() {
       else if (f.type === 'date') { v = normDate(v); if (!v) return; }
       rec[k] = v;
     });
+    if (ex._first || ex._last) { const full = [ex._first, ex._last].filter(Boolean).join(' '); if (obj === 'contact' && !rec.name) rec.name = full; }
+    if (obj === 'deal' && ex._status) { const n = norm(ex._status); if (IMP_WON.includes(n)) rec.stage = 'Wygrana'; else if (IMP_LOST.includes(n)) rec.stage = 'Przegrana'; }
+    if (obj === 'deal' && !rec.close) rec.close = addDays(30);
     if (rec1) {
       if (!rec.name) rec.name = nameOf('company', rec.company) || ex._cname || '';
       if (!rec.name) continue;
       if (isDup(obj, rec)) { dup++; continue; }
       const p = resolveContact(ex._cname, ex._cemail, ex._cphone, rec.company);
       if (p) rec.contacts = [p];
-      if (obj === 'deal' && CLOSED.includes(rec.stage)) rec.closedAt = today;
+      if (obj === 'deal' && CLOSED.includes(rec.stage)) rec.closedAt = rec.close && rec.close <= today ? rec.close : today;
+      if (isLive(obj, rec) && !rec.nextStep) { rec.nextStep = obj === 'deal' ? (stageHint(rec.stage) || 'Ustalić następny krok') : 'Odezwać się do leada'; rec.nextDate = today; }
+      logAct(obj, rec.id, 'system', `Zaimportowano${imp.source ? ' z ' + imp.source : ' z pliku CSV'}`);
     } else {
       if (!rec.name) continue;
       if (isDup(obj, rec)) { dup++; continue; }
@@ -4059,6 +4162,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && e.target.classList.contains('deal-card')) { e.target.click(); return; }
   if ((e.key === 'v' || e.key === 'V') && !e.metaKey && !e.ctrlKey && !isModal()) { e.preventDefault(); openVoice(); return; }
   if (e.key === '/' && !isModal()) { e.preventDefault(); openCmd(); return; }
+  if (e.key === '?' && !isModal()) { e.preventDefault(); openHelp(); return; }
   if (e.key === 'n' && !e.metaKey && !e.ctrlKey && !isModal()) { e.preventDefault(); openAdd(addTarget()[0]); }
 });
 
@@ -4395,9 +4499,17 @@ function srvProfileRows() {
       ${srvIdentityRow()}
       <div class="set-row"><div><h3>Poranny plan dnia</h3><p>Codziennie rano mail z zadaniami i krokami na dziś, także tymi po terminie. Wysyłamy go tylko, gdy coś czeka.</p></div>
         <div class="acts"><label class="switch"><input type="checkbox" data-srv="digest"${settings.digest === false ? '' : ' checked'}><span>Wysyłaj mi plan dnia</span></label></div></div>
+      ${srvMailboxRow()}
       ${isAdmin() ? srvFormRow() : ''}
       <div class="set-row"><div><h3>Weryfikacja dwuetapowa</h3><p>Przy logowaniu poza hasłem podajesz kod z aplikacji w telefonie. Zalecamy ją każdemu, kto ma dostęp do danych klientów.</p></div>
         <div class="acts">${twofa}</div></div>`;
+}
+function srvMailboxRow() {
+  const m = SRV.mailbox;
+  if (!m) { api('/api/org/mailbox').then(r => { SRV.mailbox = r; if (state.page === 'settings' && state.settingsObj === 'general') renderSettings(); }).catch(() => {}); return ''; }
+  if (!m.enabled) return isAdmin() ? `<div class="set-row"><div><h3>Maile w historii (BCC)</h3><p>Po skonfigurowaniu poczty przychodzącej na serwerze (INBOUND_DOMAIN i INBOUND_SECRET) każda osoba doda adres firmy jako ukrytą kopię, a maile do klientów same trafią do historii.</p></div><div class="acts"><span class="tag"><i class="dot" style="background:var(--amber)"></i>Wyłączone na serwerze</span></div></div>` : '';
+  return `<div class="set-row"><div><h3>Maile w historii (BCC)</h3><p>Dodaj ten adres jako ukrytą kopię (BCC), gdy piszesz do klienta, albo przekaż na niego mail od klienta. Wiadomość trafi do historii kontaktu, a nowego klienta Hermes doda sam i przypisze do firmy po domenie.</p></div>
+        <div class="acts srv-form">${m.address ? `<div class="auth-link"><label class="sr" for="srv-bcc">Adres BCC</label><input class="fin" id="srv-bcc" readonly value="${esc(m.address)}"><button class="ghost-button sm" data-act="srv-copy" data-src="#srv-bcc">Kopiuj adres</button></div>${isAdmin() ? '<div><button class="ghost-button sm" data-act="srv-bcc-new">Zmień adres</button></div>' : ''}` : isAdmin() ? '<button class="ghost-button sm" data-act="srv-bcc-new">Utwórz adres BCC</button>' : '<span class="mute" style="font-size:13px">Administrator jeszcze nie utworzył adresu.</span>'}</div></div>`;
 }
 function srvFormRow() {
   const f = SRV.forms;
@@ -4462,7 +4574,7 @@ function renderSrvTeam(head) {
       ${SRV.audit ? `<div class="tablewrap settings"><table><thead><tr><th scope="col">Kiedy</th><th scope="col">Kto</th><th scope="col">Co</th></tr></thead><tbody>${SRV.audit.map(a => `<tr><td class="mute" style="white-space:nowrap">${esc((d => fdate(isoD(d)) + ', ' + pad(d.getHours()) + ':' + pad(d.getMinutes()))(new Date(a.at)))}</td><td>${esc(a.user_name || 'System')}</td><td>${esc(auditText(a))}</td></tr>`).join('') || '<tr><td colspan="3" class="mute">Brak wpisów</td></tr>'}</tbody></table></div>` : ''}
     </section>` : ''}`;
 }
-const AUDIT_TXT = { login: 'Logowanie', org_created: 'Założenie konta firmy', record_created: 'Utworzenie', record_updated: 'Zmiana', record_deleted: 'Usunięcie', export: 'Eksport kopii danych', import: 'Import kopii danych', gdpr_export: 'Eksport danych osoby (RODO)', gdpr_erase: 'Usunięcie danych osoby (RODO)', invite_created: 'Zaproszenie', invite_accepted: 'Przyjęcie zaproszenia', member_updated: 'Zmiana uprawnień', member_removed: 'Usunięcie z zespołu', reset_link_created: 'Link do zmiany hasła', '2fa_enabled': 'Włączenie weryfikacji dwuetapowej', '2fa_disabled': 'Wyłączenie weryfikacji dwuetapowej', ai_first_use_today: 'Pierwsze dziś zapytanie do Hermes AI', identity_linked: 'Połączenie konta logowania', identity_unlinked: 'Odłączenie konta logowania', form_created: 'Utworzenie formularza leada', form_deleted: 'Wyłączenie formularza leada' };
+const AUDIT_TXT = { login: 'Logowanie', org_created: 'Założenie konta firmy', record_created: 'Utworzenie', record_updated: 'Zmiana', record_deleted: 'Usunięcie', export: 'Eksport kopii danych', import: 'Import kopii danych', gdpr_export: 'Eksport danych osoby (RODO)', gdpr_erase: 'Usunięcie danych osoby (RODO)', invite_created: 'Zaproszenie', invite_accepted: 'Przyjęcie zaproszenia', member_updated: 'Zmiana uprawnień', member_removed: 'Usunięcie z zespołu', reset_link_created: 'Link do zmiany hasła', '2fa_enabled': 'Włączenie weryfikacji dwuetapowej', '2fa_disabled': 'Wyłączenie weryfikacji dwuetapowej', ai_first_use_today: 'Pierwsze dziś zapytanie do Hermes AI', identity_linked: 'Połączenie konta logowania', identity_unlinked: 'Odłączenie konta logowania', form_created: 'Utworzenie formularza leada', form_deleted: 'Wyłączenie formularza leada', mailbox_created: 'Nowy adres BCC' };
 function auditText(a) {
   let d = a.detail; try { d = typeof d === 'string' ? JSON.parse(d) : d; } catch (e) { d = null; }
   const what = AUDIT_TXT[a.action] || a.action;
@@ -4494,6 +4606,10 @@ async function srvAction(a, t) {
         const m = SRV.s.members.find(x => x.id === t.dataset.id);
         const r = await api(`/api/org/members/${encodeURIComponent(t.dataset.id)}/reset`, 'POST', {});
         SRV.link = { title: `Link do nowego hasła dla: ${m ? m.name : 'osoby'}${r.sent ? ' wysłany mailem' : ''}.`, note: 'Jest ważny 24 godziny i działa raz.', url: r.link }; renderSettings(); return;
+      }
+      case 'srv-bcc-new': {
+        if (SRV.mailbox && SRV.mailbox.address && !t.dataset.armed) { t.dataset.armed = '1'; t.textContent = 'Stary adres przestanie działać. Kliknij ponownie'; return; }
+        const r = await api('/api/org/mailbox', 'POST', {}); SRV.mailbox = { enabled: true, address: r.address }; renderSettings(); toast('Adres BCC gotowy'); return;
       }
       case 'srv-form-new': await api('/api/org/forms', 'POST', {}); SRV.forms = null; renderSettings(); toast('Formularz gotowy. Wklej kod na swoją stronę.'); return;
       case 'srv-form-del': {
