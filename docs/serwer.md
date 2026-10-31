@@ -61,6 +61,9 @@ Zmienne środowiskowe opisuje [`.env.example`](../.env.example), a wdrożenie [w
 | `src/mail.ts` | Wysyłka maili przez SMTP i szablon wiadomości |
 | `src/routes-inbound.ts` | Maile w historii przez adres BCC firmy |
 | `src/onboarding.ts` | Seria powitalna: mail po rejestracji, w dniu 2 i 5 |
+| `src/webhooks.ts` | Webhooki wychodzące z podpisem HMAC |
+| `src/routes-offers.ts` | Oferty: numer, strona dla klienta, akceptacja |
+| `src/reports.ts` | Raport tygodniowy dla administratorów |
 | `src/monitor.ts` | Alerty o błędach na webhook, zgłoszenia błędów z przeglądarki |
 | `src/app.ts` | Złożenie aplikacji, nagłówki bezpieczeństwa, serwowanie `index.html` |
 
@@ -119,6 +122,9 @@ Wszystkie zapytania zmieniające dane muszą mieć nagłówek `x-hermes: 1` (och
 | `POST /api/client-errors` | każdy | Błąd JavaScript z przeglądarki do logu |
 | `GET /api/org/mailbox`, `POST` | zalogowany (tworzy admin) | Adres BCC firmy |
 | `POST /api/public/inbound/:sekret` | dostawca poczty | Wiadomość przychodząca do zapisania w historii |
+| `GET`, `POST`, `DELETE /api/org/webhooks`, `POST …/:id/test` | admin | Webhooki wychodzące |
+| `POST /api/offers`, `GET /api/offers?deal=`, `POST /api/offers/:id/withdraw` | zalogowany (bez podglądu) | Oferty do szansy |
+| `GET /oferta/:id`, `POST /api/public/offers/:id/accept` | klient z linkiem | Strona oferty i akceptacja |
 | `GET /health` | każdy | Stan serwera i bazy |
 
 ## Logowanie Google i Microsoft
@@ -157,6 +163,18 @@ To droga do automatycznego zapisu maili bez czekania na weryfikację dostępu do
 4. Nieznany adres tworzy nowy kontakt; firmę Hermes przypisuje po domenie strony, pomijając darmowe skrzynki (gmail.com, wp.pl, onet.pl i podobne).
 
 Obsługiwane formaty: Postmark Inbound (JSON), prosty JSON (`from`, `to`, `cc`, `subject`, `text`, `date`, `messageId`, np. z workera Cloudflare Email Routing) oraz formularz w stylu Mailgun. Nowy adres BCC unieważnia poprzedni.
+
+## Webhooki (Zapier, Make)
+
+Administrator dodaje w Ustawieniach adres `https://` i wybiera zdarzenia: `lead.created`, `lead.status_changed`, `deal.created`, `deal.stage_changed`, `deal.won`, `deal.lost`, `offer.accepted`. Zdarzenia powstają przy synchronizacji (porównanie poprzedniej i nowej wersji rekordu), przy leadach z formularza i przy akceptacji oferty. Treść to JSON z polami `event`, `label`, `at`, `org`, `data` (rekord z `company_name` i `contacts_detail`) oraz `previous` przy zmianach. Nagłówek `x-hermes-signature: sha256=…` to HMAC SHA 256 treści z sekretem pokazanym raz przy tworzeniu. Nieudana dostawa jest ponawiana raz, a wynik ostatniej widać w Ustawieniach. Firma ma najwyżej 10 webhooków.
+
+## Oferty
+
+Oferta zapisuje kopię pozycji z szansy (nazwa, ilość, jednostka, cena netto, rabat, VAT), dane sprzedawcy z Ustawień (`offer` w ustawieniach firmy), nabywcę i termin ważności. Numer ma postać `PREFIKS/RRRR/MM/NNN` z licznikiem w miesiącu. Link `/oferta/<id>` ma 24 losowe znaki i nie jest indeksowany. Pierwsze otwarcie przez klienta (bez sesji Hermesa) i akceptacja zapisują się w historii szansy; akceptacja wysyła też mail do autora i zdarzenie `offer.accepted`. Po terminie ważności albo po wycofaniu oferty nie da się zaakceptować.
+
+## Raport tygodniowy
+
+W poniedziałek około 8:00 administratorzy dostają podsumowanie poprzedniego tygodnia: wygrane i ich wartość, nowe leady i szanse, przegrane, otwarty lejek i szanse bez kroku, a do tego wiersz dla każdego opiekuna z liczbą aktywności. Ten sam zestaw liczb dla dowolnego okresu pobierzesz w Analityce przyciskiem „Raport CSV” w module Zespół.
 
 ## Seria powitalna
 

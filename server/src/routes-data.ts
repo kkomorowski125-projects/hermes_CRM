@@ -3,12 +3,13 @@ import type { FastifyInstance } from 'fastify';
 import type { Db } from './db.js';
 import { HttpError, bad, need, audit, parseJson, type Ctx } from './context.js';
 import { now } from './security.js';
+import { dispatch, eventsFor, type HookEvent } from './webhooks.js';
 
 export const TYPES = ['company', 'contact', 'lead', 'deal', 'activity', 'task'] as const;
 type RType = typeof TYPES[number];
 /** Ustawienia całej firmy, które zmienia administrator; reszta to preferencje osoby */
-const ORG_KEYS = ['target', 'targetSet', 'company', 'stages', 'labels', 'custom', 'meTargets'];
-const PREF_KEYS = ['aLayout', 'onboardingHidden', 'digest'];
+const ORG_KEYS = ['target', 'targetSet', 'company', 'stages', 'labels', 'custom', 'meTargets', 'rules', 'products', 'offer'];
+const PREF_KEYS = ['aLayout', 'onboardingHidden', 'digest', 'views'];
 
 type Rec = { type: RType; id: string; data: Record<string, any>; deleted: boolean; updated_at: string };
 
@@ -68,6 +69,7 @@ export default async function dataRoutes(app: FastifyInstance) {
     const rejected: { type: string; id: string; reason: string }[] = [];
     const t = now();
     const own = c.visibility === 'own' && c.role !== 'admin';
+    const hookEvents: HookEvent[] = [];
     await db.tx(async tx => {
       const existing = async (type: string, id: string) => tx.one('SELECT data, owner, deleted FROM records WHERE org_id = ? AND type = ? AND id = ?', [c.org.id, type, id]);
       const parentHidden = async (obj: string, rid: string) => {
@@ -86,6 +88,7 @@ export default async function dataRoutes(app: FastifyInstance) {
         if (prev) await tx.run('UPDATE records SET data = ?, owner = ?, updated_at = ?, updated_by = ?, deleted = 0 WHERE org_id = ? AND type = ? AND id = ?', [json, owner, t, c.user.id, c.org.id, type, id]);
         else await tx.run('INSERT INTO records (org_id, type, id, data, owner, updated_at, updated_by, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, 0)', [c.org.id, type, id, json, owner, t, c.user.id]);
         if (type !== 'activity' && type !== 'task') await audit(tx, { orgId: c.org.id, userId: c.user.id }, prev && !Number(prev.deleted) ? 'record_updated' : 'record_created', type, id, { name: data.name });
+        if (type === 'lead' || type === 'deal') hookEvents.push(...eventsFor(type, prev && !Number(prev.deleted) ? parseJson(prev.data, {}) : null, data));
       }
       for (const d of dels) {
         const type = String(d?.type), id = String(d?.id || '');
@@ -105,6 +108,7 @@ export default async function dataRoutes(app: FastifyInstance) {
         await tx.run('UPDATE users SET prefs = ? WHERE id = ?', [JSON.stringify(p), c.user.id]);
       }
     });
+    void dispatch(app, c.org.id, hookEvents).catch(e => app.log.error(e, 'Webhooki nieudane'));
     return { ok: true, rejected, cursor: t };
   });
 

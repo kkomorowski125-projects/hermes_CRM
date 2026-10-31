@@ -6,7 +6,7 @@ Prosty, AI-native CRM dla małych i średnich firm, zaprojektowany dla foundera,
 
 ![Pulpit Hermesa z listą „Na dziś”](docs/img/pulpit.png)
 
-> **Status:** wersja 0.12, faza 1 [roadmapy](docs/roadmapa.md) gotowa technicznie, sześć z dziewięciu inicjatyw fazy 2 działa. `index.html` działa samodzielnie jako prototyp z danymi w przeglądarce, a z serwerem z folderu `server/` jako aplikacja dla zespołu: konta, 2FA, role, synchronizacja, RODO i Hermes AI przez serwer.
+> **Status:** wersja 0.13: faza 1 [roadmapy](docs/roadmapa.md) gotowa technicznie, sześć z dziewięciu inicjatyw fazy 2 i pięć z ośmiu inicjatyw fazy 3 działa. Blokery, które wymagają decyzji, są wypisane w roadmapie. `index.html` działa samodzielnie jako prototyp z danymi w przeglądarce, a z serwerem z folderu `server/` jako aplikacja dla zespołu: konta, 2FA, role, synchronizacja, RODO i Hermes AI przez serwer.
 
 ## Szybki start
 
@@ -32,6 +32,7 @@ Albo bez Dockera: `cd server && npm install && npm run dev` (baza SQLite w pliku
 | Leady i szanse | Osobne obiekty: lead to potencjalny klient, szansa to klient w procesie sprzedaży. Konwersja z checklistą ICP i zainteresowania, odrzucenie z powodem. |
 | Następny krok i zadania | Każdy otwarty lead i szansa ma krok z terminem; zamknięcie wymusza kolejny. Do tego dowolnie wiele zadań z terminem i osobą, lista „Na dziś” i poranny plan mailem. |
 | Karty rekordów | Pełny ekran jak w HubSpocie czy Pipedrive: pasek etapów, kluczowe liczby, firma i wiele kontaktów, aktywności z wynikiem rozmowy, oś czasu z filtrami. |
+| Oferty i automatyzacje | Katalog produktów, pozycje w szansie z rabatem i VAT, oferta z linkiem do akceptacji online, reguły tworzące zadania i przydzielające leady, webhooki dla Zapiera i Make. |
 | Lejek | Kanban szans z edytowalnymi etapami i prostszy kanban leadów, przeciąganie, filtr opiekuna. |
 | Hermes Voice | Dodawanie firmy, kontaktu, leada i szansy głosem, także wszystko naraz, z podglądem przed zapisem. |
 | Hermes AI | Plan dnia, zagrożone szanse, kolejność leadów, podsumowania i szkice maili. Działa lokalnie albo z kluczem Claude API. |

@@ -17,7 +17,10 @@ Hermes prowadzi Cię przez sprzedaż od pierwszego kontaktu do wygranej. Ten prz
 11. [Analityka](#analityka)
 12. [Hermes AI](#hermes-ai)
 13. [Ustawienia](#ustawienia)
-14. [Cofanie i bezpieczeństwo danych](#cofanie-i-bezpieczeństwo-danych)
+14. [Produkty i oferty](#produkty-i-oferty)
+15. [Automatyzacje](#automatyzacje)
+16. [Masowe akcje, widoki i duplikaty](#masowe-akcje-widoki-i-duplikaty)
+17. [Cofanie i bezpieczeństwo danych](#cofanie-i-bezpieczeństwo-danych)
 
 ## Pierwsze uruchomienie
 
@@ -172,6 +175,8 @@ Bez klucza Hermes AI działa lokalnie i rozumie pytania o plan dnia, zagrożone 
 | Ogólne | Profil, cel miesięczny, klucz Claude API i model, kopia zapasowa, eksport CSV, dane demo, czyszczenie danych |
 | Zespół | Profile handlowców: imię, email, rola, cel indywidualny, otwarty lejek |
 | Lejek | Etapy szans: nazwa, prawdopodobieństwo, podpowiedź kroku, kolejność, dodawanie i usuwanie |
+| Automatyzacje | Reguły: zadanie po wejściu w etap, wygranej lub przegranej, opiekun i zadanie dla nowego leada |
+| Produkty | Katalog produktów i usług z ceną netto i VAT, dane sprzedawcy i stałe zapisy oferty |
 | Leady, Szanse, Firmy, Kontakty | Zmiana nazw pól i własne pola (tekst, liczba, kwota, data, lista wyboru, email, telefon) |
 
 ![Edycja etapów](img/ustawienia-etapy.png)
@@ -181,6 +186,32 @@ Bez klucza Hermes AI działa lokalnie i rozumie pytania o plan dnia, zagrożone 
 - Etapy „Wygrana” i „Przegrana” są stałe.
 - Zmiana imienia handlowca przenosi się na wszystkie jego rekordy.
 - Usunięcie profilu przekazuje jego rekordy właścicielowi konta.
+
+## Produkty i oferty
+
+Na karcie szansy panel **Produkty i oferta** zbiera pozycje: z katalogu (Ustawienia, Produkty) albo własne. Każda ma ilość, cenę netto, rabat w procentach i stawkę VAT (23, 8, 5, 0 albo zwolnienie). Wartość szansy liczy się sama z sumy netto, więc prognoza i analityka zawsze zgadzają się z ofertą.
+
+- **Podgląd i PDF** pokazuje ofertę z danymi sprzedawcy z Ustawień; z okna drukujesz ją albo zapisujesz jako PDF.
+- **Utwórz ofertę z linkiem** (z serwerem) nadaje numer, np. `OF/2026/10/001`, i kopiuje link do strony oferty dla klienta. Klient widzi ofertę na telefonie i komputerze, może ją wydrukować i zaakceptować, wpisując imię i nazwisko.
+- Otwarcie oferty przez klienta i jej akceptacja trafiają do historii szansy, a autor oferty dostaje maila. Status każdej oferty widać pod pozycjami.
+
+## Automatyzacje
+
+W Ustawieniach, w zakładce **Automatyzacje**, ustawisz reguły „kiedy, wtedy”. Gotowe szablony dodasz jednym kliknięciem: faktura i umowa po wygranej, follow up 3 dni po wejściu w etap Oferta, powrót do przegranego klienta po 90 dniach, przydział nowych leadów po kolei.
+
+| Kiedy | Wtedy |
+| --- | --- |
+| Szansa wchodzi w wybrany etap | Zadanie z terminem za wybraną liczbę dni |
+| Szansa wygrana albo przegrana | Zadanie z terminem |
+| Nowy lead (z dowolnego albo wybranego źródła) | Zadanie albo przypisanie opiekuna: wybranej osoby lub po kolei, do osoby z najmniejszą liczbą otwartych leadów |
+
+Zadanie dostaje opiekun rekordu. Każde zadziałanie reguły jest wpisane w historii. Na serwerze reguły dla nowych leadów działają też dla zgłoszeń z formularza na stronie.
+
+## Masowe akcje, widoki i duplikaty
+
+- **Masowe akcje:** zaznacz wiersze na liście (albo wszystkie widoczne pierwszym polem w nagłówku). Pasek nad tabelą pozwala zmienić opiekuna, etap szans albo status leadów i usunąć zaznaczone. Każdą zmianę cofniesz z powiadomienia.
+- **Zapisane widoki:** ikona flagi w pasku listy zapisuje filtr, opiekuna, wyszukiwanie i sortowanie pod nazwą. Widoki są osobne dla każdej osoby i pojawiają się nad tabelą.
+- **Duplikaty:** na liście firm i kontaktów przycisk **Duplikaty** pokazuje rekordy o tej samej nazwie (dla firm bez formy prawnej, np. „Sp. z o.o.”) albo tym samym emailu. Scalenie zostawia najstarszy rekord, uzupełnia w nim puste pola, przenosi powiązania i historię.
 
 ## Cofanie i bezpieczeństwo danych
 

@@ -6,7 +6,24 @@ W 18 miesięcy zamieniamy klikalny prototyp Hermesa w płatny CRM dla 300 polski
 
 **Założenia planu:** founder jako właściciel produktu, 2 do 3 programistów, projektant na pół etatu od fazy 2. Stan na 30 października 2026.
 
-**Postęp (wersja 0.12):** fazę 1 zamyka technicznie komplet: backend, konta z 2FA, Google i Microsoft, maile, zespoły i role, AI na serwerze, RODO, dziennik zmian, szyfrowane kopie, HTTPS, monitoring, testy i CI. Zostały wdrożenie na serwerze w UE, umowa powierzenia i program pilotażowy. Z fazy 2 działają: zadania z porannym planem, dane po NIP, formularz leada, wersja na telefon, importy z Pipedrive, HubSpot i Livespace oraz onboarding (seria powitalna i pomoc w aplikacji). Maile trafiają do historii przez BCC, zgodnie z planem awaryjnym na czas weryfikacji Gmaila. Przed nami synchronizacja Gmaila, Outlooka i kalendarzy oraz płatności.
+**Postęp (wersja 0.13):** fazę 1 zamyka technicznie komplet: backend, konta z 2FA, Google i Microsoft, maile, zespoły i role, AI na serwerze, RODO, dziennik zmian, szyfrowane kopie, HTTPS, monitoring, testy i CI. Z fazy 2 działa sześć z dziewięciu inicjatyw: zadania z porannym planem, dane po NIP, formularz leada, wersja na telefon, importy z innych CRM i onboarding; maile trafiają do historii przez BCC. Z fazy 3 działa pięć z ośmiu: produkty i oferty z akceptacją online, automatyzacje, masowe akcje i widoki ze scalaniem duplikatów, webhooki dla Zapiera i Make, raporty zespołu.
+
+## Blokery: decyzje i konta po stronie foundera
+
+Te prace czekają na decyzję albo dostęp, którego nie da się załatwić w kodzie. Wszystko, co dało się zrobić bez nich, jest gotowe.
+
+| Bloker | Co blokuje | Co jest gotowe | Co trzeba zrobić |
+| --- | --- | --- | --- |
+| Serwer w UE i domena | Bramka fazy 1, piloci | Docker Compose, HTTPS z Caddy, kopie, monitoring | Wybrać dostawcę (np. Hetzner, OVHcloud), kupić domenę, uruchomić według `docs/wdrozenie.md` |
+| Klucze Google i Microsoft | Logowanie jednym kliknięciem | Pełny przepływ OAuth z testami | Założyć aplikacje OAuth i wpisać klucze w `.env` |
+| Dostawca maili (SMTP) i poczty przychodzącej | Zaproszenia mailem, poranny plan, seria powitalna, BCC | Wysyłka, szablony, odbiór Postmark i JSON | Założyć konto (np. Postmark), rekordy SPF, DKIM i MX |
+| Weryfikacja aplikacji u Google | Synchronizacja Gmaila i Kalendarza (faza 2) | Plan awaryjny: BCC | Złożyć wniosek o zakresy Gmail i Calendar (trwa tygodniami) |
+| Rejestracja aplikacji Microsoft z uprawnieniami do poczty | Synchronizacja Outlooka (faza 2) | Logowanie Microsoft, BCC | Zgoda administratora w Entra, decyzja o zakresie |
+| Operator płatności i faktury VAT | Płatności i plany (faza 2, P0), program poleceń (faza 3) | Konta, firmy, role do powiązania z planem | Wybrać operatora (karta i BLIK) i sposób wystawiania faktur (np. Fakturownia, inFakt) |
+| Klucze API systemów fakturowych | Integracje fakturowe (faza 3) | Oferty z pozycjami i VAT jako źródło faktury | Wybrać system i dać klucz API do konta testowego |
+| Wysyłka z domeny handlowca | Sekwencje emailowe (faza 3) | Szablony maili w serwerze, zadania | Decyzja: wysyłka z Gmaila i Outlooka (po weryfikacji) albo z domeny firmy przez SMTP |
+| Umowa powierzenia i regulamin | Piloci, sprzedaż | Eksport i usunięcie danych osoby, dziennik zmian | Wzór umowy powierzenia, regulamin i polityka prywatności od prawnika |
+| Klucz GUS (REGON) | Branża i wielkość firmy po NIP | Nazwa, adres i miasto z Białej listy | Wniosek o klucz do API BIR w GUS |
 
 ## Fazy i bramki
 

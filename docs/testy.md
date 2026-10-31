@@ -31,9 +31,11 @@ Wynik pokazuje każdy przypadek (✓ albo ✗) i podsumowanie pliku. Polecenie k
 | `server/test/auth-extra.test.ts` | Maile z zaproszeniem i resetem, logowanie Google i Microsoft: PKCE, nowa firma, łączenie kont, 2FA po logowaniu, zaproszenie, zły wydawca i stan |
 | `server/test/growth.test.ts` | NIP z Białej listy (podstawiona odpowiedź), formularz leada z deduplikacją i pułapką na boty, zadania, poranny plan |
 | `server/test/inbound.test.ts` | Maile przez BCC (Postmark i JSON), nowy kontakt i firma po domenie, brak duplikatów, zły sekret, seria powitalna |
+| `server/test/phase3.test.ts` | Webhooki z podpisem HMAC, automatyzacje dla leadów z formularza, oferty z akceptacją i powiadomieniem, raport tygodniowy |
 | `server/test/frontend.test.ts` | `index.html` w jsdom połączony z prawdziwym API: ekran logowania, wczytanie i zapis danych, zmiany innych osób, zaproszenie z Ustawień, baner podglądu |
 | `tests/zadania.test.js` | Zadania na karcie szansy, lista „Na dziś”, cofanie, zapis, pole NIP w formularzu firmy, pomoc w aplikacji |
 | `tests/importy.test.js` | Eksporty Pipedrive i HubSpot: rozpoznanie, kolumny, mapowanie etapów, statusy, daty, imię i nazwisko z dwóch kolumn, duplikaty |
+| `tests/faza3.test.js` | Automatyzacje (szablony, etap, wygrana, przydział leadów), masowe akcje z cofaniem, zapisane widoki, scalanie duplikatów, katalog produktów, pozycje i wartość szansy, podgląd oferty, raport zespołu |
 | `tests/glos.test.js` | Parser Hermes Voice na przykładowych zdaniach, zapis i powiązania, wykrywanie istniejących rekordów, wejścia głosowe w formularzach i notatkach |
 
 ## Pisanie testu

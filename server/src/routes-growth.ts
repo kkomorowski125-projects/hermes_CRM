@@ -4,6 +4,8 @@ import { HttpError, bad, need, audit, parseJson } from './context.js';
 import { newId, now, limiter } from './security.js';
 import { layout } from './mail.js';
 import { runOnboarding } from './onboarding.js';
+import { dispatch } from './webhooks.js';
+import { runWeekly } from './reports.js';
 
 /** Data i godzina w Polsce, niezależnie od strefy serwera. */
 export function warsaw(d = new Date()) {
@@ -67,6 +69,7 @@ export function startJobs(app: FastifyInstance) {
     const h = warsaw().hour;
     if (app.cfg.digestHour >= 0 && h === app.cfg.digestHour) runDigest(app).catch(e => app.log.error(e, 'Poranny plan nieudany'));
     if (h === 10) runOnboarding(app).catch(e => app.log.error(e, 'Seria powitalna nieudana'));
+    if (h === 8 && new Date().getUTCDay() === 1) runWeekly(app).catch(e => app.log.error(e, 'Raport tygodniowy nieudany'));
   };
   const t = setInterval(tick, 10 * 60e3); tick();
   return () => clearInterval(t);
@@ -149,13 +152,27 @@ export default async function growthRoutes(app: FastifyInstance) {
     if (!person && (name || email || phone)) { person = { id: newId('p'), name: name || email || phone, email, phone, company: comp?.id || '', created: w.day }; put.push({ type: 'contact', data: person }); }
     const src = ['Strona www', 'Polecenie', 'Targi', 'Cold mailing', 'LinkedIn', 'Inne'].includes(v('source')) ? v('source') : 'Strona www';
     const lead = { id: newId('l'), name: company || name || email, company: comp?.id || '', contacts: person ? [person.id] : [], source: src, status: 'Nowy', statusAt: w.day, icp: '', disqReason: '', dealId: '', value: Number(v('value').replace(/[^\d.]/g, '')) || 0, owner: admin?.name || '', nextStep: 'Odpowiedzieć na zapytanie ze strony', nextDate: w.day, created: w.day };
+    /* automatyzacje z Ustawień: przydział opiekuna i zadania dla nowego leada */
+    const orgRow = await db.one('SELECT settings FROM orgs WHERE id = ?', [f.org_id]);
+    const rules = (parseJson<any>(orgRow?.settings, {}).rules || []).filter((r: any) => r && r.on === 'lead' && (!r.source || r.source === src));
+    for (const r of rules.filter((r: any) => r.do === 'owner' && r.owner)) {
+      if (r.owner === '__rr') {
+        const team = await db.all("SELECT u.name FROM memberships m JOIN users u ON u.id = m.user_id WHERE m.org_id = ? AND m.role <> 'viewer' ORDER BY m.created_at", [f.org_id]);
+        const open = (await db.all("SELECT owner FROM records WHERE org_id = ? AND type = 'lead' AND deleted = 0", [f.org_id])).map(x => x.owner);
+        const pick = team.map(m => ({ n: m.name, c: open.filter(o => o === m.name).length })).sort((a, b) => a.c - b.c)[0];
+        if (pick) lead.owner = pick.n;
+      } else lead.owner = r.owner;
+    }
     put.push({ type: 'lead', data: lead });
     put.push({ type: 'activity', data: { id: newId('a'), obj: 'lead', rid: lead.id, type: 'note', text: `Zgłoszenie z formularza na stronie${message ? ': ' + message : '.'}`, at: w.at } });
+    for (const r of rules.filter((r: any) => r.do === 'task' && r.title))
+      put.push({ type: 'task', data: { id: newId('t'), obj: 'lead', rid: lead.id, title: String(r.title).slice(0, 200), due: warsaw(new Date(Date.now() + (Number(r.days) || 0) * 864e5)).day, owner: lead.owner, done: '', created: w.day, auto: true } });
     await db.tx(async tx => {
       for (const r of put) await tx.run('INSERT INTO records (org_id, type, id, data, owner, updated_at, updated_by, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, 0)',
         [f.org_id, r.type, r.data.id, JSON.stringify(r.data), r.type === 'lead' ? (lead.owner || null) : null, t, null]);
       await audit(tx, { orgId: f.org_id }, 'record_created', 'lead', lead.id, { name: lead.name, via: 'form' });
     });
+    void dispatch(app, f.org_id, [{ event: 'lead.created', data: lead }]).catch(() => {});
     return done();
   });
 }

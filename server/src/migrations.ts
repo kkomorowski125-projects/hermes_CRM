@@ -133,5 +133,39 @@ export const MIGRATIONS: { id: number; name: string; up: string[] }[] = [
         PRIMARY KEY (user_id, step)
       )`
     ]
+  },
+  {
+    id: 4,
+    name: 'webhooki, oferty, raport tygodniowy',
+    up: [
+      `CREATE TABLE webhooks (
+        id TEXT PRIMARY KEY,
+        org_id TEXT NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
+        url TEXT NOT NULL,
+        events TEXT NOT NULL,
+        secret TEXT NOT NULL,
+        last_status INTEGER,
+        last_at TEXT,
+        created_at TEXT NOT NULL
+      )`,
+      `CREATE TABLE offers (
+        id TEXT PRIMARY KEY,
+        org_id TEXT NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
+        deal_id TEXT NOT NULL,
+        data TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'sent',
+        accepted_name TEXT,
+        accepted_at TEXT,
+        viewed_at TEXT,
+        created_by TEXT,
+        created_at TEXT NOT NULL
+      )`,
+      'CREATE INDEX offers_deal ON offers (org_id, deal_id)',
+      `CREATE TABLE weekly_reports (
+        org_id TEXT NOT NULL,
+        week TEXT NOT NULL,
+        PRIMARY KEY (org_id, week)
+      )`
+    ]
   }
 ];

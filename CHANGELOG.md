@@ -2,6 +2,16 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.13.0] · 31 października 2026
+
+### Dodane
+- Produkty i oferty: katalog z ceną netto i VAT, pozycje w szansie z rabatem, wartość szansy z pozycji, oferta do druku i PDF, link dla klienta z akceptacją online i powiadomieniem.
+- Automatyzacje: zadania po wejściu w etap, wygranej i przegranej, przydział nowych leadów wybranej osobie albo po kolei, gotowe szablony reguł.
+- Masowe akcje na listach: zmiana opiekuna, etapu i statusu, usuwanie, wszystko z cofaniem.
+- Zapisane widoki list dla każdej osoby i scalanie duplikatów firm i kontaktów.
+- Webhooki wychodzące dla Zapiera i Make z podpisem HMAC.
+- Raport zespołu: eksport CSV z Analityki i cotygodniowe podsumowanie mailem dla administratorów.
+
 ## [0.12.0] · 31 października 2026
 
 ### Dodane
