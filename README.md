@@ -16,6 +16,10 @@ Prosty, AI-native CRM dla małych i średnich firm, zaprojektowany dla foundera,
 
 Nie trzeba niczego instalować. Do pracy nad kodem i testów potrzebujesz Node.js 22 lub nowszego ([CONTRIBUTING.md](CONTRIBUTING.md)).
 
+### Na Macu, jak zwykła aplikacja
+
+Pobierz `Hermes-CRM-<wersja>-macOS.zip`, rozpakuj i uruchom w Terminalu `bash "Zainstaluj Hermes CRM.command"`. Instalator dodaje aplikację Hermes CRM, uruchamia ją w tle po zalogowaniu i trzyma dane tylko na tym komputerze. Szczegóły: [instalacja na Macu](docs/instalacja-mac.md); archiwum zbudujesz poleceniem `bash tools/build-installer.sh`.
+
 ### Z serwerem, dla zespołu
 
 ```bash
@@ -50,6 +54,7 @@ Szczegóły i zrzuty ekranu są w [przewodniku użytkownika](docs/przewodnik.md)
 | [Przewodnik użytkownika](docs/przewodnik.md) | Jak pracować w Hermesie, ekran po ekranie |
 | [Architektura](docs/architektura.md) | Jak zbudowana jest aplikacja i jak dodać funkcję |
 | [Serwer](docs/serwer.md) | API, role, synchronizacja, RODO, bezpieczeństwo |
+| [Instalacja na Macu](docs/instalacja-mac.md) | Instalator macOS: aplikacja, usługa w tle, dane, aktualizacja |
 | [Wdrożenie](docs/wdrozenie.md) | Docker Compose, zmienne, HTTPS, kopie bazy |
 | [Model danych](docs/model-danych.md) | Obiekty, pola, relacje, zapis i migracje |
 | [Import i eksport](docs/import-eksport.md) | Formaty CSV, kolumny, kopia zapasowa |
@@ -79,7 +84,8 @@ server/             serwer API (Fastify, TypeScript, PostgreSQL lub SQLite) i je
 Dockerfile          obraz z serwerem i aplikacją; docker-compose.yml dodaje PostgreSQL
 docs/               dokumentacja i zrzuty ekranu (docs/img)
 tests/              testy w jsdom, uruchamiane przez npm test
-tools/              sprawdzenie składni i skrypt zrzutów ekranu
+installer/macos/    skrypty instalatora i deinstalatora dla macOS z instrukcją
+tools/              sprawdzenie składni, zrzuty ekranu, budowanie instalatora
 .github/            CI (GitHub Actions) i szablony zgłoszeń
 ```
 

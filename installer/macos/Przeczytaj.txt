@@ -1,0 +1,52 @@
+HERMES CRM __VERSION__ · INSTALACJA NA MACU
+
+Wymagania: macOS 11 lub nowszy (Apple Silicon albo Intel), internet przy instalacji.
+
+JAK ZAINSTALOWAĆ
+
+1. Rozpakuj archiwum (dwuklik na pliku .zip).
+2. Otwórz Terminal (Cmd + spacja, wpisz „Terminal”, Enter).
+3. Wpisz bash i spację, przeciągnij do okna plik „Zainstaluj Hermes CRM.command”
+   i naciśnij Enter.
+
+Instalator pobierze środowisko Node.js (około 50 MB), zainstaluje aplikację
+„Hermes CRM” w folderze Programy w Twoim katalogu domowym i otworzy CRM w przeglądarce.
+Pierwsze konto, które założysz, tworzy firmę i jest kontem administratora.
+
+Możesz też kliknąć plik .command dwa razy. macOS może wtedy zablokować go jako plik
+od niezidentyfikowanego twórcy. Otwórz wtedy Ustawienia systemowe → Prywatność i ochrona,
+przewiń w dół i kliknij „Otwórz mimo to”.
+
+NA CO DZIEŃ
+
+• CRM uruchamia się sam po zalogowaniu do Maca i działa w tle.
+• Otwierasz go ikoną „Hermes CRM” (Programy w katalogu domowym, Launchpad lub Spotlight)
+  albo adresem z instalatora, domyślnie http://localhost:3210
+• Możesz go dodać do Docka albo zainstalować jak aplikację z przeglądarki Chrome lub Safari
+  (Udostępnij → Dodaj do Docka).
+
+DANE I KOPIE
+
+• Baza: ~/Library/Application Support/Hermes CRM/hermes.db
+• Ustawienia: ten sam folder, plik ustawienia.env (port, Hermes AI, wysyłka maili)
+• Kopię pobierzesz w aplikacji: Ustawienia → Ogólne → Pobierz kopię.
+  Dla pewności kopiuj też cały folder na dysk zewnętrzny albo do chmury.
+• Dane są tylko na tym komputerze. Nic nie trafia na zewnętrzne serwery, chyba że
+  włączysz Hermes AI z kluczem Claude API.
+
+AKTUALIZACJA
+
+Uruchom instalator z nowszej wersji. Dane i ustawienia zostają,
+a przed aktualizacją Hermes zapisuje kopię bazy (hermes-przed-aktualizacja.db).
+
+ODINSTALOWANIE
+
+W Terminalu wpisz bash i spację, przeciągnij „Odinstaluj Hermes CRM.command” i naciśnij Enter.
+Dane zostają, chyba że potwierdzisz ich usunięcie słowem TAK.
+
+GDY COŚ NIE DZIAŁA
+
+• Szczegóły błędów są w pliku hermes.log w folderze z danymi.
+• Port zajęty? Zmień PORT i PUBLIC_URL w pliku ustawienia.env i kliknij ikonę Hermes CRM.
+• Ręczny restart: w Terminalu wpisz
+  launchctl kickstart -k gui/$(id -u)/pl.hermes.crm

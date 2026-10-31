@@ -1,6 +1,6 @@
 {
   "name": "hermes-crm",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "private": true,
   "description": "Hermes CRM: prosty, AI-native CRM dla małych i średnich firm. Klikalny prototyp w jednym pliku HTML.",
   "scripts": {

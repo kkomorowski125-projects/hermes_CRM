@@ -2,6 +2,11 @@
 
 Format według [Keep a Changelog](https://keepachangelog.com/pl/1.1.0/). Wersje przed 1.0 to etapy prototypu.
 
+## [0.16.2] · 31 października 2026
+
+### Dodane
+- Instalator dla macOS (`tools/build-installer.sh`, `installer/macos`): aplikacja Hermes CRM w Programach z własnym Node.js, serwer w jednym pliku, usługa w tle startująca po zalogowaniu, dane w `~/Library/Application Support/Hermes CRM`, kopia bazy przy aktualizacji, deinstalator z zachowaniem danych.
+
 ## [0.16.1] · 31 października 2026
 
 ### Zmienione
