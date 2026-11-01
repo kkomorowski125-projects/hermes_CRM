@@ -51,6 +51,7 @@ Szczegóły i zrzuty ekranu są w [przewodniku użytkownika](docs/przewodnik.md)
 
 | Dokument | Dla kogo |
 | --- | --- |
+| [Stan projektu](docs/stan-projektu.md) | Co jest gotowe, otwarte sprawy i jak wrócić do pracy |
 | [Przewodnik użytkownika](docs/przewodnik.md) | Jak pracować w Hermesie, ekran po ekranie |
 | [Architektura](docs/architektura.md) | Jak zbudowana jest aplikacja i jak dodać funkcję |
 | [Serwer](docs/serwer.md) | API, role, synchronizacja, RODO, bezpieczeństwo |
